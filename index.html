@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light" data-visual-mode="compact" data-ux-step="1">
+<html lang="en" data-theme="light" data-visual-mode="compact" data-view-mode="portal" data-ux-step="1">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,6 +24,11 @@
         <div class="brand-group">
           <span class="economist-badge" style="background-color: #B45309;">Interactive Thesis</span>
           <span class="brand-title">Why Mansa Musa Was Right</span>
+          <button id="scopeSwitchPortalBtn" type="button" class="portal-badge-btn" title="Click to choose a country or view All-Africa">
+            <span id="activeScopeFlag">🌍</span>
+            <span id="activeScopeLabel">All-Africa</span>
+            <span style="font-size: 0.65rem; opacity: 0.8;">▼ Switch</span>
+          </button>
         </div>
 
         <div class="masthead-actions">
@@ -123,6 +128,87 @@
 
     <!-- Viewport Frame Container (Adapts to Phone 390px / Tablet 768px / Auto Full Screen) -->
     <div id="ngViewportStage" class="ng-viewport-stage">
+
+    <!-- ====================================================================
+         LANDING PORTAL: AFRICA'S POTENTIAL • SELECT SCOPE TO ENTER
+         ==================================================================== -->
+    <section id="country-portal" class="country-portal-hero">
+      <div class="container portal-container">
+        <div class="portal-header">
+          <div class="kicker emerald">EXPLORE AFRICA’S ECONOMIC POTENTIAL • 2026 TO 2076</div>
+          <h1 class="portal-headline">
+            Africa’s Hidden Potential: <span class="highlight">Turn $75B into a $183.5T Superpower</span>
+          </h1>
+          <p class="portal-sub">
+            In 1324, Emperor Mansa Musa ruled the wealthiest empire on Earth. Today, smart investments in healthcare, education, clean electricity, and trade can reclaim that throne. <strong>Where would you like to begin?</strong>
+          </p>
+        </div>
+
+        <div class="portal-cards-grid">
+          <!-- Option A: All-Africa -->
+          <div class="portal-card" data-select-scope="africa">
+            <div class="portal-card-top">
+              <span class="portal-card-flag">🌍</span>
+              <span class="portal-card-badge">THE CONTINENT</span>
+            </div>
+            <h2 class="portal-card-title">All-Africa (54 Nations)</h2>
+            <p class="portal-card-desc">
+              Discover how fixing the 3 historical leaks and investing $75B in high-return solutions turns 1.5 billion people into the world's #1 economy ($183.5 Trillion).
+            </p>
+            <div class="portal-card-stats">
+              <div>
+                <span class="portal-stat-num emerald">$183.5T</span>
+                <span class="portal-stat-lbl">2076 Economy</span>
+              </div>
+              <div>
+                <span class="portal-stat-num">Year 2051</span>
+                <span class="portal-stat-lbl">Passes USA #1</span>
+              </div>
+              <div>
+                <span class="portal-stat-num emerald">$3.33T</span>
+                <span class="portal-stat-lbl">Historical Aid Audited</span>
+              </div>
+            </div>
+            <button type="button" class="btn-primary portal-card-btn">
+              Explore All-Africa Potential →
+            </button>
+          </div>
+
+          <!-- Option B: Kenya -->
+          <div class="portal-card featured" data-select-scope="kenya">
+            <div class="portal-card-top">
+              <span class="portal-card-flag">🇰🇪</span>
+              <span class="portal-card-badge gold">FLAGSHIP NATION</span>
+            </div>
+            <h2 class="portal-card-title">Kenya (Silicon Savannah)</h2>
+            <p class="portal-card-desc">
+              Kenya received $161B in historical capital but tender corruption and debt drained it. See how digital procurement, geothermal power, and tech lift Kenya to an $18.6T titan.
+            </p>
+            <div class="portal-card-stats">
+              <div>
+                <span class="portal-stat-num emerald">$18.6T</span>
+                <span class="portal-stat-lbl">2076 Economy</span>
+              </div>
+              <div>
+                <span class="portal-stat-num emerald">$1.18T</span>
+                <span class="portal-stat-lbl">Value Today (If Fixed)</span>
+              </div>
+              <div>
+                <span class="portal-stat-num">54.2 : 1</span>
+                <span class="portal-stat-lbl">Lomborg Return Rate</span>
+              </div>
+            </div>
+            <button type="button" class="btn-primary portal-card-btn" style="background-color: #D97706; border-color: #D97706;">
+              Explore Kenya Potential 🇰🇪 →
+            </button>
+          </div>
+        </div>
+
+        <div class="portal-footer-hint">
+          <span>💡 <em>You can switch between Kenya and All-Africa at any time using the switcher in the top bar.</em></span>
+        </div>
+      </div>
+    </section>
 
   <main class="container">
 
