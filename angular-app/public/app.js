@@ -3208,28 +3208,6 @@
   ];
 
   const MANSA_PORTRAIT_CONFIG = {
-    throne: {
-      src: "mansa-musa-throne.jpg",
-      coords: {
-        sankore: { left: 21, top: 36 },
-        crown: { left: 50, top: 17 },
-        orb: { left: 44, top: 43 },
-        scales: { left: 19, top: 69 },
-        scepter: { left: 67, top: 35 },
-        pedestal: { left: 75, top: 83 },
-      },
-    },
-    catalan: {
-      src: "mansa-musa-catalan.jpg",
-      coords: {
-        sankore: { left: 28, top: 34 },
-        crown: { left: 65, top: 18 },
-        orb: { left: 30, top: 49 },
-        scales: { left: 18, top: 82 },
-        scepter: { left: 75, top: 46 },
-        pedestal: { left: 58, top: 85 },
-      },
-    },
     anime: {
       src: "mansa-musa-anime.jpg",
       coords: {
@@ -3257,9 +3235,13 @@
       m3Val: "22× Youth Output",
       sliderLabel: "🧬📱 Adjust Sankore Human Capital & EdTech Power:",
       formula: "Friedman Ch. 11: Human Capital (H) × Physical Capital (K) → Zero Diminishing Returns",
-      jumpHref: "#btf-matrix",
-      jumpText: "Explore Lomborg 12 Best-First Solutions ↓",
+      jumpHref: "#simulator",
+      jumpText: "Jump to Lomborg $75B & Best Things First ↓",
       linkedDial: "edtech",
+      deckActions: [
+        { label: "★ Fund Optimal $75B Sankore Portfolio", action: "loadOptimal75B" },
+        { label: "⚠ Test 1324 Raw Gold / Debt Trap", action: "loadTrap75B" },
+      ],
     },
     crown: {
       stepText: "RELIC 2 OF 6 • THE IMPERIAL CROWN OF MALI",
@@ -3275,8 +3257,12 @@
       sliderLabel: "👑 Adjust Sovereign Governance & Monetary Discipline:",
       formula: "Friedman K-Rule: ΔM (4.0%) < ΔY (8.8%) → Structural Hard-Currency Appreciation",
       jumpHref: "#friedman-markets",
-      jumpText: "Open Friedman Monetary Engine ↓",
+      jumpText: "Jump to Friedman Monetary Engine ↓",
       linkedDial: "biology",
+      deckActions: [
+        { label: "★ Activate Friedman K-Rule (4.5% M)", action: "friedmanSankore" },
+        { label: "⚠ Simulate 1324 Cairo Gold Inflation", action: "friedmanCairo" },
+      ],
     },
     orb: {
       stepText: "RELIC 3 OF 6 • THE GOLDEN NUGGET ORB",
@@ -3292,8 +3278,12 @@
       sliderLabel: "🔮 Adjust $75B Catalyst Onshore Retention & Velocity:",
       formula: "Friedman Equation: M · V(3.1×) = P · Y($183.5T) | 1325 Sankore Pivot",
       jumpHref: "#overtake-race",
-      jumpText: "Play Global GDP Overtake Race (2026–2076) ↓",
+      jumpText: "Jump to Global GDP Overtake Race ↓",
       linkedDial: "all",
+      deckActions: [
+        { label: "▶ Play 2026–2076 GDP Overtake Race", action: "playGdpRace" },
+        { label: "🚀 Race From $28.4T 2026 Counterfactual", action: "raceCounterfactual" },
+      ],
     },
     scales: {
       stepText: "RELIC 4 OF 6 • TIMBUKTU MANUSCRIPTS & BALANCE SCALES",
@@ -3309,8 +3299,13 @@
       sliderLabel: "⚖️ Seal the 3 Historical Leaky Valves (0% = Leaking, 100% = Locked):",
       formula: "Historical Audit: $3.33T × 8.5× Compounding BCR = $28.4T Africa Today",
       jumpHref: "#historical-audit",
-      jumpText: "Play the 3-Valve Leaky-Pipe Audit Game ↓",
+      jumpText: "Jump to 3-Valve Leaky-Pipe Audit ↓",
       linkedDial: "valves",
+      deckActions: [
+        { label: "🔒 Lock All 3 Valves ($28.4T)", action: "lockAllValves" },
+        { label: "💔 Open Leaks ($3.7T Reality)", action: "openAllValves" },
+        { label: "🇰🇪 Inspect Kenya $161B Audit", action: "auditKenya" },
+      ],
     },
     scepter: {
       stepText: "RELIC 5 OF 6 • THE ROYAL GOLDEN SCEPTER",
@@ -3325,13 +3320,17 @@
       m3Val: "$88.8T Combined GDP",
       sliderLabel: "⚡ Adjust $0.02 Power Grid & AfCFTA Border Clearance:",
       formula: "Friedman Price Theory Ch. 2: Relative Input Price Drop (-91%) → 42× Smelting & AI Compute Surge",
-      jumpHref: "#friedman-price-theory",
-      jumpText: "Open Friedman Price Theory Simulator ↓",
+      jumpHref: "#friedman-markets",
+      jumpText: "Jump to Friedman Price Theory Lab ↓",
       linkedDial: "power",
+      deckActions: [
+        { label: "⚡ Set $0.018/kWh Optimal Power", action: "ptOptimal" },
+        { label: "🇰🇪+🇨🇩 Load Kenya–DRC Twin Axis ($73.4T)", action: "blueprintTwinAxis" },
+      ],
     },
     pedestal: {
       stepText: "RELIC 6 OF 6 • THE GOLDEN THRONE PEDESTAL",
-      title: "💎 The Throne Pedestal: $330.3T Bourse, 8 Super-Sectors & +$42T World Boost",
+      title: "💎 The Throne Pedestal: $330.3T Bourse, 8 Super-Sectors & 54-Nation 3D Atlas",
       quote:
         "“When Africa’s 54 nations clear their own capital through Africlear and monetize Football, Eco-Tourism, Afrobeats IP, the Congo Carbon Sink, and Equatorial Spaceports, the entire world grows $42 Trillion richer.”",
       m1Label: "2076 SANKORE-500 Bourse",
@@ -3342,16 +3341,22 @@
       m3Val: "+$42.0T (US/EU/CN/IN)",
       sliderLabel: "💎⚽ Unlock the 8 Super-Sectors & Pan-African Stock Exchange:",
       formula: "Global Co-Prosperity: Africa +$183.5T GDP → Rest of World +$42.0T Trade & Tech Dividend",
-      jumpHref: "#untapped-co-prosperity",
-      jumpText: "Explore 8 Super-Sectors & Stock Market Race ↓",
+      jumpHref: "#africa-map",
+      jumpText: "Jump to 54-Nation 3D Superpower Map ↓",
       linkedDial: "super",
+      deckActions: [
+        { label: "📈 Play $330T Stock Market Race", action: "playStockRace" },
+        { label: "🌍 Play 54-Nation 3D Map Growth", action: "play3dMap" },
+      ],
     },
   };
 
-  let currentMansaPortrait = "throne";
+  let currentMansaPortrait = "anime";
   let currentMansaRelic = "orb";
   let mansaWalkTimer = null;
+  let mansaFollowSiteEnabled = true;
 
+  const mansaVisualGuide = document.getElementById("mansaVisualGuide");
   const mansaPortraitStage = document.getElementById("mansaPortraitStage");
   const mansaPortraitImg = document.getElementById("mansaPortraitImg");
   const mansaEraOverlayBadge = document.getElementById("mansaEraOverlayBadge");
@@ -3369,12 +3374,22 @@
   const mansaHudSlider = document.getElementById("mansaHudSlider");
   const mansaHudSliderVal = document.getElementById("mansaHudSliderVal");
   const mansaHudFormulaTag = document.getElementById("mansaHudFormulaTag");
+  const mansaLiveEngineDeck = document.getElementById("mansaLiveEngineDeck");
   const mansaJumpLink = document.getElementById("mansaJumpLink");
   const mansaAutoWalkBtn = document.getElementById("mansaAutoWalkBtn");
   const mansaPrevRelicBtn = document.getElementById("mansaPrevRelicBtn");
   const mansaNextRelicBtn = document.getElementById("mansaNextRelicBtn");
   const mansaMode1324Btn = document.getElementById("mansaMode1324Btn");
   const mansaMode1325Btn = document.getElementById("mansaMode1325Btn");
+  const mansaPinFollowBtn = document.getElementById("mansaPinFollowBtn");
+  const mansaSizeToggleBtn = document.getElementById("mansaSizeToggleBtn");
+  const mansaSummonModalBtn = document.getElementById("mansaSummonModalBtn");
+  const mansaSitewideFloatingDock = document.getElementById("mansaSitewideFloatingDock");
+  const mansaFloatingPinBadge = document.getElementById("mansaFloatingPinBadge");
+  const mansaFloatingSectionKicker = document.getElementById("mansaFloatingSectionKicker");
+  const mansaFloatingMessage = document.getElementById("mansaFloatingMessage");
+  const mansaExpandFullStageHereBtn = document.getElementById("mansaExpandFullStageHereBtn");
+  const mansaDismissFloatBtn = document.getElementById("mansaDismissFloatBtn");
 
   function syncMansaEraVisual(eraMode) {
     if (!mansaPortraitStage) return;
@@ -3394,9 +3409,8 @@
     }
   }
 
-  function updateMansaPortraitPositions(portraitKey) {
-    const cfg = MANSA_PORTRAIT_CONFIG[portraitKey] || MANSA_PORTRAIT_CONFIG.throne;
-    currentMansaPortrait = portraitKey;
+  function updateMansaPortraitPositions() {
+    const cfg = MANSA_PORTRAIT_CONFIG.anime;
     if (mansaPortraitImg) {
       mansaPortraitImg.src = cfg.src;
     }
@@ -3416,12 +3430,57 @@
     if (mansaConstellationLine) {
       mansaConstellationLine.setAttribute("points", pts.join(" "));
     }
-    document.querySelectorAll("[data-mansa-portrait]").forEach((btn) => {
-      btn.classList.toggle(
-        "active",
-        btn.getAttribute("data-mansa-portrait") === portraitKey
-      );
-    });
+  }
+
+  function executeMansaDeckAction(actionKey) {
+    if (actionKey === "loadOptimal75B") {
+      const btn = document.getElementById("loadNobelBtn");
+      if (btn) btn.click();
+    } else if (actionKey === "loadTrap75B") {
+      const btn = document.getElementById("loadTrapBtn");
+      if (btn) btn.click();
+    } else if (actionKey === "friedmanSankore") {
+      const btn = document.querySelector('[data-friedman-regime="sankoreFriedman"]');
+      if (btn) btn.click();
+    } else if (actionKey === "friedmanCairo") {
+      const btn = document.querySelector('[data-friedman-regime="cairo1324"]');
+      if (btn) btn.click();
+    } else if (actionKey === "playGdpRace") {
+      const el = document.getElementById("overtake-race");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+      raceYear = 2026;
+      startRacePlayback();
+    } else if (actionKey === "raceCounterfactual") {
+      const btn = document.getElementById("applyCounterfactualBaseBtn");
+      if (btn) btn.click();
+    } else if (actionKey === "lockAllValves") {
+      if (snapAllValvesShutBtn) snapAllValvesShutBtn.click();
+    } else if (actionKey === "openAllValves") {
+      if (openAllValvesLeakBtn) openAllValvesLeakBtn.click();
+    } else if (actionKey === "auditKenya") {
+      const keBtn = document.querySelector('[data-audit-scope="kenya"]');
+      if (keBtn) keBtn.click();
+      const el = document.getElementById("historical-audit");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    } else if (actionKey === "ptOptimal") {
+      const btn = document.querySelector('[data-pt-preset="sankoreComplementarity"]');
+      if (btn) btn.click();
+    } else if (actionKey === "blueprintTwinAxis") {
+      const btn = document.querySelector('[data-country="twinAxis"]');
+      if (btn) btn.click();
+      const el = document.getElementById("drc-superpower");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    } else if (actionKey === "playStockRace") {
+      const el = document.getElementById("friedman-markets");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+      stockRaceYear = 2026;
+      startStockRacePlayback();
+    } else if (actionKey === "play3dMap") {
+      const el = document.getElementById("africa-map");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+      mapSimYear = 2026;
+      startMapPlayback();
+    }
   }
 
   function selectMansaRelic(relicId) {
@@ -3432,18 +3491,23 @@
       mansaPortraitStage.setAttribute("data-active-relic", relicId);
     }
 
-    document.querySelectorAll(".mansa-hotspot-pin").forEach((pin) => {
-      pin.classList.toggle(
-        "active",
-        pin.getAttribute("data-relic-id") === relicId
-      );
-    });
-    document.querySelectorAll(".mansa-mini-pill").forEach((pill) => {
-      pill.classList.toggle(
-        "active",
-        pill.getAttribute("data-relic-id") === relicId
-      );
-    });
+    const relicNum = MANSA_RELIC_ORDER.indexOf(relicId) + 1;
+    if (mansaFloatingPinBadge) mansaFloatingPinBadge.textContent = String(relicNum);
+    if (mansaFloatingSectionKicker) {
+      mansaFloatingSectionKicker.textContent = `👑 ANIME MANSA MUSA GUIDE • ${r.stepText}`;
+    }
+    if (mansaFloatingMessage) {
+      mansaFloatingMessage.textContent = `${r.title} (${r.m1Val} • ${r.m2Val})`;
+    }
+
+    document
+      .querySelectorAll(".mansa-hotspot-pin, .mansa-mini-pill, .mansa-float-relic-btn")
+      .forEach((el) => {
+        el.classList.toggle(
+          "active",
+          el.getAttribute("data-relic-id") === relicId
+        );
+      });
 
     if (mansaRelicStepBadge) mansaRelicStepBadge.textContent = r.stepText;
     if (mansaRelicTitle) mansaRelicTitle.textContent = r.title;
@@ -3459,6 +3523,22 @@
     if (mansaJumpLink) {
       mansaJumpLink.setAttribute("href", r.jumpHref);
       mansaJumpLink.textContent = r.jumpText;
+    }
+
+    if (mansaLiveEngineDeck && r.deckActions) {
+      mansaLiveEngineDeck.innerHTML = r.deckActions
+        .map(
+          (a) =>
+            `<button type="button" class="mansa-deck-btn" data-mansa-deck-action="${a.action}">${a.label}</button>`
+        )
+        .join("");
+      mansaLiveEngineDeck
+        .querySelectorAll("[data-mansa-deck-action]")
+        .forEach((btn) => {
+          btn.addEventListener("click", () => {
+            executeMansaDeckAction(btn.getAttribute("data-mansa-deck-action"));
+          });
+        });
     }
 
     // Sync slider value with underlying dial
@@ -3484,12 +3564,6 @@
     if (mansaHudSliderVal) mansaHudSliderVal.textContent = `${dialVal}%`;
   }
 
-  document.querySelectorAll("[data-mansa-portrait]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      updateMansaPortraitPositions(btn.getAttribute("data-mansa-portrait"));
-    });
-  });
-
   document
     .querySelectorAll(".mansa-hotspot-pin, .mansa-mini-pill")
     .forEach((el) => {
@@ -3498,6 +3572,122 @@
         if (id) selectMansaRelic(id);
       });
     });
+
+  document.querySelectorAll(".mansa-float-relic-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.getAttribute("data-relic-id");
+      const targetSel = btn.getAttribute("data-scroll-to");
+      if (id) selectMansaRelic(id);
+      if (targetSel) {
+        const targetEl = document.querySelector(targetSel);
+        if (targetEl) targetEl.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  });
+
+  // Toggle Full-Stage Modal Overlay Anywhere on the Site
+  function toggleMansaSitewideModal(forceState) {
+    if (!mansaVisualGuide) return;
+    const isNowOpen =
+      typeof forceState === "boolean"
+        ? forceState
+        : !mansaVisualGuide.classList.contains("sitewide-modal-open");
+    mansaVisualGuide.classList.toggle("sitewide-modal-open", isNowOpen);
+    if (mansaSummonModalBtn) {
+      mansaSummonModalBtn.textContent = isNowOpen
+        ? "✕ Dock Back to Page"
+        : "👑 Keep Guide Open While Scrolling";
+    }
+  }
+
+  if (mansaSummonModalBtn) {
+    mansaSummonModalBtn.addEventListener("click", () => {
+      toggleMansaSitewideModal();
+    });
+  }
+
+  if (mansaExpandFullStageHereBtn) {
+    mansaExpandFullStageHereBtn.addEventListener("click", () => {
+      toggleMansaSitewideModal(true);
+    });
+  }
+
+  const floatingThumbWrap = document.querySelector(".mansa-floating-thumb-wrap");
+  if (floatingThumbWrap) {
+    floatingThumbWrap.addEventListener("click", () => {
+      toggleMansaSitewideModal(true);
+    });
+  }
+
+  if (mansaSizeToggleBtn && mansaVisualGuide) {
+    mansaSizeToggleBtn.addEventListener("click", () => {
+      const cur = mansaVisualGuide.getAttribute("data-guide-size") || "full";
+      const next = cur === "full" ? "compact" : "full";
+      mansaVisualGuide.setAttribute("data-guide-size", next);
+      mansaSizeToggleBtn.textContent =
+        next === "compact" ? "⛶ Expand Full Stage" : "🗗 Compact / ⛶ Full Size";
+    });
+  }
+
+  if (mansaPinFollowBtn) {
+    mansaPinFollowBtn.addEventListener("click", () => {
+      mansaFollowSiteEnabled = !mansaFollowSiteEnabled;
+      mansaPinFollowBtn.classList.toggle("active", mansaFollowSiteEnabled);
+      mansaPinFollowBtn.textContent = mansaFollowSiteEnabled
+        ? "📌 Follow Across Site: ON"
+        : "📌 Follow Across Site: OFF";
+      if (!mansaFollowSiteEnabled && mansaSitewideFloatingDock) {
+        mansaSitewideFloatingDock.hidden = true;
+      }
+    });
+  }
+
+  if (mansaDismissFloatBtn && mansaSitewideFloatingDock) {
+    mansaDismissFloatBtn.addEventListener("click", () => {
+      mansaSitewideFloatingDock.hidden = true;
+    });
+  }
+
+  // Scroll-Spy: Sync Active Relic & Show Floating Companion Across the Site
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!mansaFollowSiteEnabled || !mansaSitewideFloatingDock) return;
+      const y = window.scrollY;
+      const isModal =
+        mansaVisualGuide &&
+        mansaVisualGuide.classList.contains("sitewide-modal-open");
+      mansaSitewideFloatingDock.hidden = y < 580 || isModal;
+
+      // Auto-highlight the matching relic as the user scrolls through sections
+      const auditEl = document.getElementById("historical-audit");
+      const raceEl = document.getElementById("overtake-race");
+      const friedmanEl = document.getElementById("friedman-markets");
+      const mapEl = document.getElementById("africa-map");
+      const simEl = document.getElementById("simulator");
+
+      const mid = y + window.innerHeight * 0.35;
+      let spyRelic = null;
+      if (simEl && mid >= simEl.offsetTop) {
+        spyRelic = "sankore";
+      } else if (mapEl && mid >= mapEl.offsetTop) {
+        spyRelic = "pedestal";
+      } else if (friedmanEl && mid >= friedmanEl.offsetTop) {
+        spyRelic = "scepter";
+      } else if (raceEl && mid >= raceEl.offsetTop) {
+        spyRelic = "orb";
+      } else if (auditEl && mid >= auditEl.offsetTop) {
+        spyRelic = "scales";
+      }
+      if (spyRelic && spyRelic !== currentMansaRelic && y > 580) {
+        selectMansaRelic(spyRelic);
+      }
+    },
+    { passive: true }
+  );
+
+  updateMansaPortraitPositions();
+  selectMansaRelic("orb");
 
   if (mansaPrevRelicBtn) {
     mansaPrevRelicBtn.addEventListener("click", () => {

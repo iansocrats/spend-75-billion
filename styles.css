@@ -3286,6 +3286,199 @@ input[type="range"] {
   }
 }
 
+/* ============================================================================
+   SITE-WIDE INTERACTIVE ANIME MANSA MUSA STAGE, FLOATING DOCK & ENGINE DECK
+   ============================================================================ */
+.mansa-live-engine-deck {
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px dashed var(--border-hairline);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.mansa-deck-btn {
+  flex: 1 1 auto;
+  background-color: var(--bg-card);
+  color: var(--ink-primary);
+  border: 1px solid #D97706;
+  border-radius: 5px;
+  padding: 0.36rem 0.58rem;
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mansa-deck-btn:hover,
+.mansa-deck-btn.active {
+  background-color: #D97706;
+  color: #FFFFFF;
+}
+
+/* Compact Mode for Top Stage */
+.mansa-guide-shell[data-guide-size="compact"] .mansa-guide-grid {
+  grid-template-columns: 0.85fr 1.15fr;
+}
+
+.mansa-guide-shell[data-guide-size="compact"] .mansa-royal-quote {
+  display: none;
+}
+
+/* Full-Size Site-Wide Overlay Modal Mode (Summon Full Anime Stage Anywhere on Site) */
+.mansa-guide-shell.sitewide-modal-open {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(1240px, 95vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 400;
+  margin: 0;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.78), 0 0 0 100vmax rgba(0, 0, 0, 0.68);
+}
+
+/* Sticky / Floating Site-Wide Companion Dock */
+.mansa-floating-dock {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1060px, calc(100vw - 1.5rem));
+  z-index: 260;
+  background: rgba(15, 13, 10, 0.94);
+  backdrop-filter: blur(12px);
+  border: 2px solid #D97706;
+  border-radius: 10px;
+  padding: 0.6rem 0.85rem;
+  color: #FAF7F2;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.55);
+}
+
+.mansa-floating-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.mansa-floating-thumb-wrap {
+  position: relative;
+  width: 96px;
+  height: 56px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid #F59E0B;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.mansa-floating-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mansa-floating-pin-badge {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #059669;
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #A7F3D0;
+}
+
+.mansa-floating-info {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.mansa-floating-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #FCD34D;
+  letter-spacing: 0.05em;
+}
+
+.mansa-floating-msg {
+  font-size: 0.76rem;
+  color: #E7E5E4;
+  margin: 0.1rem 0 0.35rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mansa-floating-relics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.mansa-float-relic-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #FEF3C7;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  border-radius: 4px;
+  padding: 0.22rem 0.48rem;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mansa-float-relic-btn:hover,
+.mansa-float-relic-btn.active {
+  background: #D97706;
+  color: #FFFFFF;
+  border-color: #FCD34D;
+}
+
+.mansa-floating-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+@media (max-width: 680px) {
+  .mansa-floating-dock {
+    bottom: 62px;
+    padding: 0.48rem 0.6rem;
+  }
+  .mansa-floating-thumb-wrap {
+    width: 68px;
+    height: 42px;
+  }
+  .mansa-floating-msg {
+    display: none;
+  }
+  .mansa-floating-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .mansa-floating-actions #mansaExpandFullStageHereBtn {
+    flex: 1;
+  }
+}
+
+
 
 
 
