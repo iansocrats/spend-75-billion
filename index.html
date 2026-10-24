@@ -292,6 +292,88 @@
         <!-- 6 Live Output KPI Cards -->
         <div id="friedmanKpiGrid" class="friedman-kpi-grid"></div>
 
+        <!-- ================================================================
+             GLOBAL STOCK MARKET & CURRENCY OVERTAKE RACE (2026–2076)
+             ================================================================ -->
+        <div style="margin-top: 2.25rem; padding-top: 1.75rem; border-top: 2px solid var(--border-strong);">
+          <div class="kicker" style="color: #D97706;">YEARLY BOURSE &amp; CURRENCY OVERTAKE RACE (2026–2076)</div>
+          <h3 style="font-family: var(--font-serif); font-size: 1.65rem; margin-bottom: 0.4rem;">
+            Play the Stock Market &amp; Currency Overtake Race: Watch the Pan-African Exchange ($261T) &amp; Nairobi–Kinshasa Bourse ($132.1T) Surpass Euronext, Shanghai, Mumbai &amp; Wall Street
+          </h3>
+          <p style="font-size: 0.9rem; color: var(--ink-secondary); margin-bottom: 1.2rem; max-width: 900px;">
+            Because African stocks benefit from a <strong>double engine</strong>—39.2× real GDP growth PLUS a <strong>6× Buffett Ratio expansion (30% → 180% of GDP)</strong> as 28:1 Land Titling and 95:1 AfCFTA Capital Union unlock domestic pension and sovereign wealth pools—Africa’s unified stock market overtakes global bourses even faster than its GDP. Use the transport &amp; speed controls below (`0.25x Slow` to `4x Turbo`) to watch year by year:
+          </p>
+
+          <div class="race-controls-header" style="background: var(--bg-primary); padding: 1.15rem; border: 1px solid var(--border-hairline); border-radius: var(--radius-sm);">
+            <div class="race-transport-row">
+              <div class="transport-btn-group">
+                <button id="stockRaceResetBtn" type="button" class="transport-step-btn" title="Reset Stock Race to 2026">
+                  ⏮ 2026
+                </button>
+                <button id="stockRaceStepBackBtn" type="button" class="transport-step-btn" title="Step back 1 year">
+                  ◀ -1 Yr
+                </button>
+                <button id="playStockRaceBtn" type="button" class="play-timeline-btn" style="padding: 0.55rem 1.15rem; font-size: 0.84rem; background-color: #D97706;">
+                  ▶ Play Stock Market Race
+                </button>
+                <button id="stockRaceStepFwdBtn" type="button" class="transport-step-btn" title="Step forward 1 year">
+                  +1 Yr ▶
+                </button>
+                <button id="stockRaceJumpEndBtn" type="button" class="transport-step-btn" title="Jump to 2076">
+                  ⏭ 2076
+                </button>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700;">
+                  Speed:
+                </span>
+                <div id="stockRaceSpeedGroup" class="speed-pill-group" role="group" aria-label="Stock Race Playback Speed">
+                  <button type="button" class="speed-pill-btn" data-stock-speed="0.25">0.25x Slow</button>
+                  <button type="button" class="speed-pill-btn" data-stock-speed="0.5">0.5x</button>
+                  <button type="button" class="speed-pill-btn active" data-stock-speed="1">1x</button>
+                  <button type="button" class="speed-pill-btn" data-stock-speed="2">2x Fast</button>
+                  <button type="button" class="speed-pill-btn" data-stock-speed="4">4x Turbo</button>
+                </div>
+              </div>
+
+              <div id="stockRaceYearBigDisplay" class="race-year-big" style="color: #D97706;">2076</div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ink-muted);">2026</span>
+              <input
+                id="stockRaceYearSlider"
+                type="range"
+                min="2026"
+                max="2076"
+                step="1"
+                value="2076"
+                class="year-slider-input"
+                style="flex: 1; min-width: 220px;"
+                aria-label="Stock Market Race Year (2026 to 2076)"
+              />
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ink-muted);">2076</span>
+            </div>
+
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;">
+              <span style="font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700; margin-right: 0.25rem;">
+                Key Bourse Overtakes:
+              </span>
+              <button type="button" class="filter-pill" data-stock-year="2026">2026 ($1.1T Start)</button>
+              <button type="button" class="filter-pill" data-stock-year="2042">2042 (Passes EU Bourses)</button>
+              <button type="button" class="filter-pill" data-stock-year="2045">2045 (Passes India NSE/BSE)</button>
+              <button type="button" class="filter-pill" data-stock-year="2047">2047 (Passes China SSE/HK)</button>
+              <button type="button" class="filter-pill" data-stock-year="2054">2054 (Passes US NYSE+NASDAQ #1)</button>
+              <button type="button" class="filter-pill" data-stock-year="2071">2071 (KE+DRC Passes Wall St)</button>
+              <button type="button" class="filter-pill active" data-stock-year="2076">2076 ($261T Global Peak)</button>
+            </div>
+          </div>
+
+          <div id="stockRaceMilestoneCallout" class="race-milestone-callout" style="border-left-color: #D97706;"></div>
+          <div id="stockRaceBarsContainer" class="race-bars-list"></div>
+        </div>
+
         <!-- The SANKORE-500 Top 8 Pan-African Listed Megacaps (2076 Bourse Board) -->
         <div style="margin-top: 2rem;">
           <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.85rem;">
@@ -312,10 +394,10 @@
     </section>
 
     <!-- ====================================================================
-         ACT III: INTERACTIVE 54-COUNTRY AFRICA MAP EXPLORER
+         ACT IV: INTERACTIVE 54-COUNTRY AFRICA MAP EXPLORER
          ==================================================================== -->
     <section id="africa-map" class="africa-map-section">
-      <div class="kicker emerald">ACT III • THE 54-KINGDOM 3D SUPERPOWER ATLAS</div>
+      <div class="kicker emerald">ACT IV • THE 54-KINGDOM 3D SUPERPOWER ATLAS</div>
       <h2 class="section-title">
         Interactive 3D Map of Africa: Click Any Nation to Inspect Its Custom "New Sankore" Blueprint
       </h2>
@@ -357,23 +439,54 @@
       <div class="map-explorer-grid">
         <!-- Left: 3D WebGL Extruded Map + Time Scrubber + 2D Vector Fallback -->
         <div class="map-canvas-card">
-          <div class="timeline-scrubber-bar">
-            <button id="playTimelineBtn" type="button" class="play-timeline-btn">
-              ▶ Play 2026–2076 Growth
-            </button>
-            <input
-              id="mapYearSlider"
-              type="range"
-              min="2026"
-              max="2076"
-              step="1"
-              value="2076"
-              class="year-slider-input"
-              aria-label="Simulation Year"
-            />
-            <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;">
-              <span id="mapYearLabel" style="color: var(--emerald);">Year 2076</span> •
-              <span id="mapContinentalGdpLabel">$145.0T Africa GDP</span>
+          <div class="timeline-scrubber-bar" style="flex-direction: column; align-items: stretch; gap: 0.65rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <div class="transport-btn-group">
+                <button id="mapResetStartBtn" type="button" class="transport-step-btn" title="Reset Map to 2026">
+                  ⏮ 2026
+                </button>
+                <button id="mapStepBackBtn" type="button" class="transport-step-btn" title="Step back 1 year">
+                  ◀ -1 Yr
+                </button>
+                <button id="playTimelineBtn" type="button" class="play-timeline-btn" style="padding: 0.48rem 0.95rem; font-size: 0.78rem;">
+                  ▶ Play Yearly 3D Growth
+                </button>
+                <button id="mapStepFwdBtn" type="button" class="transport-step-btn" title="Step forward 1 year">
+                  +1 Yr ▶
+                </button>
+                <button id="mapJumpEndBtn" type="button" class="transport-step-btn" title="Jump to 2076">
+                  ⏭ 2076
+                </button>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
+                <span style="font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700;">Speed:</span>
+                <div id="mapSpeedGroup" class="speed-pill-group" role="group" aria-label="3D Map Playback Speed">
+                  <button type="button" class="speed-pill-btn" data-map-speed="0.25">0.25x</button>
+                  <button type="button" class="speed-pill-btn" data-map-speed="0.5">0.5x</button>
+                  <button type="button" class="speed-pill-btn active" data-map-speed="1">1x</button>
+                  <button type="button" class="speed-pill-btn" data-map-speed="2">2x</button>
+                  <button type="button" class="speed-pill-btn" data-map-speed="4">4x</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <input
+                id="mapYearSlider"
+                type="range"
+                min="2026"
+                max="2076"
+                step="1"
+                value="2076"
+                class="year-slider-input"
+                style="flex: 1; min-width: 180px;"
+                aria-label="Simulation Year"
+              />
+              <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;">
+                <span id="mapYearLabel" style="color: var(--emerald);">Year 2076</span> •
+                <span id="mapContinentalGdpLabel">$145.0T GDP • $261.0T Bourse</span>
+              </div>
             </div>
           </div>
 

@@ -341,12 +341,23 @@
     });
   }
 
-  // Timeline Scrubber & Play Animation (2026 -> 2076)
+  // Timeline Scrubber, Transport & Speed Controls for 3D Map (2026 -> 2076)
+  let mapSpeedMultiplier = 1;
+  const MAP_BASE_YEAR_MS = 220;
+  const mapResetStartBtn = document.getElementById("mapResetStartBtn");
+  const mapStepBackBtn = document.getElementById("mapStepBackBtn");
+  const mapStepFwdBtn = document.getElementById("mapStepFwdBtn");
+  const mapJumpEndBtn = document.getElementById("mapJumpEndBtn");
+
   function updateTimelineDisplay() {
+    if (mapYearSlider) mapYearSlider.value = mapSimYear;
     if (mapYearLabel) mapYearLabel.textContent = `Year ${mapSimYear}`;
     if (mapContinentalGdpLabel) {
       const contGdp = getContinentalGdpAtYear(mapSimYear);
-      mapContinentalGdpLabel.textContent = `$${contGdp.toFixed(1)}T Africa GDP`;
+      const tProg = (mapSimYear - 2026) / 50;
+      const buffettAtYr = 0.30 + 1.50 * tProg;
+      const contBourse = +(contGdp * buffettAtYr).toFixed(1);
+      mapContinentalGdpLabel.textContent = `$${contGdp.toFixed(1)}T GDP • $${contBourse}T Bourse`;
     }
     syncGeoJsonMetrics();
     if (mapEngineMode === "svg") {
@@ -355,8 +366,42 @@
     renderCountryDossier();
   }
 
+  function stopMapPlayback() {
+    if (timelineInterval) {
+      clearInterval(timelineInterval);
+      timelineInterval = null;
+    }
+    if (playTimelineBtn) {
+      playTimelineBtn.textContent =
+        mapSimYear >= 2076 ? "▶ Replay Yearly 3D Growth" : "▶ Play Yearly 3D Growth";
+    }
+  }
+
+  function startMapPlayback() {
+    if (timelineInterval) {
+      clearInterval(timelineInterval);
+      timelineInterval = null;
+    }
+    if (mapSimYear >= 2076) {
+      mapSimYear = 2026;
+      updateTimelineDisplay();
+    }
+    if (playTimelineBtn) {
+      playTimelineBtn.textContent = `⏸ Pause 3D (${mapSpeedMultiplier}x)`;
+    }
+    const stepMs = Math.max(25, Math.round(MAP_BASE_YEAR_MS / mapSpeedMultiplier));
+    timelineInterval = setInterval(() => {
+      mapSimYear += 1;
+      updateTimelineDisplay();
+      if (mapSimYear >= 2076) {
+        stopMapPlayback();
+      }
+    }, stepMs);
+  }
+
   if (mapYearSlider) {
     mapYearSlider.addEventListener("input", (e) => {
+      stopMapPlayback();
       mapSimYear = parseInt(e.target.value, 10);
       updateTimelineDisplay();
     });
@@ -365,27 +410,59 @@
   if (playTimelineBtn) {
     playTimelineBtn.addEventListener("click", () => {
       if (timelineInterval) {
-        clearInterval(timelineInterval);
-        timelineInterval = null;
-        playTimelineBtn.textContent = "▶ Play 2026–2076 Growth";
-        return;
+        stopMapPlayback();
+      } else {
+        startMapPlayback();
       }
-      if (mapSimYear >= 2076) {
-        mapSimYear = 2026;
-      }
-      playTimelineBtn.textContent = "⏸ Pause Simulation";
-      timelineInterval = setInterval(() => {
-        mapSimYear += 1;
-        if (mapYearSlider) mapYearSlider.value = mapSimYear;
-        updateTimelineDisplay();
-        if (mapSimYear >= 2076) {
-          clearInterval(timelineInterval);
-          timelineInterval = null;
-          playTimelineBtn.textContent = "▶ Replay 2026–2076 Growth";
-        }
-      }, 95);
     });
   }
+
+  if (mapResetStartBtn) {
+    mapResetStartBtn.addEventListener("click", () => {
+      stopMapPlayback();
+      mapSimYear = 2026;
+      updateTimelineDisplay();
+    });
+  }
+
+  if (mapStepBackBtn) {
+    mapStepBackBtn.addEventListener("click", () => {
+      stopMapPlayback();
+      mapSimYear = Math.max(2026, mapSimYear - 1);
+      updateTimelineDisplay();
+    });
+  }
+
+  if (mapStepFwdBtn) {
+    mapStepFwdBtn.addEventListener("click", () => {
+      stopMapPlayback();
+      mapSimYear = Math.min(2076, mapSimYear + 1);
+      updateTimelineDisplay();
+    });
+  }
+
+  if (mapJumpEndBtn) {
+    mapJumpEndBtn.addEventListener("click", () => {
+      stopMapPlayback();
+      mapSimYear = 2076;
+      updateTimelineDisplay();
+    });
+  }
+
+  document.querySelectorAll("[data-map-speed]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const spd = parseFloat(btn.getAttribute("data-map-speed"));
+      if (!isNaN(spd) && spd > 0) {
+        mapSpeedMultiplier = spd;
+        document.querySelectorAll("[data-map-speed]").forEach((b) => {
+          b.classList.toggle("active", b === btn);
+        });
+        if (timelineInterval) {
+          startMapPlayback();
+        }
+      }
+    });
+  });
 
   function populateCountryDropdown() {
     if (typeof AFRICA_MAP_COUNTRIES === "undefined") return;
@@ -1875,6 +1952,318 @@
     }
   );
 
+  // ==========================================================================
+  // 9. GLOBAL STOCK MARKET & CURRENCY OVERTAKE RACE (2026–2076)
+  // ==========================================================================
+  let stockRaceYear = 2076;
+  let stockRaceInterval = null;
+  let stockRaceSpeedMultiplier = 1;
+  const STOCK_BASE_YEAR_MS = 220;
+  let prevStockBlocRanks = {};
+  const stockRaceRowElements = {};
+
+  const stockRaceYearSlider = document.getElementById("stockRaceYearSlider");
+  const playStockRaceBtn = document.getElementById("playStockRaceBtn");
+  const stockRaceResetBtn = document.getElementById("stockRaceResetBtn");
+  const stockRaceStepBackBtn = document.getElementById("stockRaceStepBackBtn");
+  const stockRaceStepFwdBtn = document.getElementById("stockRaceStepFwdBtn");
+  const stockRaceJumpEndBtn = document.getElementById("stockRaceJumpEndBtn");
+  const stockRaceYearBigDisplay = document.getElementById("stockRaceYearBigDisplay");
+  const stockRaceMilestoneCallout = document.getElementById("stockRaceMilestoneCallout");
+  const stockRaceBarsContainer = document.getElementById("stockRaceBarsContainer");
+
+  function interpolateStockCap(bloc, yr) {
+    const d = bloc.capByDecade;
+    const decades = [2026, 2036, 2046, 2056, 2066, 2076];
+    if (yr <= 2026) return d[2026];
+    if (yr >= 2076) return d[2076];
+    for (let i = 0; i < decades.length - 1; i++) {
+      const y0 = decades[i];
+      const y1 = decades[i + 1];
+      if (yr >= y0 && yr <= y1) {
+        const t = (yr - y0) / (y1 - y0);
+        const v0 = Math.max(0.01, d[y0]);
+        const v1 = Math.max(0.01, d[y1]);
+        const geo = v0 * Math.pow(v1 / v0, t);
+        const lin = v0 + (v1 - v0) * t;
+        return +(geo * 0.68 + lin * 0.32).toFixed(2);
+      }
+    }
+    return d[2076];
+  }
+
+  function interpolateCurrencyReer(bloc, yr) {
+    const t = Math.max(0, Math.min(1, (yr - 2026) / 50));
+    return Math.round(
+      bloc.currencyReer2026 + (bloc.currencyReer2076 - bloc.currencyReer2026) * t
+    );
+  }
+
+  function getStockYoYGrowthPct(bloc, yr) {
+    const curr = interpolateStockCap(bloc, yr);
+    const prev = interpolateStockCap(bloc, Math.max(2026, yr - 1));
+    if (yr === 2026) {
+      const next = interpolateStockCap(bloc, 2027);
+      return (((next - curr) / curr) * 100).toFixed(1);
+    }
+    return (((curr - prev) / prev) * 100).toFixed(1);
+  }
+
+  function getStockRaceMilestoneMessage(yr) {
+    const afCap = interpolateStockCap(STOCK_MARKET_RACE_BLOCS[0], yr).toFixed(1);
+    const twinCap = interpolateStockCap(STOCK_MARKET_RACE_BLOCS[1], yr).toFixed(1);
+    const afReer = interpolateCurrencyReer(STOCK_MARKET_RACE_BLOCS[0], yr);
+
+    if (yr <= 2033) {
+      return `<strong>${yr} • Capital Union &amp; Collateral Unlock (Yr ${yr - 2026}/50):</strong> 28:1 Digital Land Titling unlocks $2.5T+ in dead capital as bankable collateral; 95:1 AfCFTA rails merge 54 fragmented bourses into the SANKORE-500 Exchange ($${afCap}T).`;
+    } else if (yr <= 2041) {
+      return `<strong>${yr} • Multiple Expansion Takeoff (Yr ${yr - 2026}/50):</strong> 38:1 E-Procurement cuts sovereign discount rate r; African P/E multiples expand from 7.5× toward 16×. All-Africa Bourse hits <strong>$${afCap}T</strong> (Currency REER: ${afReer}).`;
+    } else if (yr <= 2044) {
+      return `<strong>${yr} • BOURSE OVERTAKE #1 (EU SURPASSED):</strong> 🌍 <strong>All-Africa Stock Exchange ($${afCap}T) overtakes Euronext &amp; Frankfurt!</strong> Global pension funds rotate into Grand Inga &amp; Rift Valley clean-power megacaps.`;
+    } else if (yr <= 2046) {
+      return `<strong>${yr} • BOURSE OVERTAKE #2 (INDIA SURPASSED):</strong> 🌍 <strong>All-Africa Stock Exchange ($${afCap}T) overtakes India’s NSE + BSE!</strong> Meanwhile 🇰🇪🇨🇩 Nairobi–Kinshasa Bourse hits $${twinCap}T.`;
+    } else if (yr <= 2053) {
+      return `<strong>${yr} • BOURSE OVERTAKE #3 (CHINA SURPASSED):</strong> 🌍 <strong>All-Africa Stock Exchange ($${afCap}T) overtakes Shanghai + Shenzhen + Hong Kong!</strong> Friedman currency index reaches ${afReer} (+${afReer - 100}% appreciation).`;
+    } else if (yr <= 2070) {
+      return `<strong>${yr} • BOURSE OVERTAKE #4 (#1 WALL STREET SURPASSED):</strong> 🌍 <strong>The Pan-African Stock Exchange ($${afCap}T) overtakes US NYSE + NASDAQ to become the #1 Capital Market on Earth!</strong>`;
+    } else {
+      return `<strong>${yr} • UNASSAILABLE $261T FINANCIAL THRONE:</strong> 🌍 <strong>All-Africa Bourse hits $${afCap}T</strong> (180% Buffett Ratio, REER ${afReer})—and 🇰🇪🇨🇩 <strong>the Nairobi–Kinshasa Exchange alone ($${twinCap}T) overtakes Wall Street!</strong>`;
+    }
+  }
+
+  function ensureStockRaceRowsCreated() {
+    if (!stockRaceBarsContainer || typeof STOCK_MARKET_RACE_BLOCS === "undefined") return;
+    if (Object.keys(stockRaceRowElements).length === STOCK_MARKET_RACE_BLOCS.length) return;
+
+    stockRaceBarsContainer.innerHTML = "";
+    STOCK_MARKET_RACE_BLOCS.forEach((bloc, idx) => {
+      const row = document.createElement("div");
+      row.className = `race-bar-row ${bloc.isAfricaHero ? "hero-bloc" : ""}`;
+      row.style.transform = `translateY(${idx * 64}px)`;
+      row.innerHTML = `
+        <div class="race-bloc-meta">
+          <span class="race-rank-num">#${idx + 1}</span>
+          <div style="min-width: 0;">
+            <div class="race-bloc-name">
+              <span class="bloc-title-text">${bloc.flag} ${bloc.shortName}</span>
+              <span class="overtake-flash-badge" style="display: none;">🔥 OVERTAKE!</span>
+            </div>
+            <span class="race-bloc-sub stock-meta-sub">Cap/GDP: ${bloc.buffett2076} • FX REER: ${bloc.currencyReer2076}</span>
+          </div>
+        </div>
+        <div class="race-track">
+          <div class="race-fill" style="width: 3%; background-color: ${bloc.color};"></div>
+        </div>
+        <div class="race-gdp-val" style="color: ${bloc.isAfricaHero ? "var(--emerald)" : "var(--ink-primary)"};">
+          <div class="bloc-gdp-num">$0.00T</div>
+          <div class="bloc-yoy-sub" style="font-size: 0.65rem; font-weight: 500; color: var(--ink-muted);">+0.0%/yr</div>
+        </div>
+      `;
+      stockRaceBarsContainer.appendChild(row);
+      stockRaceRowElements[bloc.id] = row;
+    });
+  }
+
+  function renderStockMarketRace(trackOvertakes = true) {
+    if (!stockRaceBarsContainer || typeof STOCK_MARKET_RACE_BLOCS === "undefined") return;
+    ensureStockRaceRowsCreated();
+
+    if (stockRaceYearBigDisplay) stockRaceYearBigDisplay.textContent = stockRaceYear;
+    if (stockRaceYearSlider) stockRaceYearSlider.value = stockRaceYear;
+
+    document.querySelectorAll("[data-stock-year]").forEach((btn) => {
+      btn.classList.toggle(
+        "active",
+        parseInt(btn.getAttribute("data-stock-year"), 10) === stockRaceYear
+      );
+    });
+
+    const computed = STOCK_MARKET_RACE_BLOCS.map((bloc) => ({
+      ...bloc,
+      currentCapT: interpolateStockCap(bloc, stockRaceYear),
+      currentReer: interpolateCurrencyReer(bloc, stockRaceYear),
+      yoyPct: getStockYoYGrowthPct(bloc, stockRaceYear),
+    })).sort((a, b) => b.currentCapT - a.currentCapT);
+
+    const maxBarCap = Math.max(computed[0].currentCapT, 60.0);
+
+    if (stockRaceMilestoneCallout) {
+      const afBourse = computed.find((b) => b.id === "africa_bourse");
+      const sqBourse = computed.find((b) => b.id === "africa_sq_bourse");
+      const wealthGainT = +(afBourse.currentCapT - sqBourse.currentCapT).toFixed(2);
+
+      stockRaceMilestoneCallout.innerHTML = `
+        <div style="flex: 1; min-width: 260px;">${getStockRaceMilestoneMessage(stockRaceYear)}</div>
+        <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: #D97706; text-align: right;">
+          <div>+$${wealthGainT}T Equity Wealth Created vs. Status Quo</div>
+          <div style="font-size: 0.68rem; color: var(--ink-muted);">Speed: ${stockRaceSpeedMultiplier}x • Africa FX REER: ${afBourse.currentReer} (${afBourse.currentReer >= 100 ? "+" : ""}${afBourse.currentReer - 100}%)</div>
+        </div>
+      `;
+    }
+
+    const newRanks = {};
+    computed.forEach((bloc, idx) => {
+      newRanks[bloc.id] = idx;
+      const row = stockRaceRowElements[bloc.id];
+      if (!row) return;
+
+      row.style.transform = `translateY(${idx * 64}px)`;
+
+      const prevRank = prevStockBlocRanks[bloc.id];
+      const didOvertake =
+        trackOvertakes &&
+        typeof prevRank === "number" &&
+        idx < prevRank;
+
+      row.classList.toggle("just-overtook", didOvertake);
+      const badgeEl = row.querySelector(".overtake-flash-badge");
+      if (badgeEl) {
+        badgeEl.style.display = didOvertake ? "inline-block" : "none";
+      }
+
+      const rankEl = row.querySelector(".race-rank-num");
+      if (rankEl) rankEl.textContent = `#${idx + 1}`;
+
+      const subEl = row.querySelector(".stock-meta-sub");
+      if (subEl) {
+        const fxDiff = bloc.currentReer - 100;
+        subEl.textContent = `2076 Cap/GDP: ${bloc.buffett2076} • FX REER: ${bloc.currentReer} (${fxDiff >= 0 ? "+" : ""}${fxDiff}%)`;
+      }
+
+      const widthPct = Math.max(2.5, (bloc.currentCapT / maxBarCap) * 100);
+      const fillEl = row.querySelector(".race-fill");
+      if (fillEl) fillEl.style.width = `${widthPct}%`;
+
+      const capNumEl = row.querySelector(".bloc-gdp-num");
+      if (capNumEl) capNumEl.textContent = `$${bloc.currentCapT.toFixed(2)}T`;
+
+      const yoyEl = row.querySelector(".bloc-yoy-sub");
+      if (yoyEl) {
+        yoyEl.textContent = `+${bloc.yoyPct}%/yr`;
+        yoyEl.style.color = bloc.isAfricaHero ? "var(--emerald)" : "var(--ink-muted)";
+      }
+    });
+
+    prevStockBlocRanks = newRanks;
+  }
+
+  function stopStockRacePlayback() {
+    if (stockRaceInterval) {
+      clearInterval(stockRaceInterval);
+      stockRaceInterval = null;
+    }
+    if (playStockRaceBtn) {
+      playStockRaceBtn.textContent =
+        stockRaceYear >= 2076
+          ? "▶ Replay Stock Market Race"
+          : "▶ Play Stock Market Race";
+    }
+  }
+
+  function startStockRacePlayback() {
+    if (stockRaceInterval) {
+      clearInterval(stockRaceInterval);
+      stockRaceInterval = null;
+    }
+    if (stockRaceYear >= 2076) {
+      stockRaceYear = 2026;
+      prevStockBlocRanks = {};
+      renderStockMarketRace(false);
+    }
+    if (playStockRaceBtn) {
+      playStockRaceBtn.textContent = `⏸ Pause Bourse (${stockRaceSpeedMultiplier}x)`;
+    }
+    const stepMs = Math.max(
+      25,
+      Math.round(STOCK_BASE_YEAR_MS / stockRaceSpeedMultiplier)
+    );
+    stockRaceInterval = setInterval(() => {
+      stockRaceYear += 1;
+      renderStockMarketRace(true);
+      if (stockRaceYear >= 2076) {
+        stopStockRacePlayback();
+      }
+    }, stepMs);
+  }
+
+  if (stockRaceYearSlider) {
+    stockRaceYearSlider.addEventListener("input", (e) => {
+      stopStockRacePlayback();
+      stockRaceYear = parseInt(e.target.value, 10);
+      renderStockMarketRace(true);
+    });
+  }
+
+  document.querySelectorAll("[data-stock-year]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      stopStockRacePlayback();
+      stockRaceYear = parseInt(btn.getAttribute("data-stock-year"), 10);
+      prevStockBlocRanks = {};
+      renderStockMarketRace(false);
+    });
+  });
+
+  document.querySelectorAll("[data-stock-speed]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const spd = parseFloat(btn.getAttribute("data-stock-speed"));
+      if (!isNaN(spd) && spd > 0) {
+        stockRaceSpeedMultiplier = spd;
+        document.querySelectorAll("[data-stock-speed]").forEach((b) => {
+          b.classList.toggle("active", b === btn);
+        });
+        if (stockRaceInterval) {
+          startStockRacePlayback();
+        } else {
+          renderStockMarketRace(false);
+        }
+      }
+    });
+  });
+
+  if (stockRaceResetBtn) {
+    stockRaceResetBtn.addEventListener("click", () => {
+      stopStockRacePlayback();
+      stockRaceYear = 2026;
+      prevStockBlocRanks = {};
+      renderStockMarketRace(false);
+    });
+  }
+
+  if (stockRaceStepBackBtn) {
+    stockRaceStepBackBtn.addEventListener("click", () => {
+      stopStockRacePlayback();
+      stockRaceYear = Math.max(2026, stockRaceYear - 1);
+      renderStockMarketRace(true);
+    });
+  }
+
+  if (stockRaceStepFwdBtn) {
+    stockRaceStepFwdBtn.addEventListener("click", () => {
+      stopStockRacePlayback();
+      stockRaceYear = Math.min(2076, stockRaceYear + 1);
+      renderStockMarketRace(true);
+    });
+  }
+
+  if (stockRaceJumpEndBtn) {
+    stockRaceJumpEndBtn.addEventListener("click", () => {
+      stopStockRacePlayback();
+      stockRaceYear = 2076;
+      prevStockBlocRanks = {};
+      renderStockMarketRace(false);
+    });
+  }
+
+  if (playStockRaceBtn) {
+    playStockRaceBtn.addEventListener("click", () => {
+      if (stockRaceInterval) {
+        stopStockRacePlayback();
+      } else {
+        startStockRacePlayback();
+      }
+    });
+  }
+
   function renderAllBlueprintSections() {
     renderBlueprintHeader();
     renderDrcEndowments();
@@ -1891,6 +2280,7 @@
   renderOvertakeRace();
   renderOvertakeProofTable();
   renderFriedmanMarkets();
+  renderStockMarketRace();
   renderBtfMatrix();
   updateSimulatorSummary();
   renderInterventionsGrid();

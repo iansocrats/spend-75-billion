@@ -1596,4 +1596,103 @@ const FRIEDMAN_CAPITAL_MARKETS_MODEL = {
   ]
 };
 
+// ============================================================================
+// GLOBAL STOCK MARKET & CURRENCY OVERTAKE RACE (2026–2076)
+// ============================================================================
+
+const STOCK_MARKET_RACE_BLOCS = [
+  {
+    id: "africa_bourse",
+    name: "Pan-African Unified Stock Exchange (SANKORE-500)",
+    shortName: "All-Africa Unified Bourse (Sankore + Friedman)",
+    flag: "🌍",
+    color: "#059669",
+    isAfricaHero: true,
+    buffett2026: "30% of GDP",
+    buffett2076: "180% of GDP",
+    currencyReer2026: 100,
+    currencyReer2076: 365,
+    capByDecade: { 2026: 1.11, 2036: 8.9, 2046: 39.4, 2056: 105.9, 2066: 180.6, 2076: 261.0 }
+  },
+  {
+    id: "twin_axis_bourse",
+    name: "Nairobi–Kinshasa Twin-Axis Bourse (Kenya + DRC)",
+    shortName: "Kenya + DRC Twin-Axis Exchange",
+    flag: "🇰🇪🇨🇩",
+    color: "#1D4ED8",
+    isAfricaHero: true,
+    buffett2026: "15% of GDP",
+    buffett2076: "180% of GDP",
+    currencyReer2026: 100,
+    currencyReer2076: 382,
+    capByDecade: { 2026: 0.08, 2036: 2.5, 2046: 15.5, 2056: 47.1, 2066: 88.3, 2076: 132.1 }
+  },
+  {
+    id: "us_bourse",
+    name: "US Stock Exchanges (NYSE + NASDAQ)",
+    shortName: "United States (NYSE + NASDAQ)",
+    flag: "🇺🇸",
+    color: "#3B82F6",
+    isAfricaHero: false,
+    buffett2026: "200% of GDP",
+    buffett2076: "180% of GDP",
+    currencyReer2026: 100,
+    currencyReer2076: 84,
+    capByDecade: { 2026: 58.4, 2036: 68.2, 2046: 79.8, 2056: 91.5, 2066: 103.9, 2076: 116.1 }
+  },
+  {
+    id: "india_bourse",
+    name: "India Stock Exchanges (NSE + BSE Mumbai)",
+    shortName: "India (NSE + BSE)",
+    flag: "🇮🇳",
+    color: "#F59E0B",
+    isAfricaHero: false,
+    buffett2026: "120% of GDP",
+    buffett2076: "150% of GDP",
+    currencyReer2026: 100,
+    currencyReer2076: 118,
+    capByDecade: { 2026: 5.2, 2036: 14.6, 2046: 34.3, 2056: 56.5, 2066: 74.3, 2076: 87.8 }
+  },
+  {
+    id: "china_bourse",
+    name: "China Stock Exchanges (Shanghai + Shenzhen + HK)",
+    shortName: "China (SSE + SZSE + HKEX)",
+    flag: "🇨🇳",
+    color: "#EF4444",
+    isAfricaHero: false,
+    buffett2026: "75% of GDP",
+    buffett2076: "130% of GDP",
+    currencyReer2026: 100,
+    currencyReer2076: 76,
+    capByDecade: { 2026: 14.5, 2036: 25.6, 2046: 39.7, 2056: 51.5, 2066: 61.0, 2076: 67.6 }
+  },
+  {
+    id: "eu_bourse",
+    name: "European Union Bourses (Euronext + Frankfurt)",
+    shortName: "European Union (Euronext + Xetra)",
+    flag: "🇪🇺",
+    color: "#6366F1",
+    isAfricaHero: false,
+    buffett2026: "85% of GDP",
+    buffett2076: "130% of GDP",
+    currencyReer2026: 100,
+    currencyReer2076: 79,
+    capByDecade: { 2026: 16.5, 2036: 21.3, 2046: 26.9, 2056: 32.7, 2066: 37.9, 2076: 42.6 }
+  },
+  {
+    id: "africa_sq_bourse",
+    name: "Africa Fragmented Exchanges (Raw-Ore Status Quo Trap)",
+    shortName: "Africa Status Quo (30% GDP Trap)",
+    flag: "⚠️",
+    color: "#6B7280",
+    isAfricaHero: false,
+    buffett2026: "30% of GDP",
+    buffett2076: "30% of GDP",
+    currencyReer2026: 100,
+    currencyReer2076: 44,
+    capByDecade: { 2026: 1.11, 2036: 1.25, 2046: 1.45, 2056: 1.74, 2066: 2.08, 2076: 2.46 }
+  }
+];
+
+
 
