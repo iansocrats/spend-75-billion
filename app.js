@@ -1,6 +1,6 @@
 // ============================================================================
 // APPLICATION CONTROLLER: HOW $75B GROWS AFRICA INTO HISTORY'S LARGEST ECONOMY
-// Interactive 54-Country Map + $75B Simulator + Marimekko + Macro Blueprints
+// Featuring 60FPS MapLibre WebGL 3D Extruded Map + 2026–2076 Growth Scrubber
 // ============================================================================
 
 (function () {
@@ -17,11 +17,15 @@
   let activeDrcPhase = 1;
   let activeScenarioKey = "lomborg";
 
-  // Interactive Map State
-  let selectedMapIso = "COD"; // Default to DRC on map load
+  // Interactive Map & Timeline State
+  let selectedMapIso = "COD"; // Default to DRC
   let mapColorMetric = "gdp2076T"; // "gdp2076T", "bcrWeighted", "catalystShareB"
   let showCorridors = true;
-  let countryDedicated75BMode = false; // Toggle between proportional share vs full $75B in selected country
+  let countryDedicated75BMode = false;
+  let mapSimYear = 2076; // 2026 to 2076
+  let timelineInterval = null;
+  let mapEngineMode = "3d"; // "3d", "2d-gl", or "svg"
+  let glMap = null;
 
   // Helper: Calculate effective BCR and Benefit ($B) for an intervention
   function getEffectiveMetrics(item) {
@@ -34,6 +38,20 @@
 
   function getActiveBlueprint() {
     return AFRICAN_BLUEPRINTS[activeCountryKey] || AFRICAN_BLUEPRINTS.africa;
+  }
+
+  // Helper: Interpolate country GDP at any year between 2026 and 2076 (compound curve)
+  function getCountryGdpAtYear(c, year) {
+    const t = Math.max(0, Math.min(1, (year - 2026) / 50.0));
+    // Non-linear compound curve (t^2.15 matches 50-year compounding trajectory)
+    const curve = Math.pow(t, 2.15);
+    return +(c.gdp2026T + (c.gdp2076T - c.gdp2026T) * curve).toFixed(2);
+  }
+
+  function getContinentalGdpAtYear(year) {
+    const t = Math.max(0, Math.min(1, (year - 2026) / 50.0));
+    const curve = Math.pow(t, 2.15);
+    return +(3.1 + (145.0 - 3.1) * curve).toFixed(1);
   }
 
   // ==========================================================================
@@ -52,36 +70,321 @@
   });
 
   // ==========================================================================
-  // 2. INTERACTIVE 54-COUNTRY AFRICA MAP & NATIONAL DOSSIER
+  // 2. 60FPS MAPLIBRE WEBGL 3D EXTRUDED MAP + 2D VECTOR ATLAS
   // ==========================================================================
   const africaSvgMap = document.getElementById("africaSvgMap");
+  const maplibreContainer = document.getElementById("maplibreContainer");
   const mapFloatingTooltip = document.getElementById("mapFloatingTooltip");
   const countryDossierCard = document.getElementById("countryDossierCard");
   const countrySelectDropdown = document.getElementById("countrySelectDropdown");
+  const mapYearSlider = document.getElementById("mapYearSlider");
+  const mapYearLabel = document.getElementById("mapYearLabel");
+  const mapContinentalGdpLabel = document.getElementById("mapContinentalGdpLabel");
+  const playTimelineBtn = document.getElementById("playTimelineBtn");
 
   function getCountryFillColor(c) {
     if (!c) return "#CBD5E1";
-    const val = c[mapColorMetric] || 0;
+    const val =
+      mapColorMetric === "gdp2076T"
+        ? getCountryGdpAtYear(c, mapSimYear)
+        : c[mapColorMetric] || 0;
+
     if (mapColorMetric === "gdp2076T") {
-      if (val >= 18) return "#1E3A8A"; // Flagship Superpowers (DRC, Nigeria, Kenya)
-      if (val >= 5.5) return "#115E59"; // Major Regional Titans (Ethiopia, SA, Egypt, Tanzania, Angola)
-      if (val >= 2.5) return "#0D9488"; // High-Growth Engines (Morocco, Zambia, Uganda, Ghana, Cote d'Ivoire, Algeria, Mozambique)
-      if (val >= 1.0) return "#2DD4BF"; // Rising Industrial Corridors
-      return "#99F6E4"; // Specialized / Island / Frontier Hubs
+      if (val >= 15) return "#F59E0B"; // Gold Superpower Peak ($15T–$54.8T)
+      if (val >= 5.0) return "#1D4ED8"; // Cobalt Regional Titan ($5T–$15T)
+      if (val >= 2.0) return "#0D9488"; // Emerald Industrial Power ($2T–$5T)
+      if (val >= 0.7) return "#2DD4BF"; // Teal Rising Engine
+      return "#99F6E4"; // Mint Frontier
     } else if (mapColorMetric === "bcrWeighted") {
-      if (val >= 41) return "#1E3A8A";
-      if (val >= 38) return "#115E59";
+      if (val >= 41) return "#F59E0B";
+      if (val >= 38) return "#1D4ED8";
       if (val >= 35) return "#0D9488";
       if (val >= 31) return "#2DD4BF";
       return "#99F6E4";
     } else {
-      // catalystShareB
-      if (val >= 5.0) return "#1E3A8A";
-      if (val >= 2.5) return "#115E59";
+      if (val >= 5.0) return "#F59E0B";
+      if (val >= 2.5) return "#1D4ED8";
       if (val >= 1.2) return "#0D9488";
       if (val >= 0.5) return "#2DD4BF";
       return "#99F6E4";
     }
+  }
+
+  // Build GeoJSON for Trans-African Megacorridors
+  function buildCorridorsGeoJson() {
+    const corridors = [
+      {
+        name: "Kenya–DRC–Lobito Twin-Ocean Axis",
+        isos: ["KEN", "UGA", "RWA", "COD", "AGO"],
+      },
+      {
+        name: "Cape-to-Cairo Continental Spine",
+        isos: ["EGY", "SDN", "ETH", "KEN", "TZA", "ZMB", "ZAF"],
+      },
+      {
+        name: "West African Atlantic-to-Congo Spine",
+        isos: ["SEN", "CIV", "GHA", "NGA", "CMR", "COD"],
+      },
+    ];
+    const features = corridors.map((corr) => {
+      const coords = corr.isos
+        .map((iso) => AFRICA_MAP_COUNTRIES[iso])
+        .filter((c) => c && typeof c.lon === "number")
+        .map((c) => [c.lon, c.lat]);
+      return {
+        type: "Feature",
+        properties: { name: corr.name },
+        geometry: { type: "LineString", coordinates: coords },
+      };
+    });
+    return { type: "FeatureCollection", features };
+  }
+
+  // Update dynamic properties on AFRICA_GEOJSON features for current year & metric
+  function syncGeoJsonMetrics() {
+    if (typeof AFRICA_GEOJSON === "undefined") return;
+    AFRICA_GEOJSON.features.forEach((f) => {
+      const iso = f.properties.iso;
+      const c = AFRICA_MAP_COUNTRIES[iso];
+      if (!c) return;
+      const curGdp = getCountryGdpAtYear(c, mapSimYear);
+      f.properties.currentGdpT = curGdp;
+      f.properties.fillColor = getCountryFillColor(c);
+
+      // Compute 3D extrusion height in meters for WebGL view
+      let h = 25000;
+      if (mapColorMetric === "gdp2076T") {
+        h = Math.max(25000, curGdp * 42000);
+      } else if (mapColorMetric === "bcrWeighted") {
+        h = Math.max(25000, (c.bcrWeighted - 22) * 65000);
+      } else {
+        h = Math.max(25000, c.catalystShareB * 140000);
+      }
+      f.properties.extrusionHeight = mapEngineMode === "2d-gl" ? 0 : Math.round(h);
+      f.properties.label = `${c.iso}\n$${curGdp}T`;
+    });
+
+    if (glMap && glMap.getSource("africa-countries")) {
+      glMap.getSource("africa-countries").setData(AFRICA_GEOJSON);
+    }
+  }
+
+  function initWebGlMap() {
+    if (typeof maplibregl === "undefined" || typeof AFRICA_GEOJSON === "undefined") {
+      // Fallback to SVG if MapLibre script didn't load
+      setMapEngineMode("svg");
+      return;
+    }
+
+    syncGeoJsonMetrics();
+
+    try {
+      glMap = new maplibregl.Map({
+        container: "maplibreContainer",
+        style: {
+          version: 8,
+          sources: {
+            "africa-countries": {
+              type: "geojson",
+              data: AFRICA_GEOJSON,
+            },
+            "africa-corridors": {
+              type: "geojson",
+              data: buildCorridorsGeoJson(),
+            },
+          },
+          layers: [
+            {
+              id: "ocean-bg",
+              type: "background",
+              paint: {
+                "background-color": "#090D16",
+              },
+            },
+            {
+              id: "africa-extrusion",
+              type: "fill-extrusion",
+              source: "africa-countries",
+              paint: {
+                "fill-extrusion-color": ["get", "fillColor"],
+                "fill-extrusion-height": ["get", "extrusionHeight"],
+                "fill-extrusion-base": 0,
+                "fill-extrusion-opacity": 0.9,
+              },
+            },
+            {
+              id: "africa-borders",
+              type: "line",
+              source: "africa-countries",
+              paint: {
+                "line-color": "#0F172A",
+                "line-width": 1.2,
+              },
+            },
+            {
+              id: "africa-selected-outline",
+              type: "line",
+              source: "africa-countries",
+              filter: ["==", ["get", "iso"], selectedMapIso],
+              paint: {
+                "line-color": "#FF3B30",
+                "line-width": 3.5,
+              },
+            },
+            {
+              id: "corridors-glow",
+              type: "line",
+              source: "africa-corridors",
+              paint: {
+                "line-color": "#FF3B30",
+                "line-width": 6,
+                "line-blur": 4,
+                "line-opacity": 0.55,
+              },
+            },
+            {
+              id: "corridors-core",
+              type: "line",
+              source: "africa-corridors",
+              paint: {
+                "line-color": "#FFFFFF",
+                "line-width": 2,
+                "line-dasharray": [2, 2],
+                "line-opacity": 0.9,
+              },
+            },
+          ],
+        },
+        center: [21.5, 1.5],
+        zoom: 2.55,
+        pitch: 50,
+        bearing: -8,
+        antialias: true,
+      });
+
+      glMap.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "bottom-right");
+
+      glMap.on("mousemove", "africa-extrusion", (e) => {
+        glMap.getCanvas().style.cursor = "pointer";
+        if (e.features && e.features.length > 0) {
+          const props = e.features[0].properties;
+          const c = AFRICA_MAP_COUNTRIES[props.iso];
+          if (c) {
+            const curGdp = getCountryGdpAtYear(c, mapSimYear);
+            mapFloatingTooltip.innerHTML = `
+              <strong>${c.flag} ${c.name}</strong> (${c.region})<br/>
+              Year ${mapSimYear} GDP: <strong style="color: var(--emerald);">$${curGdp}T</strong> (2076 Peak: <strong>$${c.gdp2076T}T</strong>) • BCR: <strong>${c.bcrWeighted}:1</strong>
+            `;
+          }
+        }
+      });
+
+      glMap.on("mouseleave", "africa-extrusion", () => {
+        glMap.getCanvas().style.cursor = "";
+      });
+
+      glMap.on("click", "africa-extrusion", (e) => {
+        if (e.features && e.features.length > 0) {
+          const iso = e.features[0].properties.iso;
+          selectMapCountry(iso, true);
+        }
+      });
+    } catch (err) {
+      console.warn("WebGL fallback to SVG:", err);
+      setMapEngineMode("svg");
+    }
+  }
+
+  function setMapEngineMode(mode) {
+    mapEngineMode = mode;
+    document.querySelectorAll("[data-engine-mode]").forEach((btn) => {
+      btn.classList.toggle("active", btn.getAttribute("data-engine-mode") === mode);
+    });
+
+    if (mode === "svg") {
+      maplibreContainer.style.display = "none";
+      africaSvgMap.style.display = "block";
+      renderAfricaSvgMap();
+    } else {
+      maplibreContainer.style.display = "block";
+      africaSvgMap.style.display = "none";
+      syncGeoJsonMetrics();
+      if (glMap) {
+        glMap.resize();
+        glMap.easeTo({
+          pitch: mode === "3d" ? 50 : 0,
+          bearing: mode === "3d" ? -8 : 0,
+          duration: 700,
+        });
+      }
+    }
+  }
+
+  document.querySelectorAll("[data-engine-mode]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      setMapEngineMode(btn.getAttribute("data-engine-mode"));
+    });
+  });
+
+  const resetCameraBtn = document.getElementById("resetCameraBtn");
+  if (resetCameraBtn) {
+    resetCameraBtn.addEventListener("click", () => {
+      if (glMap) {
+        glMap.flyTo({
+          center: [21.5, 1.5],
+          zoom: 2.55,
+          pitch: mapEngineMode === "3d" ? 50 : 0,
+          bearing: mapEngineMode === "3d" ? -8 : 0,
+          duration: 1100,
+        });
+      }
+    });
+  }
+
+  // Timeline Scrubber & Play Animation (2026 -> 2076)
+  function updateTimelineDisplay() {
+    if (mapYearLabel) mapYearLabel.textContent = `Year ${mapSimYear}`;
+    if (mapContinentalGdpLabel) {
+      const contGdp = getContinentalGdpAtYear(mapSimYear);
+      mapContinentalGdpLabel.textContent = `$${contGdp.toFixed(1)}T Africa GDP`;
+    }
+    syncGeoJsonMetrics();
+    if (mapEngineMode === "svg") {
+      renderAfricaSvgMap();
+    }
+    renderCountryDossier();
+  }
+
+  if (mapYearSlider) {
+    mapYearSlider.addEventListener("input", (e) => {
+      mapSimYear = parseInt(e.target.value, 10);
+      updateTimelineDisplay();
+    });
+  }
+
+  if (playTimelineBtn) {
+    playTimelineBtn.addEventListener("click", () => {
+      if (timelineInterval) {
+        clearInterval(timelineInterval);
+        timelineInterval = null;
+        playTimelineBtn.textContent = "▶ Play 2026–2076 Growth";
+        return;
+      }
+      if (mapSimYear >= 2076) {
+        mapSimYear = 2026;
+      }
+      playTimelineBtn.textContent = "⏸ Pause Simulation";
+      timelineInterval = setInterval(() => {
+        mapSimYear += 1;
+        if (mapYearSlider) mapYearSlider.value = mapSimYear;
+        updateTimelineDisplay();
+        if (mapSimYear >= 2076) {
+          clearInterval(timelineInterval);
+          timelineInterval = null;
+          playTimelineBtn.textContent = "▶ Replay 2026–2076 Growth";
+        }
+      }, 95);
+    });
   }
 
   function populateCountryDropdown() {
@@ -105,7 +408,6 @@
 
     const countries = Object.values(AFRICA_MAP_COUNTRIES);
 
-    // 1. Render Country Polygons
     countries.forEach((c) => {
       if (!c.d) return;
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -118,22 +420,20 @@
       path.setAttribute("data-iso", c.iso);
 
       path.addEventListener("mouseenter", () => {
+        const curGdp = getCountryGdpAtYear(c, mapSimYear);
         mapFloatingTooltip.innerHTML = `
           <strong>${c.flag} ${c.name}</strong> (${c.region})<br/>
-          2076 Superpower Peak: <strong style="color: var(--emerald);">$${c.gdp2076T.toFixed(
-            2
-          )}T</strong> • Avg BCR: <strong>${c.bcrWeighted}:1</strong>
+          Year ${mapSimYear} GDP: <strong style="color: var(--emerald);">$${curGdp}T</strong> (2076 Peak: <strong>$${c.gdp2076T}T</strong>)
         `;
       });
 
       path.addEventListener("click", () => {
-        selectMapCountry(c.iso);
+        selectMapCountry(c.iso, false);
       });
 
       africaSvgMap.appendChild(path);
     });
 
-    // 2. Render Clickable Pins for Small Island Nations so they are easy to click
     const islandIsos = ["CPV", "STP", "SYC", "MUS", "COM"];
     islandIsos.forEach((iso) => {
       const c = AFRICA_MAP_COUNTRIES[iso];
@@ -152,27 +452,14 @@
       );
       circle.setAttribute("stroke-width", "2");
       circle.style.cursor = "pointer";
-
-      circle.addEventListener("mouseenter", () => {
-        mapFloatingTooltip.innerHTML = `
-          <strong>${c.flag} ${c.name}</strong> (Island Hub)<br/>
-          2076 Superpower Peak: <strong style="color: var(--emerald);">$${c.gdp2076T.toFixed(
-            2
-          )}T</strong> • Avg BCR: <strong>${c.bcrWeighted}:1</strong>
-        `;
-      });
-      circle.addEventListener("click", () => selectMapCountry(c.iso));
+      circle.addEventListener("click", () => selectMapCountry(c.iso, false));
       africaSvgMap.appendChild(circle);
     });
 
-    // 3. Optional Trans-African Megacorridor Overlay
     if (showCorridors) {
       const corridors = [
-        // East-Central Twin Axis: Kenya (KEN) -> Uganda (UGA) -> Rwanda (RWA) -> DRC (COD) -> Angola/Lobito (AGO)
         ["KEN", "UGA", "RWA", "COD", "AGO"],
-        // Cape-to-Cairo Spine: Egypt (EGY) -> Sudan (SDN) -> Ethiopia (ETH) -> Kenya (KEN) -> Tanzania (TZA) -> Zambia (ZMB) -> South Africa (ZAF)
         ["EGY", "SDN", "ETH", "KEN", "TZA", "ZMB", "ZAF"],
-        // West African Atlantic Spine: Senegal (SEN) -> Cote d'Ivoire (CIV) -> Ghana (GHA) -> Nigeria (NGA) -> Cameroon (CMR) -> DRC (COD)
         ["SEN", "CIV", "GHA", "NGA", "CMR", "COD"],
       ];
 
@@ -193,7 +480,6 @@
       });
     }
 
-    // 4. Render Key Country ISO Labels on Major Hubs
     const labeledIsos = [
       "COD",
       "KEN",
@@ -254,12 +540,12 @@
       ? 75.0
       : c.catalystShareB;
     const immediateSurplusB = +(displayedCatalystB * c.bcrWeighted).toFixed(1);
+    const curGdpT = getCountryGdpAtYear(c, mapSimYear);
 
     const endowmentsHtml = c.keyEndowments
       .map((e) => `<li>${e}</li>`)
       .join("");
 
-    // Scale phase budgets if user toggles Dedicated $75B Country Mode
     function formatPhaseText(text) {
       if (!countryDedicated75BMode) return text;
       return text.replace(/\$(\d+(\.\d+)?)B/g, (_, num) => {
@@ -274,11 +560,11 @@
           <div class="kicker emerald">${c.region.toUpperCase()} • ${c.roleBadge}</div>
           <h3 class="dossier-country-title">${c.flag} ${c.name}</h3>
         </div>
-        <button id="toggleCountry75BModeBtn" type="button" class="btn-outline" style="font-size: 0.75rem; padding: 0.45rem 0.75rem;">
+        <button id="toggleCountry75BModeBtn" type="button" class="btn-outline" style="font-size: 0.74rem; padding: 0.42rem 0.72rem;">
           ${
             countryDedicated75BMode
-              ? "Viewing: Dedicated $75B National Deployment (Click for Continental Share)"
-              : `Viewing: $${c.catalystShareB}B Continental Share (Click to Simulate Full $75B Here)`
+              ? "Viewing: Dedicated $75B Here (Switch to Continental Share)"
+              : `Viewing: $${c.catalystShareB}B Share (Simulate Full $75B Here)`
           }
         </button>
       </div>
@@ -299,10 +585,8 @@
           <span class="dossier-metric-val emerald">$${immediateSurplusB.toLocaleString()}B</span>
         </div>
         <div class="dossier-metric-box">
-          <span class="dossier-metric-label">2026 → 2076 GDP</span>
-          <span class="dossier-metric-val emerald">$${c.gdp2026T}T → $${c.gdp2076T.toFixed(
-      2
-    )}T</span>
+          <span class="dossier-metric-label">Year ${mapSimYear} GDP (2076 Peak)</span>
+          <span class="dossier-metric-val emerald">$${curGdpT}T ($${c.gdp2076T}T)</span>
         </div>
       </div>
 
@@ -360,30 +644,40 @@
     }
   }
 
-  function selectMapCountry(iso) {
-    if (!AFRICA_MAP_COUNTRIES[iso]) return;
+  function selectMapCountry(iso, flyCamera = true) {
+    const c = AFRICA_MAP_COUNTRIES[iso];
+    if (!c) return;
     selectedMapIso = iso;
     if (countrySelectDropdown) {
       countrySelectDropdown.value = iso;
     }
+
+    if (glMap && glMap.getLayer("africa-selected-outline")) {
+      glMap.setFilter("africa-selected-outline", ["==", ["get", "iso"], iso]);
+      if (flyCamera && typeof c.lon === "number") {
+        glMap.flyTo({
+          center: [c.lon, c.lat],
+          zoom: 3.6,
+          pitch: mapEngineMode === "3d" ? 52 : 0,
+          bearing: mapEngineMode === "3d" ? -12 : 0,
+          duration: 1100,
+        });
+      }
+    }
+
     renderAfricaSvgMap();
     renderCountryDossier();
-
-    // If user clicks DRC or Kenya on the map, also sync the deep-dive tab below if desired
-    if (iso === "COD") {
-      // Keep map dossier focused on DRC
-    }
   }
 
   if (countrySelectDropdown) {
     countrySelectDropdown.addEventListener("change", (e) => {
-      selectMapCountry(e.target.value);
+      selectMapCountry(e.target.value, true);
     });
   }
 
   document.querySelectorAll("[data-quick-iso]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      selectMapCountry(btn.getAttribute("data-quick-iso"));
+      selectMapCountry(btn.getAttribute("data-quick-iso"), true);
     });
   });
 
@@ -391,6 +685,7 @@
   if (mapColorMetricSelect) {
     mapColorMetricSelect.addEventListener("change", (e) => {
       mapColorMetric = e.target.value;
+      syncGeoJsonMetrics();
       renderAfricaSvgMap();
     });
   }
@@ -401,6 +696,13 @@
   if (toggleCorridorsCheckbox) {
     toggleCorridorsCheckbox.addEventListener("change", (e) => {
       showCorridors = e.target.checked;
+      if (glMap) {
+        const vis = showCorridors ? "visible" : "none";
+        if (glMap.getLayer("corridors-glow"))
+          glMap.setLayoutProperty("corridors-glow", "visibility", vis);
+        if (glMap.getLayer("corridors-core"))
+          glMap.setLayoutProperty("corridors-core", "visibility", vis);
+      }
       renderAfricaSvgMap();
     });
   }
@@ -1024,6 +1326,7 @@
   populateCountryDropdown();
   renderAfricaSvgMap();
   renderCountryDossier();
+  initWebGlMap();
   updateSimulatorSummary();
   renderInterventionsGrid();
   renderMarimekkoChart();

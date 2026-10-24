@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,700;1,6..72,500&display=swap" rel="stylesheet">
+  <!-- MapLibre GL JS for 60FPS GPU 3D Extruded Countries & Smooth Camera FlyTo -->
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -147,24 +150,66 @@
 
       <!-- 2-Column Map + Country Dossier Grid -->
       <div class="map-explorer-grid">
-        <!-- Left: Interactive SVG Map -->
+        <!-- Left: 3D WebGL Extruded Map + Time Scrubber + 2D Vector Fallback -->
         <div class="map-canvas-card">
-          <div id="mapFloatingTooltip" class="map-floating-tooltip">
-            Click any country to inspect its Lomborg $75B Blueprint
+          <!-- Interactive 2026 -> 2076 Time-Scrubber & 3D Camera Bar -->
+          <div class="timeline-scrubber-bar">
+            <button id="playTimelineBtn" type="button" class="play-timeline-btn">
+              ▶ Play 2026–2076 Growth
+            </button>
+            <input
+              id="mapYearSlider"
+              type="range"
+              min="2026"
+              max="2076"
+              step="1"
+              value="2076"
+              class="year-slider-input"
+              aria-label="Simulation Year"
+            />
+            <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;">
+              <span id="mapYearLabel" style="color: var(--emerald);">Year 2076</span> •
+              <span id="mapContinentalGdpLabel">$145.0T Africa GDP</span>
+            </div>
           </div>
-          <svg id="africaSvgMap" class="africa-svg-map" viewBox="0 0 800 860" role="img" aria-label="Interactive map of all African countries"></svg>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem;">
+            <div class="map-engine-pill-group">
+              <button type="button" class="engine-mode-btn active" data-engine-mode="3d">
+                ⚡ 3D WebGL Extrusion (52° Tilt)
+              </button>
+              <button type="button" class="engine-mode-btn" data-engine-mode="2d-gl">
+                Top-Down WebGL (0°)
+              </button>
+              <button type="button" class="engine-mode-btn" data-engine-mode="svg">
+                2D Vector Atlas
+              </button>
+            </div>
+            <button id="resetCameraBtn" type="button" class="btn-outline" style="font-size: 0.72rem; padding: 0.32rem 0.65rem;">
+              ⟲ Reset Full Africa Camera
+            </button>
+          </div>
+
+          <div class="webgl-map-stage">
+            <div id="mapFloatingTooltip" class="map-floating-tooltip">
+              Click any country to fly in 3D &amp; inspect its Lomborg $75B Blueprint (Right-drag to rotate 3D)
+            </div>
+            <div id="maplibreContainer"></div>
+            <svg id="africaSvgMap" class="africa-svg-map" viewBox="0 0 800 860" role="img" aria-label="Interactive map of all African countries"></svg>
+          </div>
+
           <div class="map-legend-row">
             <div class="legend-gradient-bar">
-              <span>Color Scale:</span>
+              <span>3D Height &amp; Color:</span>
               <span class="legend-swatch" style="background: #99F6E4;"></span>
               <span class="legend-swatch" style="background: #2DD4BF;"></span>
               <span class="legend-swatch" style="background: #0D9488;"></span>
-              <span class="legend-swatch" style="background: #115E59;"></span>
-              <span class="legend-swatch" style="background: #1E3A8A;"></span>
-              <span>Peak Superpower Tier</span>
+              <span class="legend-swatch" style="background: #1D4ED8;"></span>
+              <span class="legend-swatch" style="background: #F59E0B;"></span>
+              <span>Peak Superpower Tier ($18T–$54.8T)</span>
             </div>
             <div>
-              <span style="color: var(--crimson); font-weight: 700;">---</span> Trans-African Rail &amp; Power Megacorridors
+              <span style="color: var(--crimson); font-weight: 700;">━━━</span> Glowing Megacorridors (Drag right-mouse to tilt/rotate 3D)
             </div>
           </div>
         </div>

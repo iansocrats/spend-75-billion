@@ -837,14 +837,86 @@ body {
   box-shadow: var(--shadow-subtle);
 }
 
-.africa-svg-map {
+.webgl-map-stage {
+  position: relative;
   width: 100%;
-  height: auto;
-  max-height: 680px;
-  display: block;
-  background: radial-gradient(circle at 50% 50%, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  height: 620px;
   border: 1px solid var(--border-hairline);
   border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, #0F172A 0%, #060911 100%);
+}
+
+#maplibreContainer {
+  width: 100%;
+  height: 100%;
+}
+
+.africa-svg-map {
+  width: 100%;
+  height: 100%;
+  display: none;
+  background: radial-gradient(circle at 50% 50%, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+}
+
+.timeline-scrubber-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 1.1rem;
+  margin-bottom: 0.9rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+}
+
+.play-timeline-btn {
+  background-color: var(--emerald);
+  color: #FFFFFF;
+  border: none;
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.play-timeline-btn:hover {
+  filter: brightness(1.1);
+}
+
+.year-slider-input {
+  flex: 1;
+  min-width: 160px;
+  accent-color: var(--emerald);
+  cursor: pointer;
+}
+
+.map-engine-pill-group {
+  display: inline-flex;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.engine-mode-btn {
+  background-color: var(--bg-card);
+  color: var(--ink-secondary);
+  border: none;
+  padding: 0.38rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.73rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.engine-mode-btn.active {
+  background-color: var(--ink-primary);
+  color: var(--bg-primary);
 }
 
 .country-path {
