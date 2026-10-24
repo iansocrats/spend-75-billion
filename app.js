@@ -2875,24 +2875,24 @@
           <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: ${
             redirectPct < 5 ? "var(--crimson)" : "var(--emerald)"
           };">
-            ${audit.flag} ${audit.name} • ${audit.multipleOf75B}
+            ${audit.flag} ${audit.name} • Total Received: ${audit.amountReceivedLabel || "$" + audit.totalPublicCapitalB + "B"}
           </div>
           <div style="font-weight: 700; font-size: 0.98rem; margin-top: 0.15rem;">
             ${
               redirectPct === 0
-                ? `💔 All 3 Pipes Leaking (1.3:1 Status Quo): 2026 GDP Stuck at ${
+                ? `💔 All 3 Leaks Open: Economy stuck at ${
                     audit.actual2026.gdpT < 1
                       ? `$${Math.round(audit.actual2026.gdpT * 1000)}B`
                       : `$${audit.actual2026.gdpT}T`
                   }`
-                : `🔒 Pipes Locked (${bcrNum}:1 Lomborg Sequence): 2026 GDP Reaches ${
+                : `🔒 Leaks Plugged: Economy reaches ${
                     cfGdpT < 1 ? `$${Math.round(cfGdpT * 1000)}B` : `$${cfGdpT}T`
-                  } Today (${gdpMultiple}× Larger!)`
+                  } today (${gdpMultiple}× larger!)`
             }
           </div>
         </div>
         <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; text-align: right;">
-          <div style="color: var(--emerald);">2026 Counterfactual Gain: +$${gdpLostGapT}T/yr</div>
+          <div style="color: var(--emerald);">Wealth Lost to Leaks: +$${gdpLostGapT}T/year</div>
         </div>
       `;
     }
