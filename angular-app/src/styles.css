@@ -2954,6 +2954,14 @@ input[type="range"] {
   color: #D97706;
 }
 
+html[data-country-scope="kenya"] .ux-stepper-tab.active {
+  border-bottom-color: #D97706;
+}
+
+html[data-country-scope="kenya"] .ux-step-progress-fill {
+  background: linear-gradient(90deg, #D97706, #059669);
+}
+
 /* Step Visibility Rules: Show only active step panel unless data-ux-step="all" */
 html[data-ux-step="1"] [data-step-panel]:not([data-step-panel="1"]),
 html[data-ux-step="2"] [data-step-panel]:not([data-step-panel="2"]),

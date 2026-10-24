@@ -22,7 +22,7 @@
     <header class="masthead">
       <div class="masthead-inner">
         <div class="brand-group">
-          <span class="economist-badge" style="background-color: #B45309;">Interactive Thesis</span>
+          <span id="scopeBrandBadge" class="economist-badge" style="background-color: #B45309;">Interactive Thesis</span>
           <span class="brand-title">Why Mansa Musa Was Right</span>
 
           <!-- Country Scope Switcher Navbar -->
@@ -61,19 +61,19 @@
         <div class="ux-stepper-inner">
           <button type="button" class="ux-step-tab active" data-step-btn="1">
             <span class="ux-step-num">STEP 1 • START HERE</span>
-            <span class="ux-step-title">💔 1. Where Did the Money Go?</span>
+            <span id="stepTab1Title" class="ux-step-title">💔 1. Where Did the Money Go?</span>
           </button>
           <button type="button" class="ux-step-tab" data-step-btn="2">
             <span class="ux-step-num">STEP 2 • THE FIX</span>
-            <span class="ux-step-title">🎛️ 2. The $75B Solution</span>
+            <span id="stepTab2Title" class="ux-step-title">🎛️ 2. The $75B Solution</span>
           </button>
           <button type="button" class="ux-step-tab" data-step-btn="3">
             <span class="ux-step-num">STEP 3 • THE RACE</span>
-            <span class="ux-step-title">🏁 3. Africa Takes the Lead</span>
+            <span id="stepTab3Title" class="ux-step-title">🏁 3. Africa Takes the Lead</span>
           </button>
           <button type="button" class="ux-step-tab" data-step-btn="4">
             <span class="ux-step-num">STEP 4 • YOUR COUNTRY</span>
-            <span class="ux-step-title">🌍 4. Explore 54 Countries in 3D</span>
+            <span id="stepTab4Title" class="ux-step-title">🌍 4. Explore 54 Countries in 3D</span>
           </button>
           <button type="button" class="ux-step-tab ux-step-all-btn" data-step-btn="all" title="Show all sections on one continuous page">
             <span class="ux-step-num">MODE</span>
@@ -145,17 +145,17 @@
          ==================================================================== -->
     <section id="historical-audit" class="friedman-markets-section" data-step-panel="1">
       <div class="ux-step-callout">
-        <span class="ux-step-callout-badge">👉 STEP 1 OF 4 • START HERE</span>
-        <span class="ux-step-callout-text">
+        <span id="step1CalloutBadge" class="ux-step-callout-badge">👉 STEP 1 OF 4 • START HERE</span>
+        <span id="step1CalloutText" class="ux-step-callout-text">
           <strong>Why is Africa still poor?</strong> Africa already received <strong>$3.33 Trillion</strong> in foreign aid and loans (and Kenya <strong>$161 Billion</strong>). But <strong>3 big leaks</strong> drained almost all of it away. <strong>Click the 3 valves below</strong> to plug the leaks and see what Africa (<strong>$28.4T</strong>) &amp; Kenya (<strong>$1.18T</strong>) should already be worth today!
         </span>
       </div>
 
-      <div class="kicker crimson">STEP 1 • WHERE DID $3.33 TRILLION GO?</div>
-      <h2 class="section-title">
+      <div id="step1Kicker" class="kicker crimson">STEP 1 • WHERE DID $3.33 TRILLION GO?</div>
+      <h2 id="step1Title" class="section-title">
         Plug the 3 Leaks: See What Africa &amp; Kenya Should Already Be Worth Today
       </h2>
-      <p class="section-subtitle">
+      <p id="step1Subtitle" class="section-subtitle">
         Over the past 40 years, Africa was given <strong>$3.33 Trillion</strong> in loans and aid—44 times what we need today. Yet for every $1 received, Africa only kept <strong>$1.30</strong> in real value because 3 broken pipes drained the rest away. Click each valve below to plug the leaks:
       </p>
 
@@ -267,26 +267,26 @@
          ==================================================================== -->
     <section id="premise" class="hero" data-step-panel="2">
       <div class="ux-step-callout">
-        <span class="ux-step-callout-badge">🎛️ STEP 2 OF 4 • THE $75B FIX</span>
-        <span class="ux-step-callout-text">
+        <span id="step2CalloutBadge" class="ux-step-callout-badge">🎛️ STEP 2 OF 4 • THE $75B FIX</span>
+        <span id="step2CalloutText" class="ux-step-callout-text">
           <strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Growth</strong> vs. <strong>⚠️ Old Trap</strong>) to see how spending $75 Billion smartly unlocks an <strong>$183.5 Trillion</strong> economy.
         </span>
       </div>
 
       <div class="hero-grid">
         <div>
-          <div class="kicker">STEP 2 • MOVE THE 4 CONTROLS</div>
-          <h1 class="hero-headline" style="margin-bottom: 0.75rem;">
+          <div id="step2Kicker" class="kicker">STEP 2 • MOVE THE 4 CONTROLS</div>
+          <h1 id="heroHeadline" class="hero-headline" style="margin-bottom: 0.75rem;">
             <span class="highlight">How $75 Billion Changes Everything:</span> Turn the 4 Dials to Build a <span class="highlight-drc">$183.5 Trillion Superpower</span>
           </h1>
-          <p class="hero-lead">
+          <p id="heroLead" class="hero-lead">
             In 1324, Emperor Mansa Musa handed out raw gold in Cairo and crashed Egypt's economy for 12 years. Realizing his mistake, in 1325 he pivoted to building <strong>Sankore University in Timbuktu</strong>—investing in education, trade routes, and local industries. Move the 4 dials below to test what happens when we invest in human potential and cheap clean energy instead of just digging up raw minerals:
           </p>
 
           <!-- Interactive 4-Dial Master Equalizer -->
           <div class="equalizer-board">
             <div class="equalizer-top-bar">
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--emerald);">
+              <span id="eqTopBarTitle" style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--emerald);">
                 🎛️ Live 4-Pillar Economic Controls ($75B Catalyst)
               </span>
               <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
@@ -342,33 +342,33 @@
 
         <!-- Right Column: Live Reactive Visual Scoreboard -->
         <aside class="nobel-brief-card" style="border-top-color: #D97706;">
-          <div class="kicker" style="color: #D97706;">AFRICA'S LIVE SCORECARD (YEAR 2076)</div>
+          <div id="nobelBriefKicker" class="kicker" style="color: #D97706;">AFRICA'S LIVE SCORECARD (YEAR 2076)</div>
           <h2 id="eqVerdictTitle" class="nobel-brief-title">🏆 #1 Economy in Human History</h2>
 
           <div class="stat-pillars">
             <div>
               <div id="eqScoreGdp" class="stat-pillar-num emerald">$183.5T</div>
-              <div class="stat-pillar-label">Total Economy Size (vs. $3.7T Today)</div>
+              <div id="eqScoreGdpLabel" class="stat-pillar-label">Total Economy Size (vs. $3.7T Today)</div>
             </div>
             <div>
               <div id="eqScoreBourse" class="stat-pillar-num emerald">$330.3T</div>
-              <div class="stat-pillar-label">Stock Market Value (1.8× Economy)</div>
+              <div id="eqScoreBourseLabel" class="stat-pillar-label">Stock Market Value (1.8× Economy)</div>
             </div>
             <div>
               <div id="eqScoreOvertakeYr" class="stat-pillar-num crimson">Year 2051</div>
-              <div class="stat-pillar-label">Year Africa Passes the US as #1 on Earth</div>
+              <div id="eqScoreOvertakeLabel" class="stat-pillar-label">Year Africa Passes the US as #1 on Earth</div>
             </div>
             <div>
               <div id="eqScoreCurrency" class="stat-pillar-num emerald">+265%</div>
-              <div class="stat-pillar-label">African Currency Strength vs. Dollar</div>
+              <div id="eqScoreCurrencyLabel" class="stat-pillar-label">African Currency Strength vs. Dollar</div>
             </div>
           </div>
 
           <ul class="laureate-list">
             <li><span>🧬 Child Brain Loss (Stunting)</span> <span id="eqBarStunting">&lt; 1.2% (Virtually Wiped Out)</span></li>
             <li><span>⚡ Electricity Cost</span> <span id="eqBarPower">$0.018 / kWh (Cheapest on Earth)</span></li>
-            <li><span>🇰🇪🇨🇩 Kenya + Congo Engine</span> <span id="eqBarTwinAxis">$88.8T Combined (#2 on Earth)</span></li>
-            <li><span>🤝 Win-Win for the World</span> <span id="eqBarCoProsperity">+$42.0T Boost to US, EU &amp; China</span></li>
+            <li><span id="eqBarTwinAxisLabel">🇰🇪🇨🇩 Kenya + Congo Engine</span> <span id="eqBarTwinAxis">$88.8T Combined (#2 on Earth)</span></li>
+            <li><span id="eqBarCoProsperityLabel">🤝 Win-Win for the World</span> <span id="eqBarCoProsperity">+$42.0T Boost to US, EU &amp; China</span></li>
           </ul>
         </aside>
       </div>
@@ -379,17 +379,17 @@
          ==================================================================== -->
     <section id="overtake-race" class="overtake-race-section" data-step-panel="3">
       <div class="ux-step-callout">
-        <span class="ux-step-callout-badge">🏁 STEP 3 OF 4 • THE PAYOFF</span>
-        <span class="ux-step-callout-text">
+        <span id="step3CalloutBadge" class="ux-step-callout-badge">🏁 STEP 3 OF 4 • THE PAYOFF</span>
+        <span id="step3CalloutText" class="ux-step-callout-text">
           <strong>Your Action:</strong> Press <strong>▶ Play Yearly Race</strong> (or click the <strong>Key Years</strong> below) to watch Africa pass Europe, India, China, and the United States to become the world's #1 economy.
         </span>
       </div>
 
-      <div class="kicker">STEP 3 • 2026 TO 2076 • WATCH AFRICA TAKE THE LEAD</div>
-      <h2 class="section-title">
+      <div id="overtakeRaceKicker" class="kicker">STEP 3 • 2026 TO 2076 • WATCH AFRICA TAKE THE LEAD</div>
+      <h2 id="overtakeRaceTitle" class="section-title">
         The Global Race: Watch Africa Overtake Europe, India, China &amp; the United States
       </h2>
-      <p class="section-subtitle">
+      <p id="overtakeRaceSubtitle" class="section-subtitle">
         In 1324, Mansa Musa’s Mali was wealthier than any kingdom in Europe or Asia. Press <strong>▶ Play Yearly Race</strong> (or slide the years 2026 to 2076) to watch how high-impact investments lift Africa’s young population past aging world powers into the #1 economic spot on Earth:
       </p>
 
@@ -553,13 +553,13 @@
          ==================================================================== -->
     <section id="friedman-markets" class="friedman-markets-section" data-step-panel="3">
       <details class="ux-deep-drawer">
-        <summary>📈 Optional Deep Dive in Step 3: Stock Market Growth &amp; Why Sound Currency Rules Work</summary>
+        <summary id="friedmanDeepDiveSummary">📈 Optional Deep Dive in Step 3: Stock Market Growth &amp; Why Sound Currency Rules Work</summary>
         <div class="ux-deep-drawer-body">
-          <div class="kicker" style="color: #D97706;">FINANCIAL MARKETS &amp; CURRENCY STRENGTH</div>
-          <h2 class="section-title">
+          <div id="friedmanKicker" class="kicker" style="color: #D97706;">FINANCIAL MARKETS &amp; CURRENCY STRENGTH</div>
+          <h2 id="friedmanTitle" class="section-title">
             From Currency Crash to the World’s Strongest Money
           </h2>
-          <p class="section-subtitle">
+          <p id="friedmanSubtitle" class="section-subtitle">
             In 1324, Mansa Musa gave away tons of raw gold, which caused prices to skyrocket because goods hadn't increased. By contrast, under our $75B plan, real production skyrockets 39-fold while money supply stays disciplined—turning African currency into a rock-solid global reserve.
           </p>
 
@@ -826,17 +826,17 @@
          ==================================================================== -->
     <section id="africa-map" class="africa-map-section" data-step-panel="4">
       <div class="ux-step-callout">
-        <span class="ux-step-callout-badge">🌍 STEP 4 OF 4 • YOUR COUNTRY</span>
-        <span class="ux-step-callout-text">
+        <span id="step4CalloutBadge" class="ux-step-callout-badge">🌍 STEP 4 OF 4 • YOUR COUNTRY</span>
+        <span id="step4CalloutText" class="ux-step-callout-text">
           <strong>Your Action:</strong> Click any country on the <strong>3D Map of Africa</strong> (or pick <strong>🇰🇪 Kenya</strong>, <strong>🇨🇩 Congo</strong>, <strong>🇳🇬 Nigeria</strong>) to fly to it and see its personalized economic growth plan.
         </span>
       </div>
 
-      <div class="kicker emerald">STEP 4 • THE 54-NATION 3D ATLAS</div>
-      <h2 class="section-title">
+      <div id="africaMapKicker" class="kicker emerald">STEP 4 • THE 54-NATION 3D ATLAS</div>
+      <h2 id="africaMapTitle" class="section-title">
         Interactive 3D Map: Click Any Country to See Its Custom Plan
       </h2>
-      <p class="section-subtitle">
+      <p id="africaMapSubtitle" class="section-subtitle">
         Every African nation has a unique superpower—from the <strong>DRC’s $24 Trillion in critical green minerals and hydro power</strong> and <strong>Kenya’s tech hub &amp; geothermal energy</strong>, to <strong>Nigeria’s massive youth workforce</strong> and <strong>Mali’s solar basin</strong>. Click any country below to see its customized 4-step path to prosperity:
       </p>
 
@@ -976,11 +976,11 @@
          ==================================================================== -->
     <section id="simulator" class="section-block" data-step-panel="2" style="padding-top: 0.5rem;">
       <details class="ux-deep-drawer">
-        <summary>➕ Optional Deep Dive in Step 2: Customize All 20 Solutions ($75B Budget Engine &amp; High-Return Curve)</summary>
+        <summary id="simDeepDiveSummary">➕ Optional Deep Dive in Step 2: Customize All 20 Solutions ($75B Budget Engine &amp; High-Return Curve)</summary>
         <div class="ux-deep-drawer-body">
-          <div class="kicker">HOW $75 BILLION IS ALLOCATED • 12 HIGHEST-RETURN INVESTMENTS</div>
-          <h2 class="section-title">Why Education, Health &amp; Trade Beat Concrete Every Time</h2>
-          <p class="section-subtitle" style="margin-bottom: 1.5rem;">
+          <div id="simulatorKicker" class="kicker">HOW $75 BILLION IS ALLOCATED • 12 HIGHEST-RETURN INVESTMENTS</div>
+          <h2 id="simulatorTitle" class="section-title">Why Education, Health &amp; Trade Beat Concrete Every Time</h2>
+          <p id="simulatorSubtitle" class="section-subtitle" style="margin-bottom: 1.5rem;">
             Why did Mansa Musa invest in universities and trade routes rather than just digging more gold mines? Because raw resource mining only yields <strong>$1.90 per $1 spent</strong>, while basic health, schooling, and open trade return <strong>$33 to $101 per $1 spent</strong>. Test your own budget below:
           </p>
 
@@ -988,12 +988,12 @@
           <div class="btf-matrix-panel">
             <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.75rem;">
               <div>
-                <div class="kicker emerald">THE 12 HIGHEST-RETURN POLICIES ON EARTH</div>
-                <h3 style="font-family: var(--font-serif); font-size: 1.5rem;">
+                <div id="btfMatrixPanelKicker" class="kicker emerald">THE 12 HIGHEST-RETURN POLICIES ON EARTH</div>
+                <h3 id="btfMatrixPanelTitle" style="font-family: var(--font-serif); font-size: 1.5rem;">
                   12 Proven Solutions That Save Lives and Multiply Wealth
                 </h3>
               </div>
-              <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--emerald); font-weight: 700;">
+              <span id="btfMatrixStatBadge" style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--emerald); font-weight: 700;">
                 Saves 4.2M Lives Every Year • $52 Average Return Per $1
               </span>
             </div>

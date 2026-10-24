@@ -1467,6 +1467,81 @@ const OVERTAKE_RACE_BLOCS = [
   }
 ];
 
+const OVERTAKE_RACE_BLOCS_KENYA = [
+  {
+    id: "kenya_lomborg",
+    name: "Kenya (Silicon Savannah • Best Things First Catalyst)",
+    shortName: "Kenya (Lomborg Model)",
+    flag: "🇰🇪",
+    color: "#D97706",
+    isAfricaHero: true,
+    workingAge2076: "68M (+130%)",
+    medianAge2076: "31 yrs",
+    powerCostKwh: "$0.038/kWh (Olkaria Geothermal & Turkana Wind)",
+    gdpByDecade: { 2026: 0.14, 2036: 1.18, 2046: 4.2, 2056: 8.5, 2066: 13.8, 2076: 18.6 }
+  },
+  {
+    id: "germany",
+    name: "Germany",
+    shortName: "Germany",
+    flag: "🇩🇪",
+    color: "#6B7280",
+    isAfricaHero: false,
+    workingAge2076: "34M (-35% Shrink)",
+    medianAge2076: "52 yrs",
+    powerCostKwh: "$0.22/kWh",
+    gdpByDecade: { 2026: 4.6, 2036: 5.4, 2046: 6.3, 2056: 7.2, 2066: 7.9, 2076: 8.5 }
+  },
+  {
+    id: "uk",
+    name: "United Kingdom",
+    shortName: "United Kingdom",
+    flag: "🇬🇧",
+    color: "#3B82F6",
+    isAfricaHero: false,
+    workingAge2076: "36M (-12% Aging)",
+    medianAge2076: "48 yrs",
+    powerCostKwh: "$0.24/kWh",
+    gdpByDecade: { 2026: 3.6, 2036: 4.3, 2046: 5.1, 2056: 5.8, 2066: 6.4, 2076: 6.8 }
+  },
+  {
+    id: "france",
+    name: "France",
+    shortName: "France",
+    flag: "🇫🇷",
+    color: "#6366F1",
+    isAfricaHero: false,
+    workingAge2076: "33M (-15% Aging)",
+    medianAge2076: "49 yrs",
+    powerCostKwh: "$0.19/kWh",
+    gdpByDecade: { 2026: 3.2, 2036: 3.8, 2046: 4.5, 2056: 5.1, 2066: 5.5, 2076: 5.9 }
+  },
+  {
+    id: "south_africa",
+    name: "South Africa",
+    shortName: "South Africa",
+    flag: "🇿🇦",
+    color: "#10B981",
+    isAfricaHero: false,
+    workingAge2076: "42M (+8%)",
+    medianAge2076: "36 yrs",
+    powerCostKwh: "$0.14/kWh (Eskom Grid)",
+    gdpByDecade: { 2026: 0.42, 2036: 0.85, 2046: 1.5, 2056: 2.2, 2066: 2.9, 2076: 3.5 }
+  },
+  {
+    id: "kenya_status_quo",
+    name: "Kenya Under Debt & Tender Trap (No Reform)",
+    shortName: "Kenya (Debt & Tender Trap)",
+    flag: "⚠️",
+    color: "#9CA3AF",
+    isAfricaHero: false,
+    workingAge2076: "Unemployed / Brain Drain",
+    medianAge2076: "31 yrs",
+    powerCostKwh: "$0.20/kWh (Thermal IPPs)",
+    gdpByDecade: { 2026: 0.14, 2036: 0.22, 2046: 0.38, 2056: 0.65, 2066: 0.98, 2076: 1.4 }
+  }
+];
+
 // ============================================================================
 // MILTON FRIEDMAN MONETARY ENGINE (M*V = P*Y) & $261T STOCK MARKET MODEL
 // ============================================================================
@@ -1592,6 +1667,74 @@ const FRIEDMAN_CAPITAL_MARKETS_MODEL = {
       peRatio: "20.4x",
       divYield: "3.6%",
       catalyst: "Transforms 80% of global platinum-group metals & gold into quantum hardware and aerospace components."
+    }
+  ],
+  megacapsKenya: [
+    {
+      ticker: "SAFARICOM-GLOBAL",
+      name: "Safaricom & M-Pesa Pan-African / Indo-Pacific FinTech Rails",
+      hq: "🇰🇪 Nairobi & Mombasa",
+      sector: "FinTech, Mobile Payments, Micro-Credit & AI Agents",
+      marketCap2026B: 8.5,
+      baseCap2076T: 4.8,
+      peRatio: "24.5x",
+      divYield: "3.2%",
+      catalyst: "Origin of M-Pesa expanded into cross-border 95:1 paperless customs and AfCFTA universal payments."
+    },
+    {
+      ticker: "KENGEN-GEO",
+      name: "KenGen 10GW Rift Valley Geothermal & Green Ammonia SEZ",
+      hq: "🇰🇪 Naivasha & Olkaria",
+      sector: "Baseload Geothermal Power & Green Fertilizer",
+      marketCap2026B: 2.5,
+      baseCap2076T: 3.9,
+      peRatio: "21.0x",
+      divYield: "4.1%",
+      catalyst: "10 GW geothermal steam at $0.038/kWh powering Naivasha green manufacturing and data centres."
+    },
+    {
+      ticker: "ARDHISASA-TITLES",
+      name: "ArdhiSasa Digital Land Titles & Tokenized Property Protocol",
+      hq: "🇰🇪 Nairobi (Ministry of Lands Tech)",
+      sector: "Digital Property Rights & Smallholder Capital Unlock",
+      marketCap2026B: 0.8,
+      baseCap2076T: 3.2,
+      peRatio: "28.0x",
+      divYield: "1.9%",
+      catalyst: "Unlocks $150B+ in previously unbankable Kenyan land, giving 10M farmers instant collateral."
+    },
+    {
+      ticker: "MOMBASA-GATEWAY",
+      name: "Port of Mombasa & LAPSSET Coast-to-Coast Maritime Logistics",
+      hq: "🇰🇪 Mombasa & Lamu",
+      sector: "Deepwater Maritime Ports & Standard Gauge Rail",
+      marketCap2026B: 3.2,
+      baseCap2076T: 2.8,
+      peRatio: "19.5x",
+      divYield: "3.8%",
+      catalyst: "24-hour digitized customs clearance serving 300M people across East & Central Africa."
+    },
+    {
+      ticker: "KEMRI-TUSOME",
+      name: "KEMRI-Tusome Biomedical, Vaccines & Adaptive EdTech",
+      hq: "🇰🇪 Nairobi & Kisumu",
+      sector: "Pedagogical Software & Tropical Disease Synthesis",
+      marketCap2026B: 1.1,
+      baseCap2076T: 2.6,
+      peRatio: "27.2x",
+      divYield: "2.2%",
+      catalyst: "Proves 65:1 adaptive education tablets and manufactures mRNA vaccines for Eastern Africa."
+    },
+    {
+      ticker: "EQUITY-KCB-INTL",
+      name: "Equity & KCB East Africa Trade Settlement Rails",
+      hq: "🇰🇪 Nairobi",
+      sector: "Commercial Banking & AfCFTA Trade Finance",
+      marketCap2026B: 2.9,
+      baseCap2076T: 2.4,
+      peRatio: "18.2x",
+      divYield: "4.5%",
+      catalyst: "Finances SME export corridors across Kenya, DRC, Uganda, Rwanda, and South Sudan."
     }
   ]
 };
