@@ -2773,7 +2773,24 @@ input[type="range"] {
 .ux-stepper-bar {
   background-color: var(--bg-secondary);
   border-top: 1px solid var(--border-hairline);
-  padding: 0.4rem 1rem;
+  padding: 0.35rem 1rem 0;
+  position: relative;
+}
+
+.ux-step-progress-track {
+  max-width: 1320px;
+  margin: 0.35rem auto 0;
+  height: 3px;
+  background: var(--border-hairline);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ux-step-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--emerald) 0%, #D97706 100%);
+  border-radius: 2px;
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .ux-stepper-inner {
@@ -2840,6 +2857,39 @@ input[type="range"] {
   padding: 0.42rem 0.85rem;
   text-align: center;
   align-items: center;
+}
+
+/* Valve card interactive hover & affordance */
+.valve-card {
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.valve-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.valve-card:active {
+  transform: translateY(0);
+}
+
+.valve-card.locked {
+  border: 2px solid var(--emerald);
+  background-color: var(--emerald-soft);
+}
+
+.valve-card.leaking {
+  border: 2px dashed var(--crimson);
+  background-color: var(--crimson-soft);
+  animation: pulseLeakBorder 2s infinite ease-in-out;
+}
+
+@keyframes pulseLeakBorder {
+  0%, 100% { border-color: var(--crimson); }
+  50% { border-color: transparent; }
 }
 
 /* Step Visibility Rules: Show only active step panel unless data-ux-step="all" */

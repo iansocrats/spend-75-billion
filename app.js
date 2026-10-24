@@ -3242,6 +3242,12 @@
       );
     });
 
+    const progBar = document.getElementById("uxStepProgressBar");
+    if (progBar) {
+      const pctMap = { "1": "25%", "2": "50%", "3": "75%", "4": "100%", "all": "100%" };
+      progBar.style.width = pctMap[stepStr] || "25%";
+    }
+
     // If switching to Step 4 or All, resize MapLibre WebGL canvas & SVG map
     if (stepStr === "4" || stepStr === "all") {
       setTimeout(() => {

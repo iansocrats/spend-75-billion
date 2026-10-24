@@ -47,24 +47,27 @@
         <div class="ux-stepper-inner">
           <button type="button" class="ux-step-tab active" data-step-btn="1">
             <span class="ux-step-num">STEP 1 • START HERE</span>
-            <span class="ux-step-title">💔 Why $3.33T Failed (Fix the 3 Leaks)</span>
+            <span class="ux-step-title">💔 Why $3.33T Failed (Fix 3 Leaks)</span>
           </button>
           <button type="button" class="ux-step-tab" data-step-btn="2">
             <span class="ux-step-num">STEP 2 • THE SOLUTION</span>
-            <span class="ux-step-title">🎛️ The $75B Fix (Turn the 4 Dials)</span>
+            <span class="ux-step-title">🎛️ The $75B Fix (Turn 4 Dials)</span>
           </button>
           <button type="button" class="ux-step-tab" data-step-btn="3">
             <span class="ux-step-num">STEP 3 • THE PAYOFF</span>
-            <span class="ux-step-title">🏁 Watch Africa Overtake the World</span>
+            <span class="ux-step-title">🏁 Africa Overtakes World (2026–76)</span>
           </button>
           <button type="button" class="ux-step-tab" data-step-btn="4">
             <span class="ux-step-num">STEP 4 • YOUR COUNTRY</span>
-            <span class="ux-step-title">🌍 54-Nation 3D Map (Kenya &amp; DRC)</span>
+            <span class="ux-step-title">🌍 54-Nation 3D Map (KE &amp; DRC)</span>
           </button>
           <button type="button" class="ux-step-tab ux-step-all-btn" data-step-btn="all" title="Show all sections on one continuous page">
-            <span class="ux-step-num">FULL PAGE</span>
-            <span class="ux-step-title">📑 View All</span>
+            <span class="ux-step-num">MODE</span>
+            <span class="ux-step-title">📑 All</span>
           </button>
+        </div>
+        <div class="ux-step-progress-track">
+          <div id="uxStepProgressBar" class="ux-step-progress-fill" style="width: 25%;"></div>
         </div>
       </nav>
     </header>
@@ -122,118 +125,6 @@
     <div id="ngViewportStage" class="ng-viewport-stage">
 
   <main class="container">
-
-    <!-- ====================================================================
-         STEP 2: INTERACTIVE 4-DIAL SANKORE SUPERPOWER EQUALIZER & SCOREBOARD
-         ==================================================================== -->
-    <section id="premise" class="hero" data-step-panel="2">
-      <div class="ux-step-callout">
-        <span class="ux-step-callout-badge">🎛️ STEP 2 OF 4 • THE $75B SOLUTION</span>
-        <span class="ux-step-callout-text">
-          <strong>Your Action:</strong> Drag the <strong>4 Sankore Dials</strong> below (or click <strong>🔥 Max Sankore</strong> vs. <strong>⚠️ 1324 Trap</strong>) and watch the 2076 Superpower Scoreboard on the right update live.
-        </span>
-      </div>
-
-      <div class="hero-grid">
-        <div>
-          <div class="kicker">STEP 2 • INTERACTIVE COMMAND CENTER • TURN THE 4 SANKORE DIALS</div>
-          <h1 class="hero-headline" style="margin-bottom: 0.75rem;">
-            <span class="highlight">How $75B Fixes the Leaks:</span> Drag the 4 Dials Below to Build a <span class="highlight-drc">$183.5T Superpower</span>
-          </h1>
-          <p class="hero-lead">
-            In 1324, Mansa Musa’s raw gold giveaway crashed Cairo’s currency for 12 years—so in 1325 he pivoted to building <strong>Sankore University in Timbuktu</strong> and anchoring trade onshore. Drag the 4 dials below to test <strong>Mansa Musa’s Sankore Law × Bjørn Lomborg’s <em>Best Things First</em> × Milton Friedman’s <em>Price Theory</em></strong>:
-          </p>
-
-          <!-- Interactive 4-Dial Master Equalizer -->
-          <div class="equalizer-board">
-            <div class="equalizer-top-bar">
-              <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--emerald);">
-                🎛️ Live 4-Pillar Sankore Equalizer ($75B Catalyst)
-              </span>
-              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
-                <button id="eqPresetMaxBtn" type="button" class="filter-pill active" style="font-size: 0.7rem; padding: 0.25rem 0.6rem;">
-                  🔥 Max Sankore ($183.5T)
-                </button>
-                <button id="eqPresetTrapBtn" type="button" class="filter-pill" style="font-size: 0.7rem; padding: 0.25rem 0.6rem;">
-                  ⚠️ 1324 Raw Gold Trap ($8.2T)
-                </button>
-              </div>
-            </div>
-
-            <div class="friedman-sliders-grid" style="margin-bottom: 0.85rem;">
-              <div class="friedman-slider-card">
-                <div class="friedman-slider-top">
-                  <label for="eqDialBiology">🧬 1. Biology &amp; Vaccines (101:1)</label>
-                  <span id="valEqBiology" class="friedman-slider-val emerald">100%</span>
-                </div>
-                <input id="eqDialBiology" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
-              </div>
-
-              <div class="friedman-slider-card">
-                <div class="friedman-slider-top">
-                  <label for="eqDialEdtech">📱 2. Sankore EdTech &amp; Seeds (65:1)</label>
-                  <span id="valEqEdtech" class="friedman-slider-val emerald">100%</span>
-                </div>
-                <input id="eqDialEdtech" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
-              </div>
-
-              <div class="friedman-slider-card">
-                <div class="friedman-slider-top">
-                  <label for="eqDialPowerTrade">⚡ 3. $0.02 Power &amp; AfCFTA (95:1)</label>
-                  <span id="valEqPowerTrade" class="friedman-slider-val emerald">100%</span>
-                </div>
-                <input id="eqDialPowerTrade" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
-              </div>
-
-              <div class="friedman-slider-card">
-                <div class="friedman-slider-top">
-                  <label for="eqDialSuperSectors">⚽🦁 4. Sports, Tourism &amp; Space (+$38.5T)</label>
-                  <span id="valEqSuperSectors" class="friedman-slider-val emerald">100%</span>
-                </div>
-                <input id="eqDialSuperSectors" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
-              </div>
-            </div>
-
-            <div class="hero-cta-row" style="margin-bottom: 0;">
-              <button type="button" class="btn-primary" data-goto-step="3">Next: Watch Africa Overtake the World (Step 3) →</button>
-              <button type="button" class="btn-outline" data-goto-step="1">← Back to Step 1 ($3.33T Leak Audit)</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Column: Live Reactive Visual Scoreboard -->
-        <aside class="nobel-brief-card" style="border-top-color: #D97706;">
-          <div class="kicker" style="color: #D97706;">LIVE SUPERPOWER SCOREBOARD (2076)</div>
-          <h2 id="eqVerdictTitle" class="nobel-brief-title">🏆 #1 Economy &amp; #1 Currency in History</h2>
-
-          <div class="stat-pillars">
-            <div>
-              <div id="eqScoreGdp" class="stat-pillar-num emerald">$183.5T</div>
-              <div class="stat-pillar-label">2076 All-Africa GDP (vs. $3.7T Today)</div>
-            </div>
-            <div>
-              <div id="eqScoreBourse" class="stat-pillar-num emerald">$330.3T</div>
-              <div class="stat-pillar-label">2076 Pan-African Stock Exchange (1.8×)</div>
-            </div>
-            <div>
-              <div id="eqScoreOvertakeYr" class="stat-pillar-num crimson">Year 2051</div>
-              <div class="stat-pillar-label">Year Africa Surpasses USA as #1 on Earth</div>
-            </div>
-            <div>
-              <div id="eqScoreCurrency" class="stat-pillar-num emerald">+265%</div>
-              <div class="stat-pillar-label">Friedman Real Currency Appreciation</div>
-            </div>
-          </div>
-
-          <ul class="laureate-list">
-            <li><span>🧬 Child Stunting Eradicated</span> <span id="eqBarStunting">&lt; 1.2% (Zero Brain Loss)</span></li>
-            <li><span>⚡ Baseload Hydro/Geothermal</span> <span id="eqBarPower">$0.018 / kWh</span></li>
-            <li><span>🇰🇪🇨🇩 Kenya + DRC Twin Axis</span> <span id="eqBarTwinAxis">$88.8T GDP (#2 on Earth)</span></li>
-            <li><span>🤝 Rest-of-World Co-Prosperity</span> <span id="eqBarCoProsperity">+$42.0T Global Boost</span></li>
-          </ul>
-        </aside>
-      </div>
-    </section>
 
     <!-- ====================================================================
          STEP 1 (START HERE): INTERACTIVE LEAKY-PIPE VALVE GAME ($3.33T AFRICA & $161B KENYA)
@@ -354,6 +245,118 @@
             Next: Step 2 — Turn the 4 $75B Sankore Dials →
           </button>
         </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         STEP 2: INTERACTIVE 4-DIAL SANKORE SUPERPOWER EQUALIZER & SCOREBOARD
+         ==================================================================== -->
+    <section id="premise" class="hero" data-step-panel="2">
+      <div class="ux-step-callout">
+        <span class="ux-step-callout-badge">🎛️ STEP 2 OF 4 • THE $75B SOLUTION</span>
+        <span class="ux-step-callout-text">
+          <strong>Your Action:</strong> Drag the <strong>4 Sankore Dials</strong> below (or click <strong>🔥 Max Sankore</strong> vs. <strong>⚠️ 1324 Trap</strong>) and watch the 2076 Superpower Scoreboard on the right update live.
+        </span>
+      </div>
+
+      <div class="hero-grid">
+        <div>
+          <div class="kicker">STEP 2 • INTERACTIVE COMMAND CENTER • TURN THE 4 SANKORE DIALS</div>
+          <h1 class="hero-headline" style="margin-bottom: 0.75rem;">
+            <span class="highlight">How $75B Fixes the Leaks:</span> Drag the 4 Dials Below to Build a <span class="highlight-drc">$183.5T Superpower</span>
+          </h1>
+          <p class="hero-lead">
+            In 1324, Mansa Musa’s raw gold giveaway crashed Cairo’s currency for 12 years—so in 1325 he pivoted to building <strong>Sankore University in Timbuktu</strong> and anchoring trade onshore. Drag the 4 dials below to test <strong>Mansa Musa’s Sankore Law × Bjørn Lomborg’s <em>Best Things First</em> × Milton Friedman’s <em>Price Theory</em></strong>:
+          </p>
+
+          <!-- Interactive 4-Dial Master Equalizer -->
+          <div class="equalizer-board">
+            <div class="equalizer-top-bar">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--emerald);">
+                🎛️ Live 4-Pillar Sankore Equalizer ($75B Catalyst)
+              </span>
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <button id="eqPresetMaxBtn" type="button" class="filter-pill active" style="font-size: 0.7rem; padding: 0.25rem 0.6rem;">
+                  🔥 Max Sankore ($183.5T)
+                </button>
+                <button id="eqPresetTrapBtn" type="button" class="filter-pill" style="font-size: 0.7rem; padding: 0.25rem 0.6rem;">
+                  ⚠️ 1324 Raw Gold Trap ($8.2T)
+                </button>
+              </div>
+            </div>
+
+            <div class="friedman-sliders-grid" style="margin-bottom: 0.85rem;">
+              <div class="friedman-slider-card">
+                <div class="friedman-slider-top">
+                  <label for="eqDialBiology">🧬 1. Biology &amp; Vaccines (101:1)</label>
+                  <span id="valEqBiology" class="friedman-slider-val emerald">100%</span>
+                </div>
+                <input id="eqDialBiology" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
+              </div>
+
+              <div class="friedman-slider-card">
+                <div class="friedman-slider-top">
+                  <label for="eqDialEdtech">📱 2. Sankore EdTech &amp; Seeds (65:1)</label>
+                  <span id="valEqEdtech" class="friedman-slider-val emerald">100%</span>
+                </div>
+                <input id="eqDialEdtech" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
+              </div>
+
+              <div class="friedman-slider-card">
+                <div class="friedman-slider-top">
+                  <label for="eqDialPowerTrade">⚡ 3. $0.02 Power &amp; AfCFTA (95:1)</label>
+                  <span id="valEqPowerTrade" class="friedman-slider-val emerald">100%</span>
+                </div>
+                <input id="eqDialPowerTrade" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
+              </div>
+
+              <div class="friedman-slider-card">
+                <div class="friedman-slider-top">
+                  <label for="eqDialSuperSectors">⚽🦁 4. Sports, Tourism &amp; Space (+$38.5T)</label>
+                  <span id="valEqSuperSectors" class="friedman-slider-val emerald">100%</span>
+                </div>
+                <input id="eqDialSuperSectors" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
+              </div>
+            </div>
+
+            <div class="hero-cta-row" style="margin-bottom: 0;">
+              <button type="button" class="btn-primary" data-goto-step="3">Next: Watch Africa Overtake the World (Step 3) →</button>
+              <button type="button" class="btn-outline" data-goto-step="1">← Back to Step 1 ($3.33T Leak Audit)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Live Reactive Visual Scoreboard -->
+        <aside class="nobel-brief-card" style="border-top-color: #D97706;">
+          <div class="kicker" style="color: #D97706;">LIVE SUPERPOWER SCOREBOARD (2076)</div>
+          <h2 id="eqVerdictTitle" class="nobel-brief-title">🏆 #1 Economy &amp; #1 Currency in History</h2>
+
+          <div class="stat-pillars">
+            <div>
+              <div id="eqScoreGdp" class="stat-pillar-num emerald">$183.5T</div>
+              <div class="stat-pillar-label">2076 All-Africa GDP (vs. $3.7T Today)</div>
+            </div>
+            <div>
+              <div id="eqScoreBourse" class="stat-pillar-num emerald">$330.3T</div>
+              <div class="stat-pillar-label">2076 Pan-African Stock Exchange (1.8×)</div>
+            </div>
+            <div>
+              <div id="eqScoreOvertakeYr" class="stat-pillar-num crimson">Year 2051</div>
+              <div class="stat-pillar-label">Year Africa Surpasses USA as #1 on Earth</div>
+            </div>
+            <div>
+              <div id="eqScoreCurrency" class="stat-pillar-num emerald">+265%</div>
+              <div class="stat-pillar-label">Friedman Real Currency Appreciation</div>
+            </div>
+          </div>
+
+          <ul class="laureate-list">
+            <li><span>🧬 Child Stunting Eradicated</span> <span id="eqBarStunting">&lt; 1.2% (Zero Brain Loss)</span></li>
+            <li><span>⚡ Baseload Hydro/Geothermal</span> <span id="eqBarPower">$0.018 / kWh</span></li>
+            <li><span>🇰🇪🇨🇩 Kenya + DRC Twin Axis</span> <span id="eqBarTwinAxis">$88.8T GDP (#2 on Earth)</span></li>
+            <li><span>🤝 Rest-of-World Co-Prosperity</span> <span id="eqBarCoProsperity">+$42.0T Global Boost</span></li>
+          </ul>
+        </aside>
       </div>
     </section>
 
