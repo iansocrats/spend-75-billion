@@ -2790,16 +2790,16 @@
       if (pill) {
         if (vid === "graft") {
           pill.textContent = isLocked
-            ? "🔒 LOCKED (38:1 E-PROCUREMENT)"
-            : "💔 LEAKING (-30% TENDER GRAFT)";
+            ? "🔒 PLUGGED (Digital Bidding • $38 back per $1)"
+            : "💔 LEAKING (-30% stolen in fake contracts)";
         } else if (vid === "tiedAid") {
           pill.textContent = isLocked
-            ? "🔒 LOCKED (101:1 HEALTH & 65:1 EDTECH)"
-            : "💔 LEAKING (TIED AID & STUNTING)";
+            ? "🔒 PLUGGED (Vaccines & Tablet Schools • Up to $101 back per $1)"
+            : "💔 LEAKING (Foreign consultants & untreated malaria)";
         } else {
           pill.textContent = isLocked
-            ? "🔒 LOCKED (55:1 TITLES & $0.03 POWER)"
-            : "💔 LEAKING (58% DEBT SERVICE & DEAD LAND)";
+            ? "🔒 PLUGGED (Land Titles & 2¢ Power • $55 back per $1)"
+            : "💔 LEAKING (Unregistered land & expensive power)";
         }
       }
       if (fill) {
@@ -2918,16 +2918,16 @@
 
     auditComparisonGrid.innerHTML = `
       <div class="friedman-kpi-card">
-        <div class="friedman-kpi-label">2026 GDP (${gdpMultiple}× Surge)</div>
+        <div class="friedman-kpi-label">2026 Economy Size (${gdpMultiple}× Bigger If Fixed)</div>
         <div class="friedman-kpi-val" style="color: var(--emerald);">${cfGdpDisplay}</div>
         <div class="split-meter-wrap">
           <div class="split-meter-row">
-            <span style="width: 58px; color: var(--crimson);">Reality:</span>
+            <span style="width: 65px; color: var(--crimson);">With Leaks:</span>
             <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: ${realityBarPct}%; background: var(--crimson);"></div></div>
             <span>${actGdpDisplay}</span>
           </div>
           <div class="split-meter-row">
-            <span style="width: 58px; color: var(--emerald);">Sankore:</span>
+            <span style="width: 65px; color: var(--emerald);">Plugged:</span>
             <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: ${cfBarPct}%; background: var(--emerald);"></div></div>
             <strong>${cfGdpDisplay}</strong>
           </div>
@@ -2935,16 +2935,16 @@
       </div>
 
       <div class="friedman-kpi-card gold">
-        <div class="friedman-kpi-label">2026 Income Per Person</div>
+        <div class="friedman-kpi-label">Annual Income Per Person</div>
         <div class="friedman-kpi-val" style="color: #D97706;">$${cfPerCapita.toLocaleString()}/yr</div>
         <div class="split-meter-wrap">
           <div class="split-meter-row">
-            <span style="width: 58px; color: var(--crimson);">Reality:</span>
+            <span style="width: 65px; color: var(--crimson);">With Leaks:</span>
             <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: 13%; background: var(--crimson);"></div></div>
             <span>$${audit.actual2026.perCapitaUsd.toLocaleString()}</span>
           </div>
           <div class="split-meter-row">
-            <span style="width: 58px; color: var(--emerald);">Sankore:</span>
+            <span style="width: 65px; color: var(--emerald);">Plugged:</span>
             <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: ${cfBarPct}%; background: #D97706;"></div></div>
             <strong>$${cfPerCapita.toLocaleString()}</strong>
           </div>
@@ -2952,16 +2952,16 @@
       </div>
 
       <div class="friedman-kpi-card">
-        <div class="friedman-kpi-label">2026 Stock Exchange Cap</div>
+        <div class="friedman-kpi-label">Stock Market Wealth</div>
         <div class="friedman-kpi-val" style="color: var(--emerald);">${cfBourseDisplay}</div>
         <div class="split-meter-wrap">
           <div class="split-meter-row">
-            <span style="width: 58px; color: var(--crimson);">Reality:</span>
+            <span style="width: 65px; color: var(--crimson);">With Leaks:</span>
             <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: 6%; background: var(--crimson);"></div></div>
             <span>${actBourseDisplay}</span>
           </div>
           <div class="split-meter-row">
-            <span style="width: 58px; color: var(--emerald);">Sankore:</span>
+            <span style="width: 65px; color: var(--emerald);">Plugged:</span>
             <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: ${cfBarPct}%; background: var(--emerald);"></div></div>
             <strong>${cfBourseDisplay}</strong>
           </div>
@@ -2969,10 +2969,10 @@
       </div>
 
       <div class="friedman-kpi-card gold">
-        <div class="friedman-kpi-label">2026 Friedman Currency Value</div>
+        <div class="friedman-kpi-label">Currency Value (Purchasing Power)</div>
         <div class="friedman-kpi-val" style="color: #D97706; font-size: 1.35rem;">${cfCurrencyText}</div>
         <div class="friedman-kpi-sub">
-          <span style="color: var(--crimson);">Reality: ${audit.actual2026.currencyLabel}</span>
+          <span style="color: var(--crimson);">Today with Leaks: ${audit.actual2026.currencyLabel}</span>
         </div>
       </div>
     `;
