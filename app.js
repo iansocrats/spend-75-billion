@@ -3191,6 +3191,392 @@
       eqPresetTrapBtn.classList.add("active");
       if (eqPresetMaxBtn) eqPresetMaxBtn.classList.remove("active");
       renderMasterEqualizer();
+      syncMansaEraVisual("cairo");
+    });
+  }
+
+  // ==========================================================================
+  // INTERACTIVE MANSA MUSA VISUAL GUIDE ("THE LIVING SANKORE THRONE")
+  // ==========================================================================
+  const MANSA_RELIC_ORDER = [
+    "sankore",
+    "crown",
+    "orb",
+    "scales",
+    "scepter",
+    "pedestal",
+  ];
+
+  const MANSA_PORTRAIT_CONFIG = {
+    throne: {
+      src: "mansa-musa-throne.jpg",
+      coords: {
+        sankore: { left: 21, top: 36 },
+        crown: { left: 50, top: 17 },
+        orb: { left: 44, top: 43 },
+        scales: { left: 19, top: 69 },
+        scepter: { left: 67, top: 35 },
+        pedestal: { left: 75, top: 83 },
+      },
+    },
+    catalan: {
+      src: "mansa-musa-catalan.jpg",
+      coords: {
+        sankore: { left: 28, top: 34 },
+        crown: { left: 65, top: 18 },
+        orb: { left: 30, top: 49 },
+        scales: { left: 18, top: 82 },
+        scepter: { left: 75, top: 46 },
+        pedestal: { left: 58, top: 85 },
+      },
+    },
+  };
+
+  const MANSA_RELICS_DATA = {
+    sankore: {
+      stepText: "RELIC 1 OF 6 • SANKORE UNIVERSITY SPIRES",
+      title: "🏛️ Sankore Spires: 101:1 Maternal/Child Health & 65:1 AI EdTech",
+      quote:
+        "“Gold dug from the earth is finite; a mind trained in mathematics, medicine, and astronomy at Sankore compounds wealth across ten generations.”",
+      m1Label: "Lomborg Best-First BCR",
+      m1Val: "101 : 1 → 65 : 1",
+      m2Label: "Friedman Ch. 11 Human IRR",
+      m2Val: "42% Annual IRR",
+      m3Label: "Productivity Multiplier",
+      m3Val: "22× Youth Output",
+      sliderLabel: "🧬📱 Adjust Sankore Human Capital & EdTech Power:",
+      formula: "Friedman Ch. 11: Human Capital (H) × Physical Capital (K) → Zero Diminishing Returns",
+      jumpHref: "#btf-matrix",
+      jumpText: "Explore Lomborg 12 Best-First Solutions ↓",
+      linkedDial: "edtech",
+    },
+    crown: {
+      stepText: "RELIC 2 OF 6 • THE IMPERIAL CROWN OF MALI",
+      title: "👑 The Imperial Crown: 38:1 E-Procurement & 4.0% K-Percent Rule",
+      quote:
+        "“A sovereign crown is only as strong as its ledger. When every gold dinar is tracked on an open ledger and money supply grows strictly with production, corruption dies.”",
+      m1Label: "E-Procurement Return",
+      m1Val: "38 : 1 BCR",
+      m2Label: "Friedman K-Percent Rule",
+      m2Val: "4.0% / Yr Cap",
+      m3Label: "Real FX Appreciation",
+      m3Val: "+265% vs. USD",
+      sliderLabel: "👑 Adjust Sovereign Governance & Monetary Discipline:",
+      formula: "Friedman K-Rule: ΔM (4.0%) < ΔY (8.8%) → Structural Hard-Currency Appreciation",
+      jumpHref: "#friedman-markets",
+      jumpText: "Open Friedman Monetary Engine ↓",
+      linkedDial: "biology",
+    },
+    orb: {
+      stepText: "RELIC 3 OF 6 • THE GOLDEN NUGGET ORB",
+      title: "🔮 The Golden Orb: Why $75B Anchored Onshore Beats $3.33T of Leaked Aid",
+      quote:
+        "“In 1324 in Cairo, I gave away raw bullion without domestic production—and crashed Egypt’s currency for 12 years. In 1325 in Timbuktu, I anchored gold inside Sankore scholars and productive velocity.”",
+      m1Label: "Catalyst vs. 2076 GDP",
+      m1Val: "$75B → $183.5T",
+      m2Label: "Friedman Velocity (V)",
+      m2Val: "1.1× → 3.1×",
+      m3Label: "#1 Global Overtake Year",
+      m3Val: "Year 2051",
+      sliderLabel: "🔮 Adjust $75B Catalyst Onshore Retention & Velocity:",
+      formula: "Friedman Equation: M · V(3.1×) = P · Y($183.5T) | 1325 Sankore Pivot",
+      jumpHref: "#overtake-race",
+      jumpText: "Play Global GDP Overtake Race (2026–2076) ↓",
+      linkedDial: "all",
+    },
+    scales: {
+      stepText: "RELIC 4 OF 6 • TIMBUKTU MANUSCRIPTS & BALANCE SCALES",
+      title: "⚖️ The Scales: Shutting the $3.33T Africa & $161B Kenya Leaky Pipes",
+      quote:
+        "“Africa already received $3.33 Trillion since 1960—44 times our $75B catalyst—yet 86% leaked out through untitled land, ghost contracts, and foreign debt service. Lock the 3 valves and Africa is $28.4T today.”",
+      m1Label: "Biometric Land Titles",
+      m1Val: "55 : 1 ($4.8T Dead Capital)",
+      m2Label: "2026 All-Africa Counterfactual",
+      m2Val: "$28.4T (vs. $3.7T)",
+      m3Label: "2026 Kenya Counterfactual",
+      m3Val: "$1.18T (vs. $136B)",
+      sliderLabel: "⚖️ Seal the 3 Historical Leaky Valves (0% = Leaking, 100% = Locked):",
+      formula: "Historical Audit: $3.33T × 8.5× Compounding BCR = $28.4T Africa Today",
+      jumpHref: "#historical-audit",
+      jumpText: "Play the 3-Valve Leaky-Pipe Audit Game ↓",
+      linkedDial: "valves",
+    },
+    scepter: {
+      stepText: "RELIC 5 OF 6 • THE ROYAL GOLDEN SCEPTER",
+      title: "⚡ The Royal Scepter: $0.02/kWh Baseload Power & 95:1 AfCFTA Corridors",
+      quote:
+        "“No empire can refine its own gold or copper while paying $0.22/kWh for diesel generators and waiting 14 days at internal borders. Strike down the tariff walls and unleash Grand Inga & Rift Geothermal.”",
+      m1Label: "Industrial Power Price",
+      m1Val: "$0.22 → $0.018/kWh",
+      m2Label: "Friedman Price Elasticity",
+      m2Val: "|ε_d| = 2.4 (42× Output)",
+      m3Label: "DRC + Kenya Twin Axis",
+      m3Val: "$88.8T Combined GDP",
+      sliderLabel: "⚡ Adjust $0.02 Power Grid & AfCFTA Border Clearance:",
+      formula: "Friedman Price Theory Ch. 2: Relative Input Price Drop (-91%) → 42× Smelting & AI Compute Surge",
+      jumpHref: "#friedman-price-theory",
+      jumpText: "Open Friedman Price Theory Simulator ↓",
+      linkedDial: "power",
+    },
+    pedestal: {
+      stepText: "RELIC 6 OF 6 • THE GOLDEN THRONE PEDESTAL",
+      title: "💎 The Throne Pedestal: $330.3T Bourse, 8 Super-Sectors & +$42T World Boost",
+      quote:
+        "“When Africa’s 54 nations clear their own capital through Africlear and monetize Football, Eco-Tourism, Afrobeats IP, the Congo Carbon Sink, and Equatorial Spaceports, the entire world grows $42 Trillion richer.”",
+      m1Label: "2076 SANKORE-500 Bourse",
+      m1Val: "$330.3T (1.8× GDP)",
+      m2Label: "8 Untapped Super-Sectors",
+      m2Val: "+$38.5T GDP / +$69T Cap",
+      m3Label: "Rest-of-World Dividend",
+      m3Val: "+$42.0T (US/EU/CN/IN)",
+      sliderLabel: "💎⚽ Unlock the 8 Super-Sectors & Pan-African Stock Exchange:",
+      formula: "Global Co-Prosperity: Africa +$183.5T GDP → Rest of World +$42.0T Trade & Tech Dividend",
+      jumpHref: "#untapped-co-prosperity",
+      jumpText: "Explore 8 Super-Sectors & Stock Market Race ↓",
+      linkedDial: "super",
+    },
+  };
+
+  let currentMansaPortrait = "throne";
+  let currentMansaRelic = "orb";
+  let mansaWalkTimer = null;
+
+  const mansaPortraitStage = document.getElementById("mansaPortraitStage");
+  const mansaPortraitImg = document.getElementById("mansaPortraitImg");
+  const mansaEraOverlayBadge = document.getElementById("mansaEraOverlayBadge");
+  const mansaConstellationLine = document.getElementById("mansaConstellationLine");
+  const mansaRelicStepBadge = document.getElementById("mansaRelicStepBadge");
+  const mansaRelicTitle = document.getElementById("mansaRelicTitle");
+  const mansaRelicQuote = document.getElementById("mansaRelicQuote");
+  const mansaMetric1Label = document.getElementById("mansaMetric1Label");
+  const mansaMetric1Val = document.getElementById("mansaMetric1Val");
+  const mansaMetric2Label = document.getElementById("mansaMetric2Label");
+  const mansaMetric2Val = document.getElementById("mansaMetric2Val");
+  const mansaMetric3Label = document.getElementById("mansaMetric3Label");
+  const mansaMetric3Val = document.getElementById("mansaMetric3Val");
+  const mansaHudSliderLabel = document.getElementById("mansaHudSliderLabel");
+  const mansaHudSlider = document.getElementById("mansaHudSlider");
+  const mansaHudSliderVal = document.getElementById("mansaHudSliderVal");
+  const mansaHudFormulaTag = document.getElementById("mansaHudFormulaTag");
+  const mansaJumpLink = document.getElementById("mansaJumpLink");
+  const mansaAutoWalkBtn = document.getElementById("mansaAutoWalkBtn");
+  const mansaPrevRelicBtn = document.getElementById("mansaPrevRelicBtn");
+  const mansaNextRelicBtn = document.getElementById("mansaNextRelicBtn");
+  const mansaMode1324Btn = document.getElementById("mansaMode1324Btn");
+  const mansaMode1325Btn = document.getElementById("mansaMode1325Btn");
+
+  function syncMansaEraVisual(eraMode) {
+    if (!mansaPortraitStage) return;
+    mansaPortraitStage.setAttribute("data-era-mode", eraMode);
+    if (mansaMode1324Btn) {
+      mansaMode1324Btn.classList.toggle("active", eraMode === "cairo");
+    }
+    if (mansaMode1325Btn) {
+      mansaMode1325Btn.classList.toggle("active", eraMode === "sankore");
+    }
+    if (mansaEraOverlayBadge) {
+      const curGdp = eqScoreGdp ? eqScoreGdp.textContent : "$183.5T";
+      mansaEraOverlayBadge.textContent =
+        eraMode === "cairo"
+          ? `⚠️ 1324 CAIRO BULLION LEAK • ${curGdp} GDP (86% DRAINED)`
+          : `🏛️ 1325 SANKORE ENGINE ACTIVE • ${curGdp} GDP (2076 #1)`;
+    }
+  }
+
+  function updateMansaPortraitPositions(portraitKey) {
+    const cfg = MANSA_PORTRAIT_CONFIG[portraitKey] || MANSA_PORTRAIT_CONFIG.throne;
+    currentMansaPortrait = portraitKey;
+    if (mansaPortraitImg) {
+      mansaPortraitImg.src = cfg.src;
+    }
+    const pts = [];
+    MANSA_RELIC_ORDER.forEach((relicId) => {
+      const pos = cfg.coords[relicId];
+      if (!pos) return;
+      pts.push(`${pos.left},${pos.top}`);
+      const pin = document.querySelector(
+        `.mansa-hotspot-pin[data-relic-id="${relicId}"]`
+      );
+      if (pin) {
+        pin.style.left = `${pos.left}%`;
+        pin.style.top = `${pos.top}%`;
+      }
+    });
+    if (mansaConstellationLine) {
+      mansaConstellationLine.setAttribute("points", pts.join(" "));
+    }
+    document.querySelectorAll("[data-mansa-portrait]").forEach((btn) => {
+      btn.classList.toggle(
+        "active",
+        btn.getAttribute("data-mansa-portrait") === portraitKey
+      );
+    });
+  }
+
+  function selectMansaRelic(relicId) {
+    const r = MANSA_RELICS_DATA[relicId];
+    if (!r) return;
+    currentMansaRelic = relicId;
+    if (mansaPortraitStage) {
+      mansaPortraitStage.setAttribute("data-active-relic", relicId);
+    }
+
+    document.querySelectorAll(".mansa-hotspot-pin").forEach((pin) => {
+      pin.classList.toggle(
+        "active",
+        pin.getAttribute("data-relic-id") === relicId
+      );
+    });
+    document.querySelectorAll(".mansa-mini-pill").forEach((pill) => {
+      pill.classList.toggle(
+        "active",
+        pill.getAttribute("data-relic-id") === relicId
+      );
+    });
+
+    if (mansaRelicStepBadge) mansaRelicStepBadge.textContent = r.stepText;
+    if (mansaRelicTitle) mansaRelicTitle.textContent = r.title;
+    if (mansaRelicQuote) mansaRelicQuote.textContent = r.quote;
+    if (mansaMetric1Label) mansaMetric1Label.textContent = r.m1Label;
+    if (mansaMetric1Val) mansaMetric1Val.textContent = r.m1Val;
+    if (mansaMetric2Label) mansaMetric2Label.textContent = r.m2Label;
+    if (mansaMetric2Val) mansaMetric2Val.textContent = r.m2Val;
+    if (mansaMetric3Label) mansaMetric3Label.textContent = r.m3Label;
+    if (mansaMetric3Val) mansaMetric3Val.textContent = r.m3Val;
+    if (mansaHudSliderLabel) mansaHudSliderLabel.textContent = r.sliderLabel;
+    if (mansaHudFormulaTag) mansaHudFormulaTag.textContent = r.formula;
+    if (mansaJumpLink) {
+      mansaJumpLink.setAttribute("href", r.jumpHref);
+      mansaJumpLink.textContent = r.jumpText;
+    }
+
+    // Sync slider value with underlying dial
+    let dialVal = 100;
+    if (r.linkedDial === "edtech" && eqDialEdtech) {
+      dialVal = parseFloat(eqDialEdtech.value);
+    } else if (r.linkedDial === "biology" && eqDialBiology) {
+      dialVal = parseFloat(eqDialBiology.value);
+    } else if (r.linkedDial === "power" && eqDialPowerTrade) {
+      dialVal = parseFloat(eqDialPowerTrade.value);
+    } else if (r.linkedDial === "super" && eqDialSuperSectors) {
+      dialVal = parseFloat(eqDialSuperSectors.value);
+    } else if (r.linkedDial === "valves") {
+      const shutCount =
+        (auditValveState.v1 ? 1 : 0) +
+        (auditValveState.v2 ? 1 : 0) +
+        (auditValveState.v3 ? 1 : 0);
+      dialVal = Math.round((shutCount / 3) * 100);
+    } else if (eqDialBiology) {
+      dialVal = parseFloat(eqDialBiology.value);
+    }
+    if (mansaHudSlider) mansaHudSlider.value = dialVal;
+    if (mansaHudSliderVal) mansaHudSliderVal.textContent = `${dialVal}%`;
+  }
+
+  document.querySelectorAll("[data-mansa-portrait]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      updateMansaPortraitPositions(btn.getAttribute("data-mansa-portrait"));
+    });
+  });
+
+  document
+    .querySelectorAll(".mansa-hotspot-pin, .mansa-mini-pill")
+    .forEach((el) => {
+      el.addEventListener("click", () => {
+        const id = el.getAttribute("data-relic-id");
+        if (id) selectMansaRelic(id);
+      });
+    });
+
+  if (mansaPrevRelicBtn) {
+    mansaPrevRelicBtn.addEventListener("click", () => {
+      const idx = MANSA_RELIC_ORDER.indexOf(currentMansaRelic);
+      const prevIdx =
+        (idx - 1 + MANSA_RELIC_ORDER.length) % MANSA_RELIC_ORDER.length;
+      selectMansaRelic(MANSA_RELIC_ORDER[prevIdx]);
+    });
+  }
+
+  if (mansaNextRelicBtn) {
+    mansaNextRelicBtn.addEventListener("click", () => {
+      const idx = MANSA_RELIC_ORDER.indexOf(currentMansaRelic);
+      const nextIdx = (idx + 1) % MANSA_RELIC_ORDER.length;
+      selectMansaRelic(MANSA_RELIC_ORDER[nextIdx]);
+    });
+  }
+
+  if (mansaHudSlider) {
+    mansaHudSlider.addEventListener("input", () => {
+      const v = parseFloat(mansaHudSlider.value);
+      if (mansaHudSliderVal) mansaHudSliderVal.textContent = `${Math.round(v)}%`;
+      const r = MANSA_RELICS_DATA[currentMansaRelic];
+      if (!r) return;
+
+      if (r.linkedDial === "edtech" && eqDialEdtech) {
+        eqDialEdtech.value = v;
+      } else if (r.linkedDial === "biology" && eqDialBiology) {
+        eqDialBiology.value = v;
+      } else if (r.linkedDial === "power" && eqDialPowerTrade) {
+        eqDialPowerTrade.value = v;
+      } else if (r.linkedDial === "super" && eqDialSuperSectors) {
+        eqDialSuperSectors.value = v;
+      } else if (r.linkedDial === "valves") {
+        auditValveState.v1 = v >= 30;
+        auditValveState.v2 = v >= 65;
+        auditValveState.v3 = v >= 90;
+        renderHistoricalAudit();
+      } else {
+        if (eqDialBiology) eqDialBiology.value = v;
+        if (eqDialEdtech) eqDialEdtech.value = v;
+        if (eqDialPowerTrade) eqDialPowerTrade.value = v;
+        if (eqDialSuperSectors) eqDialSuperSectors.value = v;
+      }
+      renderMasterEqualizer();
+      syncMansaEraVisual(v < 40 ? "cairo" : "sankore");
+    });
+  }
+
+  if (mansaMode1324Btn) {
+    mansaMode1324Btn.addEventListener("click", () => {
+      if (eqPresetTrapBtn) eqPresetTrapBtn.click();
+      if (openAllValvesLeakBtn) openAllValvesLeakBtn.click();
+      syncMansaEraVisual("cairo");
+      if (mansaHudSlider) mansaHudSlider.value = 0;
+      if (mansaHudSliderVal) mansaHudSliderVal.textContent = "0%";
+    });
+  }
+
+  if (mansaMode1325Btn) {
+    mansaMode1325Btn.addEventListener("click", () => {
+      if (eqPresetMaxBtn) eqPresetMaxBtn.click();
+      if (snapAllValvesShutBtn) snapAllValvesShutBtn.click();
+      syncMansaEraVisual("sankore");
+      if (mansaHudSlider) mansaHudSlider.value = 100;
+      if (mansaHudSliderVal) mansaHudSliderVal.textContent = "100%";
+    });
+  }
+
+  if (mansaAutoWalkBtn) {
+    mansaAutoWalkBtn.addEventListener("click", () => {
+      if (mansaWalkTimer) {
+        clearInterval(mansaWalkTimer);
+        mansaWalkTimer = null;
+        mansaAutoWalkBtn.textContent = "▶ Tour All 6 Relics";
+        return;
+      }
+      mansaAutoWalkBtn.textContent = "⏹ Stop Relic Tour";
+      let stepIdx = 0;
+      selectMansaRelic(MANSA_RELIC_ORDER[stepIdx]);
+      mansaWalkTimer = setInterval(() => {
+        stepIdx++;
+        if (stepIdx >= MANSA_RELIC_ORDER.length) {
+          clearInterval(mansaWalkTimer);
+          mansaWalkTimer = null;
+          mansaAutoWalkBtn.textContent = "▶ Tour All 6 Relics";
+          return;
+        }
+        selectMansaRelic(MANSA_RELIC_ORDER[stepIdx]);
+      }, 2800);
     });
   }
 

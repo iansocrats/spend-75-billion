@@ -2517,4 +2517,427 @@ html[data-visual-mode="compact"] .card-prose-collapse {
   transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* ============================================================================
+   INTERACTIVE MANSA MUSA VISUAL GUIDE ("THE LIVING SANKORE THRONE")
+   ============================================================================ */
+.mansa-guide-shell {
+  background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+  border: 2px solid rgba(217, 119, 6, 0.45);
+  border-top: 5px solid #D97706;
+  border-radius: 10px;
+  padding: 1.35rem;
+  margin-bottom: 1.75rem;
+  box-shadow: 0 18px 40px -15px rgba(217, 119, 6, 0.18);
+}
+
+.mansa-guide-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.15rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.mansa-guide-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.45rem, 2.5vw, 2.15rem);
+  line-height: 1.15;
+  margin: 0;
+  color: var(--ink-primary);
+}
+
+.mansa-guide-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.mansa-guide-grid {
+  display: grid;
+  grid-template-columns: 1.38fr 1fr;
+  gap: 1.35rem;
+  align-items: stretch;
+}
+
+.mansa-portrait-stage {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #0F0D0A;
+  border: 2px solid #D97706;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.32), inset 0 0 40px rgba(217, 119, 6, 0.25);
+  aspect-ratio: 16 / 9;
+  user-select: none;
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.mansa-portrait-stage[data-era-mode="cairo"] {
+  border-color: var(--crimson);
+  box-shadow: 0 12px 32px rgba(153, 27, 27, 0.35), inset 0 0 55px rgba(153, 27, 27, 0.45);
+}
+
+.mansa-portrait-stage[data-era-mode="cairo"] .mansa-portrait-img {
+  filter: sepia(0.32) saturate(0.75) contrast(1.06) brightness(0.84);
+}
+
+.mansa-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), filter 0.35s ease;
+}
+
+.mansa-era-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 4;
+  background: rgba(12, 10, 9, 0.84);
+  backdrop-filter: blur(8px);
+  color: #FCD34D;
+  border: 1px solid rgba(252, 211, 77, 0.55);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.32rem 0.68rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.mansa-portrait-stage[data-era-mode="cairo"] .mansa-era-badge {
+  color: #FCA5A5;
+  border-color: rgba(248, 113, 113, 0.65);
+}
+
+.mansa-constellation-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.mansa-constellation-svg polyline {
+  fill: none;
+  stroke: rgba(252, 211, 77, 0.42);
+  stroke-width: 0.45;
+  stroke-dasharray: 1.5 1.5;
+}
+
+/* Pulsing Golden Hotspot Pins */
+.mansa-hotspot-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: left 0.45s cubic-bezier(0.22, 1, 0.36, 1), top 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.2s ease;
+}
+
+.mansa-hotspot-pin:hover,
+.mansa-hotspot-pin.active {
+  z-index: 8;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.pin-pulse {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.45);
+  animation: mansaPulseRing 2s infinite ease-out;
+  pointer-events: none;
+}
+
+.mansa-hotspot-pin.active .pin-pulse {
+  background: rgba(16, 185, 129, 0.65);
+  width: 42px;
+  height: 42px;
+}
+
+@keyframes mansaPulseRing {
+  0% {
+    transform: translate(-50%, -50%) scale(0.75);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.85);
+    opacity: 0;
+  }
+}
+
+.pin-core {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #FDE68A, #D97706 70%, #92400E 100%);
+  border: 2px solid #FFFBEB;
+  color: #1C1917;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.65);
+  flex-shrink: 0;
+}
+
+.mansa-hotspot-pin.active .pin-core {
+  background: radial-gradient(circle at 30% 30%, #6EE7B7, #059669 75%, #064E3B 100%);
+  color: #FFFFFF;
+  border-color: #A7F3D0;
+  box-shadow: 0 0 18px rgba(16, 185, 129, 0.9);
+}
+
+.pin-tag {
+  background: rgba(12, 10, 9, 0.88);
+  backdrop-filter: blur(6px);
+  color: #FEF3C7;
+  border: 1px solid rgba(245, 158, 11, 0.6);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 0.22rem 0.52rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+  transition: all 0.2s ease;
+}
+
+.mansa-hotspot-pin.active .pin-tag {
+  background: rgba(6, 78, 59, 0.95);
+  color: #ECFDF5;
+  border-color: #34D399;
+}
+
+.mansa-pivot-dock {
+  position: absolute;
+  bottom: 0.65rem;
+  left: 0.65rem;
+  right: 0.65rem;
+  z-index: 6;
+  display: flex;
+  gap: 0.45rem;
+  background: rgba(12, 10, 9, 0.84);
+  backdrop-filter: blur(8px);
+  padding: 0.35rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.mansa-era-btn {
+  flex: 1;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06);
+  color: #E7E5E4;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 0.38rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mansa-era-btn[data-era="cairo"].active {
+  background: rgba(153, 27, 27, 0.9);
+  border-color: #F87171;
+  color: #FEF2F2;
+}
+
+.mansa-era-btn[data-era="sankore"].active {
+  background: rgba(4, 120, 87, 0.92);
+  border-color: #34D399;
+  color: #ECFDF5;
+}
+
+/* Right HUD Panel */
+.mansa-hud-panel {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid #D97706;
+  border-radius: 8px;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.mansa-hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mansa-step-pill {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #D97706;
+  text-transform: uppercase;
+}
+
+.mansa-step-nav {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.mansa-hud-title {
+  font-family: var(--font-serif);
+  font-size: 1.22rem;
+  line-height: 1.25;
+  margin: 0;
+  color: var(--ink-primary);
+}
+
+.mansa-royal-quote {
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  background: rgba(217, 119, 6, 0.08);
+  border-left: 3px solid #D97706;
+  border-radius: 0 6px 6px 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.88rem;
+  line-height: 1.42;
+  color: var(--ink-secondary);
+}
+
+.mansa-hud-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.mansa-hud-metric-box {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.48rem 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.mansa-metric-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.mansa-metric-val {
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.mansa-metric-val.gold {
+  color: #D97706;
+}
+
+.mansa-metric-val.emerald {
+  color: var(--emerald);
+}
+
+.mansa-metric-val.crimson {
+  color: var(--crimson);
+}
+
+.mansa-hud-control-box {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem;
+}
+
+.mansa-formula-tag {
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--ink-muted);
+}
+
+.mansa-relic-pills-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.38rem;
+}
+
+.mansa-mini-pill {
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-secondary);
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 0.35rem 0.4rem;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.18s ease;
+}
+
+.mansa-mini-pill:hover,
+.mansa-mini-pill.active {
+  background-color: #D97706;
+  border-color: #D97706;
+  color: #FFFFFF;
+}
+
+.mansa-hud-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1024px) {
+  .mansa-guide-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .mansa-guide-shell {
+    padding: 0.85rem;
+  }
+  .pin-tag {
+    display: none;
+  }
+  .mansa-hotspot-pin.active .pin-tag {
+    display: inline-block;
+    font-size: 0.58rem;
+    padding: 0.16rem 0.4rem;
+  }
+  .mansa-pivot-dock {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .mansa-era-btn {
+    font-size: 0.58rem;
+    padding: 0.26rem 0.35rem;
+  }
+}
+
+
 

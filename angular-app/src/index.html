@@ -116,15 +116,174 @@
   <main class="container">
 
     <!-- ====================================================================
-         ACT I: INTERACTIVE 4-DIAL SANKORE SUPERPOWER EQUALIZER & SCOREBOARD
+         ACT I: INTERACTIVE MANSA MUSA VISUAL GUIDE & 4-DIAL EQUALIZER
          ==================================================================== -->
     <section id="premise" class="hero">
+      <!-- Interactive Mansa Musa Visual Guide ("The Living Sankore Throne") -->
+      <div class="mansa-guide-shell" id="mansaVisualGuide">
+        <div class="mansa-guide-topbar">
+          <div>
+            <span class="kicker" style="margin-bottom: 0.15rem; display: block;">👑 INTERACTIVE VISUAL GUIDE • CLICK ANY GOLDEN RELIC ON MANSA MUSA (c. 1325 TIMBUKTU)</span>
+            <h1 class="mansa-guide-title">
+              <span class="highlight">Why Mansa Musa Was Right:</span> Click the 6 Relics on His Throne to Turn <span class="highlight-drc">$75B Into a $183.5T Superpower</span>
+            </h1>
+          </div>
+          <div class="mansa-guide-controls">
+            <div class="scenario-buttons" style="margin: 0;">
+              <button type="button" class="scenario-btn active" data-mansa-portrait="throne">
+                🏛️ Timbuktu Throne Portrait
+              </button>
+              <button type="button" class="scenario-btn" data-mansa-portrait="catalan">
+                🧭 1375 Catalan Atlas Pose
+              </button>
+            </div>
+            <button id="mansaAutoWalkBtn" type="button" class="play-timeline-btn" style="padding: 0.42rem 0.85rem; font-size: 0.75rem;">
+              ▶ Tour All 6 Relics
+            </button>
+          </div>
+        </div>
+
+        <div class="mansa-guide-grid">
+          <!-- Left: Interactive Portrait Canvas with 6 Pulsing Relic Hotspots -->
+          <div id="mansaPortraitStage" class="mansa-portrait-stage" data-active-relic="orb" data-era-mode="sankore">
+            <img
+              id="mansaPortraitImg"
+              src="mansa-musa-throne.jpg"
+              alt="Emperor Mansa Musa I seated on the Golden Throne of Timbuktu holding the Golden Nugget and Royal Scepter with Sankore University in the background"
+              class="mansa-portrait-img"
+            />
+            <!-- Dynamic Aura & Era Badge Overlay -->
+            <div id="mansaEraOverlayBadge" class="mansa-era-badge">
+              🏛️ 1325 SANKORE ENGINE ACTIVE • $183.5T GDP (2076)
+            </div>
+
+            <!-- SVG Connecting Lines Between Relics -->
+            <svg class="mansa-constellation-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <polyline id="mansaConstellationLine" points="21,36 50,17 44,43 19,69 67,35 75,83" />
+            </svg>
+
+            <!-- 6 Interactive Relic Hotspot Pins (Reposition automatically per portrait) -->
+            <button type="button" class="mansa-hotspot-pin" data-relic-id="sankore" style="left: 21%; top: 36%;" aria-label="1. Sankore University Spires: 101:1 Health & 65:1 EdTech">
+              <span class="pin-pulse"></span>
+              <span class="pin-core">1</span>
+              <span class="pin-tag">🏛️ Sankore Spires (101:1)</span>
+            </button>
+
+            <button type="button" class="mansa-hotspot-pin" data-relic-id="crown" style="left: 50%; top: 17%;" aria-label="2. Imperial Crown: 38:1 E-Procurement & 4% K-Rule">
+              <span class="pin-pulse"></span>
+              <span class="pin-core">2</span>
+              <span class="pin-tag">👑 Crown (K-Rule &amp; 38:1)</span>
+            </button>
+
+            <button type="button" class="mansa-hotspot-pin active" data-relic-id="orb" style="left: 44%; top: 43%;" aria-label="3. The Golden Nugget Orb: $75B Catalyst vs. 1324 Cairo Trap">
+              <span class="pin-pulse"></span>
+              <span class="pin-core">3</span>
+              <span class="pin-tag">🔮 $75B Gold Orb (MV=PY)</span>
+            </button>
+
+            <button type="button" class="mansa-hotspot-pin" data-relic-id="scales" style="left: 19%; top: 69%;" aria-label="4. Manuscripts & Balance Scale: $3.33T Audit & 55:1 Titles">
+              <span class="pin-pulse"></span>
+              <span class="pin-core">4</span>
+              <span class="pin-tag">⚖️ Scales ($3.33T Audit)</span>
+            </button>
+
+            <button type="button" class="mansa-hotspot-pin" data-relic-id="scepter" style="left: 67%; top: 35%;" aria-label="5. Royal Golden Scepter: $0.02 Power & 95:1 AfCFTA Trade">
+              <span class="pin-pulse"></span>
+              <span class="pin-core">5</span>
+              <span class="pin-tag">⚡ Scepter ($0.02 Power)</span>
+            </button>
+
+            <button type="button" class="mansa-hotspot-pin" data-relic-id="pedestal" style="left: 75%; top: 83%;" aria-label="6. Golden Throne Pedestal: $330.3T Bourse & 8 Super-Sectors">
+              <span class="pin-pulse"></span>
+              <span class="pin-core">6</span>
+              <span class="pin-tag">💎 Pedestal ($330T Bourse)</span>
+            </button>
+
+            <!-- Bottom Pivot Bar Inside Portrait: 1324 Cairo Giveaway vs. 1325 Timbuktu Sankore Engine -->
+            <div class="mansa-pivot-dock">
+              <button id="mansaMode1324Btn" type="button" class="mansa-era-btn" data-era="cairo">
+                ⚠️ 1324 Cairo Gold Dump (86% Leak • $8.2T)
+              </button>
+              <button id="mansaMode1325Btn" type="button" class="mansa-era-btn active" data-era="sankore">
+                🏛️ 1325 Timbuktu Sankore Pivot (100% Productive • $183.5T)
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Live Relic Inspector HUD & Step-by-Step Controller -->
+          <aside class="mansa-hud-panel">
+            <div class="mansa-hud-header">
+              <span id="mansaRelicStepBadge" class="mansa-step-pill">RELIC 3 OF 6 • THE GOLDEN NUGGET ORB</span>
+              <div class="mansa-step-nav">
+                <button id="mansaPrevRelicBtn" type="button" class="transport-step-btn" title="Previous Relic">◀ Prev</button>
+                <button id="mansaNextRelicBtn" type="button" class="transport-step-btn" title="Next Relic">Next ▶</button>
+              </div>
+            </div>
+
+            <h2 id="mansaRelicTitle" class="mansa-hud-title">
+              🔮 The Golden Orb: Why $75B Anchored Onshore Beats $3.33T of Leaked Aid
+            </h2>
+
+            <blockquote id="mansaRelicQuote" class="mansa-royal-quote">
+              “In 1324 in Cairo, I gave away raw bullion without domestic production—and crashed Egypt’s currency for 12 years. In 1325 in Timbuktu, I anchored gold inside Sankore scholars, trade guilds, and productive velocity.”
+            </blockquote>
+
+            <!-- Live Metric Strip for Selected Relic -->
+            <div class="mansa-hud-metrics">
+              <div class="mansa-hud-metric-box">
+                <span id="mansaMetric1Label" class="mansa-metric-label">Benefit-Cost Ratio</span>
+                <strong id="mansaMetric1Val" class="mansa-metric-val gold">55 : 1 BCR</strong>
+              </div>
+              <div class="mansa-hud-metric-box">
+                <span id="mansaMetric2Label" class="mansa-metric-label">2076 Wealth Impact</span>
+                <strong id="mansaMetric2Val" class="mansa-metric-val emerald">$183.5T GDP</strong>
+              </div>
+              <div class="mansa-hud-metric-box">
+                <span id="mansaMetric3Label" class="mansa-metric-label">Global Co-Prosperity</span>
+                <strong id="mansaMetric3Val" class="mansa-metric-val crimson">+$42.0T World</strong>
+              </div>
+            </div>
+
+            <!-- Interactive Slider Inside the Relic HUD -->
+            <div class="mansa-hud-control-box">
+              <div class="friedman-slider-top">
+                <label id="mansaHudSliderLabel" for="mansaHudSlider">🎛️ Adjust This Relic’s Execution Power:</label>
+                <span id="mansaHudSliderVal" class="friedman-slider-val emerald">100%</span>
+              </div>
+              <input id="mansaHudSlider" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
+              <div id="mansaHudFormulaTag" class="mansa-formula-tag">
+                Friedman Rule: M · V(3.1×) = P · Y($183.5T) | K-Rule: 4.0%/yr
+              </div>
+            </div>
+
+            <!-- Quick Relic Selector Pills (1-6) -->
+            <div class="mansa-relic-pills-row">
+              <button type="button" class="mansa-mini-pill" data-relic-id="sankore">1. 🏛️ Sankore</button>
+              <button type="button" class="mansa-mini-pill" data-relic-id="crown">2. 👑 Crown</button>
+              <button type="button" class="mansa-mini-pill active" data-relic-id="orb">3. 🔮 $75B Orb</button>
+              <button type="button" class="mansa-mini-pill" data-relic-id="scales">4. ⚖️ Scales</button>
+              <button type="button" class="mansa-mini-pill" data-relic-id="scepter">5. ⚡ Scepter</button>
+              <button type="button" class="mansa-mini-pill" data-relic-id="pedestal">6. 💎 Pedestal</button>
+            </div>
+
+            <div class="mansa-hud-actions">
+              <a id="mansaJumpLink" href="#friedman-markets" class="btn-primary" style="flex: 1; text-align: center;">
+                Explore This Engine Below ↓
+              </a>
+              <a href="#overtake-race" class="btn-drc" style="text-align: center;">
+                ▶ Play 2026–2076 Race
+              </a>
+            </div>
+          </aside>
+        </div>
+      </div>
+
       <div class="hero-grid">
         <div>
-          <div class="kicker">ACT I • INTERACTIVE COMMAND CENTER • TURN THE 4 SANKORE DIALS</div>
-          <h1 class="hero-headline" style="margin-bottom: 0.75rem;">
-            <span class="highlight">Why Mansa Musa Was Right:</span> Drag the 4 Dials Below to Turn <span class="highlight-drc">$75B Into a $183.5T Superpower</span>
-          </h1>
+          <div class="kicker">MASTER 4-DIAL EQUALIZER • LINKED LIVE TO MANSA MUSA’S THRONE</div>
+          <h2 class="hero-headline" style="font-size: clamp(1.35rem, 2.2vw, 1.85rem); margin-bottom: 0.65rem;">
+            Fine-Tune All 4 Pillars Simultaneouly: <span class="highlight-drc">$75B Catalyst → $183.5T GDP &amp; $330.3T Bourse</span>
+          </h2>
           <p class="hero-lead">
             In 1324, Mansa Musa’s raw gold giveaway crashed Cairo’s currency for 12 years—so in 1325 he pivoted to building <strong>Sankore University in Timbuktu</strong> and anchoring trade onshore. Drag the 4 dials below to test <strong>Mansa Musa’s Sankore Law × Bjørn Lomborg’s <em>Best Things First</em> × Milton Friedman’s <em>Price Theory</em></strong>:
           </p>
