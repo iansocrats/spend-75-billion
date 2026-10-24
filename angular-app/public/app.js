@@ -3230,6 +3230,17 @@
         pedestal: { left: 58, top: 85 },
       },
     },
+    anime: {
+      src: "mansa-musa-anime.jpg",
+      coords: {
+        sankore: { left: 21, top: 36 },
+        crown: { left: 63, top: 16 },
+        orb: { left: 38, top: 41 },
+        scales: { left: 19, top: 69 },
+        scepter: { left: 85, top: 42 },
+        pedestal: { left: 88, top: 83 },
+      },
+    },
   };
 
   const MANSA_RELICS_DATA = {

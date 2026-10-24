@@ -3080,7 +3080,7 @@ input[type="range"] {
   }
   .mansa-guide-controls .scenario-buttons {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     width: 100%;
     gap: 0.35rem;
   }
