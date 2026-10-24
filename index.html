@@ -121,30 +121,70 @@
 
       <div class="race-arena-card">
         <div class="race-controls-header">
-          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; flex: 1;">
-            <button id="playOvertakeRaceBtn" type="button" class="play-timeline-btn" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;">
-              ▶ Play Overtake Race (2026–2076)
-            </button>
+          <div class="race-transport-row">
+            <div class="transport-btn-group">
+              <button id="raceResetStartBtn" type="button" class="transport-step-btn" title="Reset to 2026">
+                ⏮ 2026
+              </button>
+              <button id="raceStepBackBtn" type="button" class="transport-step-btn" title="Step back 1 year">
+                ◀ -1 Yr
+              </button>
+              <button id="playOvertakeRaceBtn" type="button" class="play-timeline-btn" style="padding: 0.55rem 1.15rem; font-size: 0.84rem;">
+                ▶ Play Yearly Race
+              </button>
+              <button id="raceStepFwdBtn" type="button" class="transport-step-btn" title="Step forward 1 year">
+                +1 Yr ▶
+              </button>
+              <button id="raceJumpEndBtn" type="button" class="transport-step-btn" title="Jump to 2076">
+                ⏭ 2076
+              </button>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700;">
+                Playback Speed:
+              </span>
+              <div id="raceSpeedGroup" class="speed-pill-group" role="group" aria-label="Playback Speed">
+                <button type="button" class="speed-pill-btn" data-race-speed="0.25" title="0.25x Slow Motion (880ms per year)">0.25x Slow</button>
+                <button type="button" class="speed-pill-btn" data-race-speed="0.5" title="0.5x Half Speed (440ms per year)">0.5x</button>
+                <button type="button" class="speed-pill-btn active" data-race-speed="1" title="1x Normal Yearly Pace (220ms per year)">1x</button>
+                <button type="button" class="speed-pill-btn" data-race-speed="2" title="2x Fast Forward (110ms per year)">2x Fast</button>
+                <button type="button" class="speed-pill-btn" data-race-speed="4" title="4x Turbo Speed (55ms per year)">4x Turbo</button>
+              </div>
+            </div>
+
+            <div id="raceYearBigDisplay" class="race-year-big">2076</div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ink-muted);">2026</span>
             <input
               id="overtakeYearSlider"
               type="range"
               min="2026"
               max="2076"
               step="1"
-              value="2026"
+              value="2076"
               class="year-slider-input"
-              aria-label="Overtake Race Year"
+              style="flex: 1; min-width: 220px;"
+              aria-label="Overtake Race Year (2026 to 2076)"
             />
-            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
-              <button type="button" class="filter-pill" data-race-year="2026">2026</button>
-              <button type="button" class="filter-pill" data-race-year="2045">2045 (Passes EU)</button>
-              <button type="button" class="filter-pill" data-race-year="2053">2053 (Passes China)</button>
-              <button type="button" class="filter-pill" data-race-year="2055">2055 (Passes USA #1)</button>
-              <button type="button" class="filter-pill active" data-race-year="2076">2076 ($145T Throne)</button>
-            </div>
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ink-muted);">2076</span>
           </div>
 
-          <div id="raceYearBigDisplay" class="race-year-big">2076</div>
+          <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;">
+            <span style="font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700; margin-right: 0.25rem;">
+              Key Overtake Years:
+            </span>
+            <button type="button" class="filter-pill" data-race-year="2026">2026 (Start)</button>
+            <button type="button" class="filter-pill" data-race-year="2036">2036 (Takeoff)</button>
+            <button type="button" class="filter-pill" data-race-year="2045">2045 (Passes EU)</button>
+            <button type="button" class="filter-pill" data-race-year="2051">2051 (Passes India)</button>
+            <button type="button" class="filter-pill" data-race-year="2053">2053 (Passes China)</button>
+            <button type="button" class="filter-pill" data-race-year="2055">2055 (Passes USA #1)</button>
+            <button type="button" class="filter-pill" data-race-year="2068">2068 (KE+DRC Passes USA)</button>
+            <button type="button" class="filter-pill active" data-race-year="2076">2076 ($145T Throne)</button>
+          </div>
         </div>
 
         <!-- Dynamic Historic Overtake Callout Banner -->

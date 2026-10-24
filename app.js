@@ -1338,18 +1338,27 @@
   }
 
   // ==========================================================================
-  // 7. GLOBAL SUPERPOWER OVERTAKE RACE (2026–2076)
+  // 7. GLOBAL SUPERPOWER OVERTAKE RACE (2026–2076) — YEARLY ENGINE & CONTROLS
   // ==========================================================================
   let raceYear = 2076;
   let raceInterval = null;
+  let raceSpeedMultiplier = 1; // 0.25x, 0.5x, 1x, 2x, 4x (base 1x = 220ms/year)
+  const BASE_YEAR_MS = 220;
+  let prevBlocRanks = {};
+  const raceRowElements = {};
 
   const overtakeYearSlider = document.getElementById("overtakeYearSlider");
   const playOvertakeRaceBtn = document.getElementById("playOvertakeRaceBtn");
+  const raceResetStartBtn = document.getElementById("raceResetStartBtn");
+  const raceStepBackBtn = document.getElementById("raceStepBackBtn");
+  const raceStepFwdBtn = document.getElementById("raceStepFwdBtn");
+  const raceJumpEndBtn = document.getElementById("raceJumpEndBtn");
   const raceYearBigDisplay = document.getElementById("raceYearBigDisplay");
   const raceMilestoneCallout = document.getElementById("raceMilestoneCallout");
   const raceBarsContainer = document.getElementById("raceBarsContainer");
   const raceProofTableBody = document.getElementById("raceProofTableBody");
 
+  // Smooth exponential/compound interpolation between decadal checkpoints
   function interpolateBlocGdp(bloc, yr) {
     const d = bloc.gdpByDecade;
     const decades = [2026, 2036, 2046, 2056, 2066, 2076];
@@ -1360,40 +1369,87 @@
       const y1 = decades[i + 1];
       if (yr >= y0 && yr <= y1) {
         const t = (yr - y0) / (y1 - y0);
-        return +(d[y0] + (d[y1] - d[y0]) * t).toFixed(2);
+        const v0 = Math.max(0.01, d[y0]);
+        const v1 = Math.max(0.01, d[y1]);
+        // Blend geometric compound growth (70%) + linear (30%) for realistic yearly curve
+        const geo = v0 * Math.pow(v1 / v0, t);
+        const lin = v0 + (v1 - v0) * t;
+        return +(geo * 0.7 + lin * 0.3).toFixed(2);
       }
     }
     return d[2076];
   }
 
+  function getBlocYoYGrowthPct(bloc, yr) {
+    const curr = interpolateBlocGdp(bloc, yr);
+    const prev = interpolateBlocGdp(bloc, Math.max(2026, yr - 1));
+    if (yr === 2026) {
+      const next = interpolateBlocGdp(bloc, 2027);
+      return (((next - curr) / curr) * 100).toFixed(1);
+    }
+    return (((curr - prev) / prev) * 100).toFixed(1);
+  }
+
   function getMilestoneMessage(yr) {
-    if (yr < 2035) {
-      return `<strong>${yr} • Phase I &amp; II Foundation:</strong> $75B + Best Things First (101:1 vaccines, 87:1 maternal care, 65:1 EdTech &amp; 33:1 seeds) eliminates stunting, malaria, and food imports across Africa.`;
-    } else if (yr < 2044) {
-      return `<strong>${yr} • Industrial Takeoff:</strong> Non-stunted, EdTech-trained youth enter the workforce; 38:1 E-Procurement &amp; 95:1 paperless customs unlock self-financing for 40+ GW Grand Inga &amp; 10+ GW Rift Geothermal.`;
-    } else if (yr < 2050) {
-      return `<strong>${yr} • HISTORIC OVERTAKE #1:</strong> 🌍 <strong>All-Africa overtakes the European Union!</strong> Cheap $0.02/kWh clean power draws global battery, green steel, and AI manufacturing onshore.`;
-    } else if (yr < 2053) {
-      return `<strong>${yr} • HISTORIC OVERTAKE #2:</strong> 🌍 <strong>All-Africa overtakes India!</strong> Meanwhile, 🇰🇪🇨🇩 the Kenya–DRC Twin Axis alone surges past $20 Trillion.`;
-    } else if (yr < 2055) {
-      return `<strong>${yr} • HISTORIC OVERTAKE #3:</strong> 🌍 <strong>All-Africa overtakes China!</strong> China's working-age population shrinks by >300M while Africa's 500M STEM workforce hits peak momentum.`;
-    } else if (yr < 2068) {
-      return `<strong>${yr} • HISTORIC OVERTAKE #4 (#1 ON EARTH):</strong> 🌍 <strong>All-Africa overtakes the United States to become the #1 Economy on Earth!</strong>`;
+    const afGdp = interpolateBlocGdp(OVERTAKE_RACE_BLOCS[0], yr).toFixed(1);
+    const twinGdp = interpolateBlocGdp(OVERTAKE_RACE_BLOCS[1], yr).toFixed(1);
+    if (yr <= 2030) {
+      return `<strong>${yr} • Phase I Biological Shield (Yr ${yr - 2026}/50):</strong> $75B + <em>Best Things First</em> deploys 101:1 vaccines, 87:1 neonatal care &amp; 52:1 TB cure. Child mortality drops 65%; stunting prevented across 45M African newborns.`;
+    } else if (yr <= 2035) {
+      return `<strong>${yr} • Phase II Cognitive &amp; Agro Surge (Yr ${yr - 2026}/50):</strong> 65:1 adaptive EdTech tablets in local languages + 33:1 climate-resilient seeds double smallholder yields; Africa ends Its $110B/yr food import bill.`;
+    } else if (yr <= 2040) {
+      return `<strong>${yr} • Phase III Fiscal &amp; Trade Integrity (Yr ${yr - 2026}/50):</strong> 38:1 E-Procurement &amp; 95:1 AfCFTA paperless corridors save $150B+/yr in procurement graft—unlocking sovereign self-financing for Grand Inga &amp; Rift Geothermal.`;
+    } else if (yr <= 2044) {
+      return `<strong>${yr} • Industrial Takeoff (Yr ${yr - 2026}/50):</strong> First wave of non-stunted, STEM-trained youth enters the workforce. All-Africa hits <strong>$${afGdp}T</strong> and closes in rapidly on the European Union.`;
+    } else if (yr <= 2050) {
+      return `<strong>${yr} • HISTORIC OVERTAKE #1 (EU SURPASSED):</strong> 🌍 <strong>All-Africa ($${afGdp}T) overtakes the European Union!</strong> $0.02/kWh clean baseload power pulls global battery, green steel &amp; AI compute onshore.`;
+    } else if (yr <= 2052) {
+      return `<strong>${yr} • HISTORIC OVERTAKE #2 (INDIA SURPASSED):</strong> 🌍 <strong>All-Africa ($${afGdp}T) overtakes India!</strong> Meanwhile, 🇰🇪🇨🇩 the Kenya–DRC Twin Axis surges to <strong>$${twinGdp}T</strong> and passes the EU.`;
+    } else if (yr <= 2054) {
+      return `<strong>${yr} • HISTORIC OVERTAKE #3 (CHINA SURPASSED):</strong> 🌍 <strong>All-Africa ($${afGdp}T) overtakes China!</strong> China’s workforce shrinks by >300M while Africa’s 500M+ STEM workforce compounds at 8.8%/yr.`;
+    } else if (yr <= 2067) {
+      return `<strong>${yr} • HISTORIC OVERTAKE #4 (#1 ON EARTH):</strong> 🌍 <strong>All-Africa ($${afGdp}T) overtakes the United States to reclaim Mansa Musa’s #1 global throne!</strong>`;
     } else {
-      return `<strong>${yr} • UNASSAILABLE SUPERPOWER PEAK:</strong> 🌍 <strong>All-Africa hits $${interpolateBlocGdp(
-        OVERTAKE_RACE_BLOCS[0],
-        yr
-      ).toFixed(
-        1
-      )}T</strong> (larger than the US, China &amp; EU combined!)—and 🇰🇪🇨🇩 <strong>the Kenya–DRC Axis alone ($${interpolateBlocGdp(
-        OVERTAKE_RACE_BLOCS[1],
-        yr
-      ).toFixed(1)}T) overtakes the United States!</strong>`;
+      return `<strong>${yr} • UNASSAILABLE GLOBAL THRONE:</strong> 🌍 <strong>All-Africa reaches $${afGdp}T</strong> (larger than the US, China &amp; EU combined!)—and 🇰🇪🇨🇩 <strong>the Kenya–DRC Axis alone ($${twinGdp}T) overtakes the United States!</strong>`;
     }
   }
 
-  function renderOvertakeRace() {
+  function ensureRaceRowsCreated() {
     if (!raceBarsContainer || typeof OVERTAKE_RACE_BLOCS === "undefined") return;
+    if (Object.keys(raceRowElements).length === OVERTAKE_RACE_BLOCS.length) return;
+
+    raceBarsContainer.innerHTML = "";
+    OVERTAKE_RACE_BLOCS.forEach((bloc, idx) => {
+      const row = document.createElement("div");
+      row.className = `race-bar-row ${bloc.isAfricaHero ? "hero-bloc" : ""}`;
+      row.style.transform = `translateY(${idx * 64}px)`;
+      row.innerHTML = `
+        <div class="race-bloc-meta">
+          <span class="race-rank-num">#${idx + 1}</span>
+          <div style="min-width: 0;">
+            <div class="race-bloc-name">
+              <span class="bloc-title-text">${bloc.flag} ${bloc.shortName}</span>
+              <span class="overtake-flash-badge" style="display: none;">🔥 OVERTAKE!</span>
+            </div>
+            <span class="race-bloc-sub">Workforce 2076: ${bloc.workingAge2076} • Power: ${bloc.powerCostKwh.split(" ")[0]}</span>
+          </div>
+        </div>
+        <div class="race-track">
+          <div class="race-fill" style="width: 3%; background-color: ${bloc.color};"></div>
+        </div>
+        <div class="race-gdp-val" style="color: ${bloc.isAfricaHero ? "var(--emerald)" : "var(--ink-primary)"};">
+          <div class="bloc-gdp-num">$0.00T</div>
+          <div class="bloc-yoy-sub" style="font-size: 0.65rem; font-weight: 500; color: var(--ink-muted);">+0.0%/yr</div>
+        </div>
+      `;
+      raceBarsContainer.appendChild(row);
+      raceRowElements[bloc.id] = row;
+    });
+  }
+
+  function renderOvertakeRace(trackOvertakes = true) {
+    if (!raceBarsContainer || typeof OVERTAKE_RACE_BLOCS === "undefined") return;
+    ensureRaceRowsCreated();
 
     if (raceYearBigDisplay) raceYearBigDisplay.textContent = raceYear;
     if (overtakeYearSlider) overtakeYearSlider.value = raceYear;
@@ -1408,6 +1464,7 @@
     const computed = OVERTAKE_RACE_BLOCS.map((bloc) => ({
       ...bloc,
       currentGdpT: interpolateBlocGdp(bloc, raceYear),
+      yoyPct: getBlocYoYGrowthPct(bloc, raceYear),
     })).sort((a, b) => b.currentGdpT - a.currentGdpT);
 
     const maxBarGdp = Math.max(computed[0].currentGdpT, 32.0);
@@ -1417,43 +1474,90 @@
       const africaStatusQuo = computed.find((b) => b.id === "africa_status_quo");
       const gainT = +(
         africaLomborg.currentGdpT - africaStatusQuo.currentGdpT
-      ).toFixed(1);
+      ).toFixed(2);
       raceMilestoneCallout.innerHTML = `
-        <div>${getMilestoneMessage(raceYear)}</div>
-        <div style="font-family: var(--font-mono); font-weight: 700; color: var(--emerald);">
-          Lomborg Sequencing Gain in ${raceYear}: +$${gainT} Trillion vs. Status Quo
+        <div style="flex: 1; min-width: 260px;">${getMilestoneMessage(raceYear)}</div>
+        <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--emerald); text-align: right;">
+          <div>+${gainT}T Lomborg Dividend vs. Status Quo</div>
+          <div style="font-size: 0.68rem; color: var(--ink-muted);">Speed: ${raceSpeedMultiplier}x (${Math.round(BASE_YEAR_MS / raceSpeedMultiplier)}ms/yr) • Year ${raceYear - 2026} of 50</div>
         </div>
       `;
     }
 
-    raceBarsContainer.innerHTML = computed
-      .map((bloc, idx) => {
-        const widthPct = Math.max(2.5, (bloc.currentGdpT / maxBarGdp) * 100);
-        return `
-          <div class="race-bar-row ${bloc.isAfricaHero ? "hero-bloc" : ""}">
-            <div class="race-bloc-meta">
-              <span class="race-rank-num">#${idx + 1}</span>
-              <div>
-                <div class="race-bloc-name">${bloc.flag} ${bloc.shortName}</div>
-                <span class="race-bloc-sub">Workforce 2076: ${
-                  bloc.workingAge2076
-                } • Power: ${bloc.powerCostKwh.split(" ")[0]}</span>
-              </div>
-            </div>
-            <div class="race-track">
-              <div class="race-fill" style="width: ${widthPct}%; background-color: ${
-          bloc.color
-        };"></div>
-            </div>
-            <div class="race-gdp-val" style="color: ${
-              bloc.isAfricaHero ? "var(--emerald)" : "var(--ink-primary)"
-            };">
-              $${bloc.currentGdpT.toFixed(2)}T
-            </div>
-          </div>
-        `;
-      })
-      .join("");
+    const newRanks = {};
+    computed.forEach((bloc, idx) => {
+      newRanks[bloc.id] = idx;
+      const row = raceRowElements[bloc.id];
+      if (!row) return;
+
+      // Smooth vertical position swap
+      row.style.transform = `translateY(${idx * 64}px)`;
+
+      // Check if this bloc just climbed in rank compared to previous rendered step
+      const prevRank = prevBlocRanks[bloc.id];
+      const didOvertake =
+        trackOvertakes &&
+        typeof prevRank === "number" &&
+        idx < prevRank;
+
+      row.classList.toggle("just-overtook", didOvertake);
+      const badgeEl = row.querySelector(".overtake-flash-badge");
+      if (badgeEl) {
+        badgeEl.style.display = didOvertake ? "inline-block" : "none";
+      }
+
+      const rankEl = row.querySelector(".race-rank-num");
+      if (rankEl) rankEl.textContent = `#${idx + 1}`;
+
+      const widthPct = Math.max(2.5, (bloc.currentGdpT / maxBarGdp) * 100);
+      const fillEl = row.querySelector(".race-fill");
+      if (fillEl) fillEl.style.width = `${widthPct}%`;
+
+      const gdpNumEl = row.querySelector(".bloc-gdp-num");
+      if (gdpNumEl) gdpNumEl.textContent = `$${bloc.currentGdpT.toFixed(2)}T`;
+
+      const yoyEl = row.querySelector(".bloc-yoy-sub");
+      if (yoyEl) {
+        yoyEl.textContent = `+${bloc.yoyPct}%/yr`;
+        yoyEl.style.color = bloc.isAfricaHero ? "var(--emerald)" : "var(--ink-muted)";
+      }
+    });
+
+    prevBlocRanks = newRanks;
+  }
+
+  function stopRacePlayback() {
+    if (raceInterval) {
+      clearInterval(raceInterval);
+      raceInterval = null;
+    }
+    if (playOvertakeRaceBtn) {
+      playOvertakeRaceBtn.textContent =
+        raceYear >= 2076 ? "▶ Replay Yearly Race" : "▶ Play Yearly Race";
+    }
+  }
+
+  function startRacePlayback() {
+    if (raceInterval) {
+      clearInterval(raceInterval);
+      raceInterval = null;
+    }
+    if (raceYear >= 2076) {
+      raceYear = 2026;
+      prevBlocRanks = {};
+      renderOvertakeRace(false);
+    }
+    if (playOvertakeRaceBtn) {
+      playOvertakeRaceBtn.textContent = `⏸ Pause (${raceSpeedMultiplier}x)`;
+    }
+    const stepMs = Math.max(25, Math.round(BASE_YEAR_MS / raceSpeedMultiplier));
+    raceInterval = setInterval(() => {
+      raceYear += 1;
+      renderOvertakeRace(true);
+      if (raceYear >= 2076) {
+        stopRacePlayback();
+      }
+    }, stepMs);
   }
 
   function renderOvertakeProofTable() {
@@ -1478,39 +1582,80 @@
 
   if (overtakeYearSlider) {
     overtakeYearSlider.addEventListener("input", (e) => {
+      stopRacePlayback();
       raceYear = parseInt(e.target.value, 10);
-      renderOvertakeRace();
+      renderOvertakeRace(true);
     });
   }
 
   document.querySelectorAll("[data-race-year]").forEach((btn) => {
     btn.addEventListener("click", () => {
+      stopRacePlayback();
       raceYear = parseInt(btn.getAttribute("data-race-year"), 10);
-      renderOvertakeRace();
+      prevBlocRanks = {};
+      renderOvertakeRace(false);
     });
   });
+
+  document.querySelectorAll("[data-race-speed]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const spd = parseFloat(btn.getAttribute("data-race-speed"));
+      if (!isNaN(spd) && spd > 0) {
+        raceSpeedMultiplier = spd;
+        document.querySelectorAll("[data-race-speed]").forEach((b) => {
+          b.classList.toggle("active", b === btn);
+        });
+        if (raceInterval) {
+          // Live speed change while playing!
+          startRacePlayback();
+        } else {
+          renderOvertakeRace(false);
+        }
+      }
+    });
+  });
+
+  if (raceResetStartBtn) {
+    raceResetStartBtn.addEventListener("click", () => {
+      stopRacePlayback();
+      raceYear = 2026;
+      prevBlocRanks = {};
+      renderOvertakeRace(false);
+    });
+  }
+
+  if (raceStepBackBtn) {
+    raceStepBackBtn.addEventListener("click", () => {
+      stopRacePlayback();
+      raceYear = Math.max(2026, raceYear - 1);
+      renderOvertakeRace(true);
+    });
+  }
+
+  if (raceStepFwdBtn) {
+    raceStepFwdBtn.addEventListener("click", () => {
+      stopRacePlayback();
+      raceYear = Math.min(2076, raceYear + 1);
+      renderOvertakeRace(true);
+    });
+  }
+
+  if (raceJumpEndBtn) {
+    raceJumpEndBtn.addEventListener("click", () => {
+      stopRacePlayback();
+      raceYear = 2076;
+      prevBlocRanks = {};
+      renderOvertakeRace(false);
+    });
+  }
 
   if (playOvertakeRaceBtn) {
     playOvertakeRaceBtn.addEventListener("click", () => {
       if (raceInterval) {
-        clearInterval(raceInterval);
-        raceInterval = null;
-        playOvertakeRaceBtn.textContent = "▶ Play Overtake Race (2026–2076)";
-        return;
+        stopRacePlayback();
+      } else {
+        startRacePlayback();
       }
-      if (raceYear >= 2076) {
-        raceYear = 2026;
-      }
-      playOvertakeRaceBtn.textContent = "⏸ Pause Overtake Race";
-      raceInterval = setInterval(() => {
-        raceYear += 1;
-        renderOvertakeRace();
-        if (raceYear >= 2076) {
-          clearInterval(raceInterval);
-          raceInterval = null;
-          playOvertakeRaceBtn.textContent = "▶ Replay Overtake Race (2026–2076)";
-        }
-      }, 110);
     });
   }
 
