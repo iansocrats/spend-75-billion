@@ -1,5 +1,5 @@
 // ============================================================================
-// APPLICATION CONTROLLER: HOW TO SPEND $75 BILLION + DRC & KENYA BLUEPRINTS
+// APPLICATION CONTROLLER: HOW $75B GROWS AFRICA INTO HISTORY'S LARGEST ECONOMY
 // ============================================================================
 
 (function () {
@@ -12,7 +12,7 @@
   let activeCategory = "ALL";
   let discountRate = "3"; // "3" or "5"
   let dalyValuation = "base"; // "base" ($1k) or "high" ($5k)
-  let activeCountryKey = "drc"; // "drc", "kenya", or "twinAxis"
+  let activeCountryKey = "africa"; // "africa", "drc", "kenya", or "twinAxis"
   let activeDrcPhase = 1;
   let activeScenarioKey = "lomborg";
 
@@ -27,7 +27,7 @@
 
   // Helper: Get currently active African Blueprint object
   function getActiveBlueprint() {
-    return AFRICAN_BLUEPRINTS[activeCountryKey] || AFRICAN_BLUEPRINTS.drc;
+    return AFRICAN_BLUEPRINTS[activeCountryKey] || AFRICAN_BLUEPRINTS.africa;
   }
 
   // ==========================================================================
@@ -45,7 +45,7 @@
   });
 
   // ==========================================================================
-  // 2. SIMULATOR RENDER & BUDGET ENGINE
+  // 2. SIMULATOR RENDER & AFRICAN SUPERPOWER BUDGET ENGINE
   // ==========================================================================
   const simSpentDisplay = document.getElementById("simSpentDisplay");
   const simRemainingDisplay = document.getElementById("simRemainingDisplay");
@@ -77,16 +77,24 @@
     const remaining = +(MAX_BUDGET_B - totalCost).toFixed(1);
     const avgBcr = totalCost > 0 ? (totalBenefit / totalCost).toFixed(1) : "0.0";
 
+    // Calculate projected 50-year African GDP unlocked based on immediate surplus ratio
+    // Baseline Status Quo = $8.2T; Optimal $2,342B surplus unlocks $145.0T
+    const optimalSurplusRef = 2342.4;
+    const gdpUnlockedT =
+      totalCost === 0
+        ? 8.2
+        : +(8.2 + (totalBenefit / optimalSurplusRef) * (145.0 - 8.2)).toFixed(1);
+
     simSpentDisplay.textContent = `$${totalCost.toFixed(1)}B / $${MAX_BUDGET_B.toFixed(1)}B`;
-    simRemainingDisplay.textContent =
-      remaining >= 0
-        ? `$${remaining.toFixed(1)}B`
-        : `-$${Math.abs(remaining).toFixed(1)}B (Over!)`;
     simBenefitDisplay.textContent = `$${totalBenefit.toLocaleString("en-US", {
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
     })}B`;
     simAvgBcrDisplay.textContent = `${avgBcr} : 1`;
+    simRemainingDisplay.textContent = `$${gdpUnlockedT.toLocaleString("en-US", {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    })}T`;
 
     const pct = Math.min(100, Math.max(0, (totalCost / MAX_BUDGET_B) * 100));
     simProgressBar.style.width = `${pct}%`;
@@ -97,19 +105,19 @@
         remaining
       ).toFixed(
         1
-      )}B!</strong> Deselect lower-ROI proposals to stay within the $75B cap.`;
+      )}B!</strong> Deselect lower-BCR proposals to stay within the $75B catalytic cap.`;
     } else {
       simProgressBar.classList.remove("over-warning");
       if (count === 16 && !hasDecoys && Math.abs(totalCost - 75.0) < 0.5) {
-        simVerdictText.innerHTML = `✓ <strong>Optimal Nobel Portfolio Active:</strong> Every dollar is deployed into 9:1 to 60:1 high-BCR breakthroughs.`;
+        simVerdictText.innerHTML = `✓ <strong>Optimal African Superpower Portfolio Active:</strong> Unlocks $${totalBenefit.toLocaleString()}B immediately &amp; compounds into a <strong>$${gdpUnlockedT} Trillion</strong> continental economy.`;
       } else if (hasDecoys) {
-        simVerdictText.innerHTML = `<strong style="color: var(--amber);">Notice the Opportunity Cost:</strong> Funding low-BCR unsequenced projects crowds out 30:1+ nutrition, malaria, and agricultural wins.`;
+        simVerdictText.innerHTML = `<strong style="color: var(--amber);">Notice the Opportunity Cost:</strong> Funding unsequenced debt traps crowds out 40:1 biological, agricultural, and property-rights breakthroughs—costing Africa over $120 Trillion in long-term GDP!`;
       } else if (totalCost === 0) {
-        simVerdictText.innerHTML = `Select interventions below to allocate your $75.0B budget.`;
+        simVerdictText.innerHTML = `Status Quo ($0 allocated): Africa lingers at ~$8.2T by 2076. Select high-BCR catalysts below to unlock the $145T superpower trajectory.`;
       } else {
         simVerdictText.innerHTML = `You have <strong>$${remaining.toFixed(
           1
-        )}B</strong> left to allocate. Prioritize high Benefit-Cost Ratio cards for maximum human good.`;
+        )}B</strong> remaining in your $75B catalyst fund. Fund the highest Benefit-Cost Ratio levers first.`;
       }
     }
 
@@ -136,7 +144,7 @@
 
       const badgeClass = item.isWinner ? "winner" : "decoy";
       const badgeLabel = item.isWinner
-        ? `NOBEL RANK #${item.rank}`
+        ? `AFRICA CATALYST #${item.rank}`
         : `LOW-BCR TRAP #${item.rank}`;
 
       const bcrClass = bcr >= 15 ? "high-bcr" : bcr < 4 ? "low-bcr" : "";
@@ -152,7 +160,7 @@
 
           <div class="card-metrics-strip">
             <div class="strip-item">
-              <span class="strip-label">4-Yr Cost</span>
+              <span class="strip-label">Catalyst Cost</span>
               <span class="strip-val">$${item.costBillions.toFixed(1)}B</span>
             </div>
             <div class="strip-item">
@@ -160,13 +168,13 @@
               <span class="strip-val ${bcrClass}">${bcr} : 1</span>
             </div>
             <div class="strip-item">
-              <span class="strip-label">Total Good</span>
+              <span class="strip-label">Direct Surplus</span>
               <span class="strip-val">$${benefitB.toLocaleString()}B</span>
             </div>
           </div>
 
           <div class="card-Verdict-box">
-            <strong>DRC &amp; Kenya Relevance:</strong> ${item.drcRelevance}
+            <strong>Superpower Impact:</strong> ${item.drcRelevance}
           </div>
         </div>
 
@@ -205,10 +213,9 @@
 
   document.getElementById("loadTrapBtn").addEventListener("click", () => {
     selectedIds = new Set([
-      "blanket-carbon-cuts",
       "megaproject-prestige",
-      "untargeted-school-spending",
-      "early-warning",
+      "blanket-carbon-cuts",
+      "raw-ore-enclave",
     ]);
     updateSimulatorSummary();
     renderInterventionsGrid();
@@ -272,7 +279,7 @@
       .sort((a, b) => b.effectiveBcr - a.effectiveBcr);
 
     if (fundedItems.length === 0) {
-      marimekkoChart.innerHTML = `<div style="margin: auto; font-family: var(--font-mono); color: var(--ink-muted);">No interventions currently funded. Click "+ FUND" on cards above or "★ Load Nobel Optimal ($75B)".</div>`;
+      marimekkoChart.innerHTML = `<div style="margin: auto; font-family: var(--font-mono); color: var(--ink-muted);">No interventions currently funded. Click "+ FUND" on cards above or "★ Load Optimal $75B Superpower Portfolio".</div>`;
       return;
     }
 
@@ -312,7 +319,7 @@
             BCR (Height): <strong>${item.effectiveBcr}:1</strong>
           </div>
           <div style="font-family: var(--font-mono); font-weight: 700; color: var(--emerald);">
-            Total Human Good (Area) = $${item.effectiveBenefitB.toLocaleString()} Billion
+            Continental Surplus (Area) = $${item.effectiveBenefitB.toLocaleString()} Billion
           </div>
         `;
       });
@@ -322,7 +329,7 @@
   }
 
   // ==========================================================================
-  // 4. DRC, KENYA & TWIN-AXIS SUPERPOWER BLUEPRINT ENGINE
+  // 4. ALL-AFRICA, DRC, KENYA & TWIN-AXIS SUPERPOWER BLUEPRINT ENGINE
   // ==========================================================================
 
   // Country Switcher Buttons
@@ -360,7 +367,7 @@
         <div class="endowment-label">${endow.label}</div>
         <p class="endowment-detail">${endow.detail}</p>
         <div class="endowment-bottleneck">
-          <strong>Bottleneck / Unlock:</strong> ${endow.bottleneck}
+          <strong>Lomborg Unlock:</strong> ${endow.bottleneck}
         </div>
       `;
       grid.appendChild(card);
@@ -389,7 +396,7 @@
         )}</span>
         <span class="phase-tab-meta">Avg ROI: ${p.avgBcr}:1 → +$${
         p.directEconomicBenefitBillions
-      }B Good</span>
+      }B Surplus</span>
       `;
       btn.addEventListener("click", () => {
         activeDrcPhase = p.phaseNumber;
@@ -410,7 +417,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem; flex-wrap: wrap; gap: 0.4rem;">
             <span class="rank-badge winner">${intv.lomborgRef}</span>
             <span style="font-family: var(--font-mono); font-weight: 700; color: var(--emerald);">
-              $${intv.costB}B × ${intv.bcr}:1 = $${intv.benefitB}B Benefit
+              $${intv.costB}B × ${intv.bcr}:1 = $${intv.benefitB}B Surplus
             </span>
           </div>
           <h4 style="font-family: var(--font-serif); font-size: 1.15rem; margin-bottom: 0.4rem;">
@@ -500,7 +507,6 @@
       return padTop + plotH - (gdpT / maxGdp) * plotH;
     }
 
-    // Build 5 evenly spaced Y-axis ticks
     const step = maxGdp / 4;
     const yTicks = [0, step, step * 2, step * 3, maxGdp];
     const gridLines = yTicks
@@ -519,7 +525,6 @@
       })
       .join("");
 
-    // X-axis labels
     const xLabels = years
       .map((yr, idx) => {
         const x = getX(idx);
@@ -577,7 +582,6 @@
       </svg>
     `;
 
-    // Render milestone cards for active scenario
     const activeScen = trajectories[activeScenarioKey];
     milestonesWrap.innerHTML = activeScen.points
       .map(

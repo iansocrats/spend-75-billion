@@ -810,8 +810,8 @@ body {
 
 .country-switcher-bar {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.9rem;
   margin: 2rem 0 2.25rem;
 }
 
