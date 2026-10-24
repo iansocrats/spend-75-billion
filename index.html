@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>How $75B Grows Africa Into the Biggest Economy to Ever Exist — Bjørn Lomborg BCR Blueprint</title>
+  <title>How $75B Grows Africa Into the Biggest Economy to Ever Exist — Interactive 54-Nation Map &amp; BCR Blueprint</title>
   <!-- Google Fonts: Newsreader (Editorial Serif), Inter (UI Sans), JetBrains Mono (Tabular Data) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,9 +25,9 @@
 
       <nav class="nav-links" aria-label="Section navigation">
         <a href="#premise" class="nav-link">I. The Inevitability Thesis</a>
-        <a href="#simulator" class="nav-link">II. Spend the $75B</a>
-        <a href="#marimekko" class="nav-link">III. BCR Value Curve</a>
-        <a href="#drc-superpower" class="nav-link highlight-drc">IV. Continental, DRC &amp; Kenya Blueprints</a>
+        <a href="#africa-map" class="nav-link highlight-drc">II. Interactive 54-Country Map</a>
+        <a href="#simulator" class="nav-link">III. Spend the $75B</a>
+        <a href="#drc-superpower" class="nav-link">IV. DRC, Kenya &amp; Continental Deep-Dives</a>
       </nav>
 
       <button id="themeToggleBtn" class="theme-btn" type="button" aria-label="Toggle color theme">
@@ -52,14 +52,14 @@
             Why will Africa become the largest economic civilization in human history—surpassing the United States, China, and the EU combined, never to be overtaken? Because economics is ultimately governed by <strong>Working-Age Brains</strong> and <strong>Physical Endowments</strong>. Every other continent has crossed peak youth population and is aging rapidly. By 2065, Africa will be home to <strong>3+ billion people</strong> (over 50% of the planet’s young workforce), sitting atop <strong>60% of the world’s uncultivated arable land</strong>, <strong>$50T+ in critical minerals</strong>, and the <strong>cheapest continuous hydro, geothermal, and solar power on Earth</strong>.
           </p>
           <p class="hero-lead" style="font-size: 1.05rem; margin-top: -0.75rem;">
-            Yet Africa remains bottlenecked because capital is wasted on unsequenced debt traps while 40:1 human and institutional breakthroughs go unfunded. Using <strong>Bjørn Lomborg’s <em>How to Spend $75 Billion</em> (Copenhagen Consensus)</strong> Benefit-Cost Ratio triage, here is how a single <strong>$75B catalytic deployment</strong> unlocks a self-financing <strong>$145+ Trillion African Superpower</strong>.
+            Yet Africa remains bottlenecked because capital is wasted on unsequenced debt traps while 40:1 human and institutional breakthroughs go unfunded. Using <strong>Bjørn Lomborg’s <em>How to Spend $75 Billion</em> (Copenhagen Consensus)</strong> Benefit-Cost Ratio triage across all 54 African nations, here is how a single <strong>$75B catalytic deployment</strong> unlocks a self-financing <strong>$145+ Trillion African Superpower</strong>.
           </p>
           <div class="hero-cta-row">
-            <a href="#simulator" class="btn-primary">Allocate the $75B African Catalyst ↓</a>
-            <a href="#drc-superpower" class="btn-drc">Explore All-Africa, DRC &amp; Kenya Blueprints →</a>
+            <a href="#africa-map" class="btn-drc">Explore Interactive 54-Country Map ↓</a>
+            <a href="#simulator" class="btn-primary">Allocate the $75B Catalyst →</a>
           </div>
           <p style="font-size: 0.82rem; color: var(--ink-muted); font-family: var(--font-mono);">
-            Anchored by the 54-Nation AfCFTA ($145T), the DRC Heartland ($54.8T), and the Kenya Superhub ($18.6T).
+            Click any of the 54 African nations on the interactive map below to inspect its custom Lomborg BCR Blueprint.
           </p>
         </div>
 
@@ -104,10 +104,81 @@
     </section>
 
     <!-- ====================================================================
-         ACT II: INTERACTIVE $75B AFRICAN SUPERPOWER SIMULATOR
+         ACT II: INTERACTIVE 54-COUNTRY AFRICA MAP EXPLORER
+         ==================================================================== -->
+    <section id="africa-map" class="africa-map-section">
+      <div class="kicker emerald">ACT II • COUNTRY-BY-COUNTRY INTERACTIVE ATLAS</div>
+      <h2 class="section-title">
+        Interactive Map of Africa: Click Any Country to Inspect Its Custom $75B Blueprint
+      </h2>
+      <p class="section-subtitle">
+        Every African nation has a distinct superpower role—from the <strong>DRC’s $24T mineral &amp; 40GW hydro heartland</strong> and <strong>Kenya’s Silicon Savannah &amp; 10GW geothermal gateway</strong> to <strong>Nigeria’s 480M demographic engine</strong>, <strong>Ethiopia’s Blue Nile hydro</strong>, and <strong>Zambia’s Copperbelt</strong>. Click any country on the map (or select it from the menu) to see its endowments, bottleneck diagnosis, and 4-phase Lomborg ROI sequence.
+      </p>
+
+      <!-- Map Controls Bar -->
+      <div class="map-controls-bar">
+        <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+          <label for="countrySelectDropdown" style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700;">JUMP TO COUNTRY:</label>
+          <select id="countrySelectDropdown" class="sensitivity-select" style="min-width: 220px; font-weight: 600;"></select>
+
+          <button type="button" class="filter-pill" data-quick-iso="COD">🇨🇩 DRC ($54.8T)</button>
+          <button type="button" class="filter-pill" data-quick-iso="KEN">🇰🇪 Kenya ($18.6T)</button>
+          <button type="button" class="filter-pill" data-quick-iso="NGA">🇳🇬 Nigeria ($22.4T)</button>
+          <button type="button" class="filter-pill" data-quick-iso="ETH">🇪🇹 Ethiopia ($9.8T)</button>
+          <button type="button" class="filter-pill" data-quick-iso="ZAF">🇿🇦 South Africa ($8.5T)</button>
+          <button type="button" class="filter-pill" data-quick-iso="EGY">🇪🇬 Egypt ($7.8T)</button>
+          <button type="button" class="filter-pill" data-quick-iso="TZA">🇹🇿 Tanzania ($6.9T)</button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <label for="mapColorMetricSelect" style="font-family: var(--font-mono); font-size: 0.75rem;">Map Color Layer:</label>
+          <select id="mapColorMetricSelect" class="sensitivity-select">
+            <option value="gdp2076T" selected>2076 Superpower GDP Potential ($T)</option>
+            <option value="bcrWeighted">Benefit-Cost Ratio (BCR Intensity)</option>
+            <option value="catalystShareB">Share of $75B Continental Catalyst ($B)</option>
+          </select>
+
+          <label style="font-family: var(--font-mono); font-size: 0.75rem; display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer;">
+            <input type="checkbox" id="toggleCorridorsCheckbox" checked />
+            Show Megacorridors
+          </label>
+        </div>
+      </div>
+
+      <!-- 2-Column Map + Country Dossier Grid -->
+      <div class="map-explorer-grid">
+        <!-- Left: Interactive SVG Map -->
+        <div class="map-canvas-card">
+          <div id="mapFloatingTooltip" class="map-floating-tooltip">
+            Click any country to inspect its Lomborg $75B Blueprint
+          </div>
+          <svg id="africaSvgMap" class="africa-svg-map" viewBox="0 0 800 860" role="img" aria-label="Interactive map of all African countries"></svg>
+          <div class="map-legend-row">
+            <div class="legend-gradient-bar">
+              <span>Color Scale:</span>
+              <span class="legend-swatch" style="background: #99F6E4;"></span>
+              <span class="legend-swatch" style="background: #2DD4BF;"></span>
+              <span class="legend-swatch" style="background: #0D9488;"></span>
+              <span class="legend-swatch" style="background: #115E59;"></span>
+              <span class="legend-swatch" style="background: #1E3A8A;"></span>
+              <span>Peak Superpower Tier</span>
+            </div>
+            <div>
+              <span style="color: var(--crimson); font-weight: 700;">---</span> Trans-African Rail &amp; Power Megacorridors
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Dynamic Selected Country Dossier -->
+        <div id="countryDossierCard" class="country-dossier-card"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         ACT III: INTERACTIVE $75B AFRICAN SUPERPOWER SIMULATOR
          ==================================================================== -->
     <section id="simulator" class="section-block">
-      <div class="kicker">ACT II • INTERACTIVE CONTINENTAL ALLOCATION ENGINE</div>
+      <div class="kicker">ACT III • INTERACTIVE CONTINENTAL ALLOCATION ENGINE</div>
       <h2 class="section-title">Spend the $75 Billion to Build the African Superpower</h2>
       <p class="section-subtitle">
         Below are 20 continental investment proposals modeled on Bjørn Lomborg’s Copenhagen Consensus research—the <strong>16 High-BCR African Catalysts</strong> (totaling $75B) alongside <strong>4 Low-BCR Development Traps</strong> (like unsequenced debt megaprojects or raw ore export enclaves). Click cards to fund or defund them and watch how your choices affect Africa’s 50-year GDP ceiling.
@@ -182,13 +253,11 @@
       <!-- Dynamic Cards Grid -->
       <div id="interventionsGrid" class="interventions-grid"></div>
 
-      <!-- ==================================================================
-           ACT III: MARIMEKKO VALUE-CREATION CHART
-           ================================================================== -->
+      <!-- MARIMEKKO VALUE-CREATION CHART -->
       <div id="marimekko" class="marimekko-panel">
         <div class="marimekko-header">
           <div>
-            <div class="kicker emerald">ACT III • THE AFRICAN MARIMEKKO ROI CURVE</div>
+            <div class="kicker emerald">THE AFRICAN MARIMEKKO ROI CURVE</div>
             <h3 style="font-family: var(--font-serif); font-size: 1.65rem;">
               Visualizing Cost (Width) × Benefit-Cost Ratio (Height) = Total African Wealth Created
             </h3>
@@ -217,9 +286,9 @@
        ====================================================================== -->
   <section id="drc-superpower" class="drc-showcase-section">
     <div class="container">
-      <div class="kicker emerald">ACT IV • CONTINENTAL &amp; REGIONAL ENGINE ARCHITECTURES</div>
+      <div class="kicker emerald">ACT IV • CONTINENTAL &amp; FLAGSHIP ENGINE ARCHITECTURES</div>
       <h2 class="section-title">
-        The 4 Superpower Blueprints: All-Africa ($145T), DRC Heartland ($54.8T), Kenya Superhub ($18.6T) &amp; The Twin Axis ($73.4T)
+        The 4 Macro Superpower Blueprints: All-Africa ($145T), DRC Heartland ($54.8T), Kenya Superhub ($18.6T) &amp; The Twin Axis ($73.4T)
       </h2>
       <p class="section-subtitle">
         Explore how Lomborg’s $75B Benefit-Cost Ratio sequencing operates across the entire <strong>54-nation African continent</strong>, and dive deep into its two most decisive anchor engines: the <strong>Democratic Republic of the Congo</strong> (the mineral, agricultural, and 40+ GW hydropower heartland) and <strong>Kenya</strong> (the Silicon Savannah, 10+ GW geothermal, and Indian Ocean gateway).
@@ -323,11 +392,12 @@
         </p>
       </div>
       <div style="font-family: var(--font-mono); font-size: 0.76rem;">
-        Interactive Data-Journalism Showcase • Benefit-Cost Ratio (BCR) Engine
+        Interactive 54-Nation Map &amp; Benefit-Cost Ratio (BCR) Engine
       </div>
     </div>
   </footer>
 
+  <script src="africa-map-data.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>

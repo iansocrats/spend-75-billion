@@ -799,6 +799,238 @@ body {
 }
 
 /* ==========================================================================
+   INTERACTIVE 54-COUNTRY AFRICA MAP EXPLORER
+   ========================================================================== */
+
+.africa-map-section {
+  padding: 4.5rem 0;
+  border-bottom: 2px solid var(--border-strong);
+  background-color: var(--bg-primary);
+}
+
+.map-controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 0.9rem 1.2rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+}
+
+.map-explorer-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1.15fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.map-canvas-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  position: relative;
+  box-shadow: var(--shadow-subtle);
+}
+
+.africa-svg-map {
+  width: 100%;
+  height: auto;
+  max-height: 680px;
+  display: block;
+  background: radial-gradient(circle at 50% 50%, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+}
+
+.country-path {
+  stroke: var(--bg-card);
+  stroke-width: 1.1px;
+  cursor: pointer;
+  transition: fill 0.18s ease, stroke-width 0.15s ease, opacity 0.18s ease;
+}
+
+.country-path:hover {
+  stroke: var(--ink-primary);
+  stroke-width: 2.2px;
+  filter: brightness(1.08);
+}
+
+.country-path.active {
+  stroke: var(--crimson);
+  stroke-width: 2.8px;
+}
+
+.corridor-line {
+  fill: none;
+  stroke: var(--crimson);
+  stroke-width: 2.6px;
+  stroke-dasharray: 6 4;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.corridor-node {
+  fill: var(--crimson);
+  stroke: #FFFFFF;
+  stroke-width: 1.5px;
+  pointer-events: none;
+}
+
+.map-floating-tooltip {
+  position: absolute;
+  top: 1.85rem;
+  left: 1.85rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  box-shadow: var(--shadow-hover);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.map-legend-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+}
+
+.legend-gradient-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-swatch {
+  width: 16px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* Right Column: Country Dossier Card */
+.country-dossier-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-top: 4px solid var(--emerald);
+  border-radius: var(--radius-sm);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-subtle);
+}
+
+.dossier-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-hairline);
+  margin-bottom: 1.15rem;
+}
+
+.dossier-country-title {
+  font-family: var(--font-serif);
+  font-size: 1.85rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.dossier-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.dossier-metric-box {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-hairline);
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+}
+
+.dossier-metric-label {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  display: block;
+}
+
+.dossier-metric-val {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin-top: 0.15rem;
+  display: block;
+}
+
+.dossier-metric-val.emerald {
+  color: var(--emerald);
+}
+
+.dossier-endowment-list {
+  list-style: none;
+  margin: 0.5rem 0 1.1rem;
+}
+
+.dossier-endowment-list li {
+  font-size: 0.85rem;
+  color: var(--ink-secondary);
+  padding: 0.32rem 0;
+  border-bottom: 1px dashed var(--border-hairline);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.dossier-endowment-list li::before {
+  content: "◆";
+  color: var(--emerald);
+  font-size: 0.65rem;
+}
+
+.dossier-phases-stack {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 0.85rem 0 1.15rem;
+}
+
+.dossier-phase-item {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-hairline);
+  border-left: 3px solid var(--emerald);
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+}
+
+.dossier-phase-item strong {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--ink-primary);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* ==========================================================================
    ACT IV: THE DRC, KENYA & AFRICA SUPERPOWER BLUEPRINT
    ========================================================================== */
 
@@ -1124,6 +1356,15 @@ body {
     grid-template-columns: 1fr 1fr;
   }
   .country-switcher-bar {
+    grid-template-columns: 1fr;
+  }
+  .map-explorer-grid {
+    grid-template-columns: 1fr;
+  }
+  .dossier-metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .dossier-phases-stack {
     grid-template-columns: 1fr;
   }
 }

@@ -1,5 +1,6 @@
 // ============================================================================
 // APPLICATION CONTROLLER: HOW $75B GROWS AFRICA INTO HISTORY'S LARGEST ECONOMY
+// Interactive 54-Country Map + $75B Simulator + Marimekko + Macro Blueprints
 // ============================================================================
 
 (function () {
@@ -12,9 +13,15 @@
   let activeCategory = "ALL";
   let discountRate = "3"; // "3" or "5"
   let dalyValuation = "base"; // "base" ($1k) or "high" ($5k)
-  let activeCountryKey = "africa"; // "africa", "drc", "kenya", or "twinAxis"
+  let activeCountryKey = "africa"; // Macro blueprint tab ("africa", "drc", "kenya", "twinAxis")
   let activeDrcPhase = 1;
   let activeScenarioKey = "lomborg";
+
+  // Interactive Map State
+  let selectedMapIso = "COD"; // Default to DRC on map load
+  let mapColorMetric = "gdp2076T"; // "gdp2076T", "bcrWeighted", "catalystShareB"
+  let showCorridors = true;
+  let countryDedicated75BMode = false; // Toggle between proportional share vs full $75B in selected country
 
   // Helper: Calculate effective BCR and Benefit ($B) for an intervention
   function getEffectiveMetrics(item) {
@@ -25,7 +32,6 @@
     return { bcr, benefitB };
   }
 
-  // Helper: Get currently active African Blueprint object
   function getActiveBlueprint() {
     return AFRICAN_BLUEPRINTS[activeCountryKey] || AFRICAN_BLUEPRINTS.africa;
   }
@@ -42,10 +48,365 @@
     themeToggleBtn.textContent =
       next === "dark" ? "☀ Newsprint Mode" : "◑ Terminal Mode";
     renderTrajectoryChart();
+    renderAfricaSvgMap();
   });
 
   // ==========================================================================
-  // 2. SIMULATOR RENDER & AFRICAN SUPERPOWER BUDGET ENGINE
+  // 2. INTERACTIVE 54-COUNTRY AFRICA MAP & NATIONAL DOSSIER
+  // ==========================================================================
+  const africaSvgMap = document.getElementById("africaSvgMap");
+  const mapFloatingTooltip = document.getElementById("mapFloatingTooltip");
+  const countryDossierCard = document.getElementById("countryDossierCard");
+  const countrySelectDropdown = document.getElementById("countrySelectDropdown");
+
+  function getCountryFillColor(c) {
+    if (!c) return "#CBD5E1";
+    const val = c[mapColorMetric] || 0;
+    if (mapColorMetric === "gdp2076T") {
+      if (val >= 18) return "#1E3A8A"; // Flagship Superpowers (DRC, Nigeria, Kenya)
+      if (val >= 5.5) return "#115E59"; // Major Regional Titans (Ethiopia, SA, Egypt, Tanzania, Angola)
+      if (val >= 2.5) return "#0D9488"; // High-Growth Engines (Morocco, Zambia, Uganda, Ghana, Cote d'Ivoire, Algeria, Mozambique)
+      if (val >= 1.0) return "#2DD4BF"; // Rising Industrial Corridors
+      return "#99F6E4"; // Specialized / Island / Frontier Hubs
+    } else if (mapColorMetric === "bcrWeighted") {
+      if (val >= 41) return "#1E3A8A";
+      if (val >= 38) return "#115E59";
+      if (val >= 35) return "#0D9488";
+      if (val >= 31) return "#2DD4BF";
+      return "#99F6E4";
+    } else {
+      // catalystShareB
+      if (val >= 5.0) return "#1E3A8A";
+      if (val >= 2.5) return "#115E59";
+      if (val >= 1.2) return "#0D9488";
+      if (val >= 0.5) return "#2DD4BF";
+      return "#99F6E4";
+    }
+  }
+
+  function populateCountryDropdown() {
+    if (typeof AFRICA_MAP_COUNTRIES === "undefined") return;
+    const sorted = Object.values(AFRICA_MAP_COUNTRIES).sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+    countrySelectDropdown.innerHTML = sorted
+      .map(
+        (c) =>
+          `<option value="${c.iso}" ${
+            c.iso === selectedMapIso ? "selected" : ""
+          }>${c.flag} ${c.name} ($${c.gdp2076T}T Peak)</option>`
+      )
+      .join("");
+  }
+
+  function renderAfricaSvgMap() {
+    if (typeof AFRICA_MAP_COUNTRIES === "undefined" || !africaSvgMap) return;
+    africaSvgMap.innerHTML = "";
+
+    const countries = Object.values(AFRICA_MAP_COUNTRIES);
+
+    // 1. Render Country Polygons
+    countries.forEach((c) => {
+      if (!c.d) return;
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", c.d);
+      path.setAttribute("fill", getCountryFillColor(c));
+      path.setAttribute(
+        "class",
+        `country-path ${c.iso === selectedMapIso ? "active" : ""}`
+      );
+      path.setAttribute("data-iso", c.iso);
+
+      path.addEventListener("mouseenter", () => {
+        mapFloatingTooltip.innerHTML = `
+          <strong>${c.flag} ${c.name}</strong> (${c.region})<br/>
+          2076 Superpower Peak: <strong style="color: var(--emerald);">$${c.gdp2076T.toFixed(
+            2
+          )}T</strong> • Avg BCR: <strong>${c.bcrWeighted}:1</strong>
+        `;
+      });
+
+      path.addEventListener("click", () => {
+        selectMapCountry(c.iso);
+      });
+
+      africaSvgMap.appendChild(path);
+    });
+
+    // 2. Render Clickable Pins for Small Island Nations so they are easy to click
+    const islandIsos = ["CPV", "STP", "SYC", "MUS", "COM"];
+    islandIsos.forEach((iso) => {
+      const c = AFRICA_MAP_COUNTRIES[iso];
+      if (!c) return;
+      const circle = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+      circle.setAttribute("cx", c.cx);
+      circle.setAttribute("cy", c.cy);
+      circle.setAttribute("r", c.iso === selectedMapIso ? "8" : "5.5");
+      circle.setAttribute("fill", getCountryFillColor(c));
+      circle.setAttribute(
+        "stroke",
+        c.iso === selectedMapIso ? "var(--crimson)" : "#FFFFFF"
+      );
+      circle.setAttribute("stroke-width", "2");
+      circle.style.cursor = "pointer";
+
+      circle.addEventListener("mouseenter", () => {
+        mapFloatingTooltip.innerHTML = `
+          <strong>${c.flag} ${c.name}</strong> (Island Hub)<br/>
+          2076 Superpower Peak: <strong style="color: var(--emerald);">$${c.gdp2076T.toFixed(
+            2
+          )}T</strong> • Avg BCR: <strong>${c.bcrWeighted}:1</strong>
+        `;
+      });
+      circle.addEventListener("click", () => selectMapCountry(c.iso));
+      africaSvgMap.appendChild(circle);
+    });
+
+    // 3. Optional Trans-African Megacorridor Overlay
+    if (showCorridors) {
+      const corridors = [
+        // East-Central Twin Axis: Kenya (KEN) -> Uganda (UGA) -> Rwanda (RWA) -> DRC (COD) -> Angola/Lobito (AGO)
+        ["KEN", "UGA", "RWA", "COD", "AGO"],
+        // Cape-to-Cairo Spine: Egypt (EGY) -> Sudan (SDN) -> Ethiopia (ETH) -> Kenya (KEN) -> Tanzania (TZA) -> Zambia (ZMB) -> South Africa (ZAF)
+        ["EGY", "SDN", "ETH", "KEN", "TZA", "ZMB", "ZAF"],
+        // West African Atlantic Spine: Senegal (SEN) -> Cote d'Ivoire (CIV) -> Ghana (GHA) -> Nigeria (NGA) -> Cameroon (CMR) -> DRC (COD)
+        ["SEN", "CIV", "GHA", "NGA", "CMR", "COD"],
+      ];
+
+      corridors.forEach((isoList) => {
+        const pts = isoList
+          .map((code) => AFRICA_MAP_COUNTRIES[code])
+          .filter(Boolean)
+          .map((c) => `${c.cx},${c.cy}`);
+        if (pts.length > 1) {
+          const poly = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "polyline"
+          );
+          poly.setAttribute("points", pts.join(" "));
+          poly.setAttribute("class", "corridor-line");
+          africaSvgMap.appendChild(poly);
+        }
+      });
+    }
+
+    // 4. Render Key Country ISO Labels on Major Hubs
+    const labeledIsos = [
+      "COD",
+      "KEN",
+      "NGA",
+      "ETH",
+      "ZAF",
+      "EGY",
+      "TZA",
+      "AGO",
+      "DZA",
+      "MAR",
+      "ZMB",
+      "GHA",
+      "CIV",
+      "SEN",
+      "MDG",
+      "MOZ",
+      "SDN",
+      "MLI",
+      "NER",
+      "TCD",
+      "NAM",
+      "BWA",
+      "LBY",
+    ];
+    labeledIsos.forEach((iso) => {
+      const c = AFRICA_MAP_COUNTRIES[iso];
+      if (!c) return;
+      const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      txt.setAttribute("x", c.cx);
+      txt.setAttribute("y", c.cy + 3);
+      txt.setAttribute("text-anchor", "middle");
+      txt.setAttribute("font-family", "JetBrains Mono, monospace");
+      txt.setAttribute(
+        "font-size",
+        c.iso === selectedMapIso ? "11.5" : "9.5"
+      );
+      txt.setAttribute("font-weight", "700");
+      txt.setAttribute("fill", "#FFFFFF");
+      txt.setAttribute("stroke", "rgba(20,20,19,0.75)");
+      txt.setAttribute("stroke-width", "2.5");
+      txt.setAttribute("paint-order", "stroke");
+      txt.style.pointerEvents = "none";
+      txt.textContent = c.iso;
+      africaSvgMap.appendChild(txt);
+    });
+  }
+
+  function renderCountryDossier() {
+    if (typeof AFRICA_MAP_COUNTRIES === "undefined" || !countryDossierCard) return;
+    const c = AFRICA_MAP_COUNTRIES[selectedMapIso] || AFRICA_MAP_COUNTRIES["COD"];
+
+    const scaleFactor = countryDedicated75BMode
+      ? +(75.0 / Math.max(c.catalystShareB, 0.05)).toFixed(1)
+      : 1.0;
+
+    const displayedCatalystB = countryDedicated75BMode
+      ? 75.0
+      : c.catalystShareB;
+    const immediateSurplusB = +(displayedCatalystB * c.bcrWeighted).toFixed(1);
+
+    const endowmentsHtml = c.keyEndowments
+      .map((e) => `<li>${e}</li>`)
+      .join("");
+
+    // Scale phase budgets if user toggles Dedicated $75B Country Mode
+    function formatPhaseText(text) {
+      if (!countryDedicated75BMode) return text;
+      return text.replace(/\$(\d+(\.\d+)?)B/g, (_, num) => {
+        const scaled = +(parseFloat(num) * scaleFactor).toFixed(1);
+        return `$${scaled}B`;
+      });
+    }
+
+    countryDossierCard.innerHTML = `
+      <div class="dossier-header">
+        <div>
+          <div class="kicker emerald">${c.region.toUpperCase()} • ${c.roleBadge}</div>
+          <h3 class="dossier-country-title">${c.flag} ${c.name}</h3>
+        </div>
+        <button id="toggleCountry75BModeBtn" type="button" class="btn-outline" style="font-size: 0.75rem; padding: 0.45rem 0.75rem;">
+          ${
+            countryDedicated75BMode
+              ? "Viewing: Dedicated $75B National Deployment (Click for Continental Share)"
+              : `Viewing: $${c.catalystShareB}B Continental Share (Click to Simulate Full $75B Here)`
+          }
+        </button>
+      </div>
+
+      <div class="dossier-metrics-grid">
+        <div class="dossier-metric-box">
+          <span class="dossier-metric-label">${
+            countryDedicated75BMode ? "Dedicated Catalyst" : "Share of $75B Fund"
+          }</span>
+          <span class="dossier-metric-val">$${displayedCatalystB.toFixed(2)}B</span>
+        </div>
+        <div class="dossier-metric-box">
+          <span class="dossier-metric-label">Weighted BCR</span>
+          <span class="dossier-metric-val emerald">${c.bcrWeighted} : 1</span>
+        </div>
+        <div class="dossier-metric-box">
+          <span class="dossier-metric-label">Immediate Surplus</span>
+          <span class="dossier-metric-val emerald">$${immediateSurplusB.toLocaleString()}B</span>
+        </div>
+        <div class="dossier-metric-box">
+          <span class="dossier-metric-label">2026 → 2076 GDP</span>
+          <span class="dossier-metric-val emerald">$${c.gdp2026T}T → $${c.gdp2076T.toFixed(
+      2
+    )}T</span>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700;">
+          Natural &amp; Strategic Endowments (${c.name} • ~${c.pop2076M}M Pop by 2076)
+        </div>
+        <ul class="dossier-endowment-list">
+          ${endowmentsHtml}
+        </ul>
+      </div>
+
+      <div class="endowment-bottleneck" style="margin-bottom: 1rem;">
+        <strong>Primary Bottleneck Diagnosed:</strong> ${c.topBottleneck}
+      </div>
+
+      <div>
+        <div style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--cobalt); font-weight: 700;">
+          4-Phase Lomborg Benefit-Cost Ratio Sequence for ${c.name}
+        </div>
+        <div class="dossier-phases-stack">
+          <div class="dossier-phase-item">
+            <strong>Phase I • Biology &amp; Brains</strong>
+            ${formatPhaseText(c.phase1)}
+          </div>
+          <div class="dossier-phase-item">
+            <strong>Phase II • Caloric &amp; Water Surplus</strong>
+            ${formatPhaseText(c.phase2)}
+          </div>
+          <div class="dossier-phase-item">
+            <strong>Phase III • STEM &amp; Adult Health</strong>
+            ${formatPhaseText(c.phase3)}
+          </div>
+          <div class="dossier-phase-item">
+            <strong>Phase IV • Titles, Power &amp; AfCFTA</strong>
+            ${formatPhaseText(c.phase4)}
+          </div>
+        </div>
+      </div>
+
+      <div style="background: var(--emerald-soft); border-left: 4px solid var(--emerald); padding: 0.85rem 1rem; border-radius: var(--radius-sm); font-size: 0.84rem;">
+        <strong style="color: var(--emerald); font-family: var(--font-mono); text-transform: uppercase; font-size: 0.74rem; display: block; margin-bottom: 0.2rem;">
+          Onshore Value-Chain Superpower Endgame:
+        </strong>
+        ${c.valueChainWin}
+      </div>
+    `;
+
+    const modeBtn = document.getElementById("toggleCountry75BModeBtn");
+    if (modeBtn) {
+      modeBtn.addEventListener("click", () => {
+        countryDedicated75BMode = !countryDedicated75BMode;
+        renderCountryDossier();
+      });
+    }
+  }
+
+  function selectMapCountry(iso) {
+    if (!AFRICA_MAP_COUNTRIES[iso]) return;
+    selectedMapIso = iso;
+    if (countrySelectDropdown) {
+      countrySelectDropdown.value = iso;
+    }
+    renderAfricaSvgMap();
+    renderCountryDossier();
+
+    // If user clicks DRC or Kenya on the map, also sync the deep-dive tab below if desired
+    if (iso === "COD") {
+      // Keep map dossier focused on DRC
+    }
+  }
+
+  if (countrySelectDropdown) {
+    countrySelectDropdown.addEventListener("change", (e) => {
+      selectMapCountry(e.target.value);
+    });
+  }
+
+  document.querySelectorAll("[data-quick-iso]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      selectMapCountry(btn.getAttribute("data-quick-iso"));
+    });
+  });
+
+  const mapColorMetricSelect = document.getElementById("mapColorMetricSelect");
+  if (mapColorMetricSelect) {
+    mapColorMetricSelect.addEventListener("change", (e) => {
+      mapColorMetric = e.target.value;
+      renderAfricaSvgMap();
+    });
+  }
+
+  const toggleCorridorsCheckbox = document.getElementById(
+    "toggleCorridorsCheckbox"
+  );
+  if (toggleCorridorsCheckbox) {
+    toggleCorridorsCheckbox.addEventListener("change", (e) => {
+      showCorridors = e.target.checked;
+      renderAfricaSvgMap();
+    });
+  }
+
+  // ==========================================================================
+  // 3. SIMULATOR RENDER & AFRICAN SUPERPOWER BUDGET ENGINE
   // ==========================================================================
   const simSpentDisplay = document.getElementById("simSpentDisplay");
   const simRemainingDisplay = document.getElementById("simRemainingDisplay");
@@ -77,8 +438,6 @@
     const remaining = +(MAX_BUDGET_B - totalCost).toFixed(1);
     const avgBcr = totalCost > 0 ? (totalBenefit / totalCost).toFixed(1) : "0.0";
 
-    // Calculate projected 50-year African GDP unlocked based on immediate surplus ratio
-    // Baseline Status Quo = $8.2T; Optimal $2,342B surplus unlocks $145.0T
     const optimalSurplusRef = 2342.4;
     const gdpUnlockedT =
       totalCost === 0
@@ -201,7 +560,6 @@
     });
   }
 
-  // Preset Buttons
   document.getElementById("loadNobelBtn").addEventListener("click", () => {
     selectedIds = new Set(
       GLOBAL_INTERVENTIONS.filter((i) => i.isWinner).map((i) => i.id)
@@ -229,7 +587,6 @@
     renderMarimekkoChart();
   });
 
-  // Category Filter Pills
   document
     .querySelectorAll("#categoryFilterGroup .filter-pill")
     .forEach((btn) => {
@@ -243,7 +600,6 @@
       });
     });
 
-  // Sensitivity Selects
   document
     .getElementById("discountRateSelect")
     .addEventListener("change", (e) => {
@@ -261,7 +617,7 @@
   });
 
   // ==========================================================================
-  // 3. MARIMEKKO ROI VISUALIZER (WIDTH = COST, HEIGHT = BCR)
+  // 4. MARIMEKKO ROI VISUALIZER (WIDTH = COST, HEIGHT = BCR)
   // ==========================================================================
   const marimekkoChart = document.getElementById("marimekkoChart");
   const marimekkoTooltip = document.getElementById("marimekkoTooltip");
@@ -329,10 +685,9 @@
   }
 
   // ==========================================================================
-  // 4. ALL-AFRICA, DRC, KENYA & TWIN-AXIS SUPERPOWER BLUEPRINT ENGINE
+  // 5. ALL-AFRICA, DRC, KENYA & TWIN-AXIS SUPERPOWER BLUEPRINT ENGINE
   // ==========================================================================
 
-  // Country Switcher Buttons
   document
     .querySelectorAll("#countrySwitcherBar .country-switch-btn")
     .forEach((btn) => {
@@ -469,17 +824,12 @@
     `;
   }
 
-  // ==========================================================================
-  // 5. 50-YEAR COMPOUNDING GDP TRAJECTORY CHART (SVG)
-  // ==========================================================================
-
   function renderTrajectoryChart() {
     const bp = getActiveBlueprint();
     const trajectories = bp.trajectories;
     const svgWrap = document.getElementById("trajectorySvgWrap");
     const milestonesWrap = document.getElementById("trajectoryMilestones");
 
-    // Update scenario button labels dynamically
     document.getElementById("scenBtnLomborg").textContent =
       "1. " + trajectories.lomborg.name;
     document.getElementById("scenBtnMega").textContent =
@@ -613,9 +963,6 @@
       });
     });
 
-  // ==========================================================================
-  // 6. ONSHORE VALUE-CHAIN MULTIPLIER CARDS
-  // ==========================================================================
   function renderValueChains() {
     const bp = getActiveBlueprint();
     const grid = document.getElementById("valueChainGrid");
@@ -674,6 +1021,9 @@
   }
 
   // Initial Boot
+  populateCountryDropdown();
+  renderAfricaSvgMap();
+  renderCountryDossier();
   updateSimulatorSummary();
   renderInterventionsGrid();
   renderMarimekkoChart();
