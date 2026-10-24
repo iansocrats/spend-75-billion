@@ -1,0 +1,1084 @@
+/* ==========================================================================
+   EDITORIAL DATA-JOURNALISM STYLESHEET
+   Inspired by The Economist, The Pudding, NYT Upshot & Our World in Data
+   ========================================================================== */
+
+:root {
+  /* Warm Newsprint & Archival Editorial Palette */
+  --bg-primary: #FAF7F2;
+  --bg-secondary: #F2EDE4;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #F7F3EB;
+  --ink-primary: #141413;
+  --ink-secondary: #4A4843;
+  --ink-muted: #78746C;
+  --border-hairline: #DED8CC;
+  --border-strong: #141413;
+
+  /* Data Journalism Semantic Accents */
+  --crimson: #E3120B;         /* Economist Red */
+  --crimson-soft: rgba(227, 18, 11, 0.09);
+  --emerald: #0D9488;         /* High-BCR Winner Teal/Emerald */
+  --emerald-soft: rgba(13, 148, 136, 0.11);
+  --amber: #D97706;           /* Secondary / Caution ROI */
+  --amber-soft: rgba(217, 119, 6, 0.11);
+  --cobalt: #1D4ED8;          /* DRC Strategic Cobalt Blue */
+  --cobalt-soft: rgba(29, 78, 216, 0.10);
+
+  /* Typography */
+  --font-serif: 'Newsreader', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Shadows & Transitions */
+  --shadow-subtle: 0 2px 10px rgba(20, 20, 19, 0.05);
+  --shadow-hover: 0 10px 28px rgba(20, 20, 19, 0.10);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0F1115;
+  --bg-secondary: #161920;
+  --bg-card: #1C2029;
+  --bg-elevated: #232834;
+  --ink-primary: #F3F4F6;
+  --ink-secondary: #CBD5E1;
+  --ink-muted: #94A3B8;
+  --border-hairline: #2E3442;
+  --border-strong: #E2E8F0;
+  --crimson: #FF3B30;
+  --crimson-soft: rgba(255, 59, 48, 0.15);
+  --emerald: #14B8A6;
+  --emerald-soft: rgba(20, 184, 166, 0.15);
+  --amber: #F59E0B;
+  --amber-soft: rgba(245, 158, 11, 0.15);
+  --cobalt: #3B82F6;
+  --cobalt-soft: rgba(59, 130, 246, 0.15);
+  --shadow-subtle: 0 2px 12px rgba(0, 0, 0, 0.35);
+  --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.55);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--ink-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* ==========================================================================
+   TOP EDITORIAL MASTHEAD & NAVIGATION
+   ========================================================================== */
+
+.editorial-top-rule {
+  height: 5px;
+  background: linear-gradient(90deg, var(--crimson) 0%, var(--crimson) 35%, var(--emerald) 35%, var(--emerald) 70%, var(--cobalt) 70%, var(--cobalt) 100%);
+  width: 100%;
+}
+
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-hairline);
+  backdrop-filter: blur(10px);
+}
+
+.masthead-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.economist-badge {
+  background-color: var(--crimson);
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.55rem;
+  border-radius: 2px;
+}
+
+.brand-title {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  text-decoration: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--ink-primary);
+  background-color: var(--bg-secondary);
+  border-color: var(--border-hairline);
+}
+
+.nav-link.highlight-drc {
+  color: var(--emerald);
+  background-color: var(--emerald-soft);
+  border-color: rgba(13, 148, 136, 0.3);
+}
+
+.nav-link.highlight-drc:hover {
+  background-color: var(--emerald);
+  color: #FFFFFF;
+}
+
+.theme-btn {
+  background: var(--bg-secondary);
+  color: var(--ink-primary);
+  border: 1px solid var(--border-hairline);
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.theme-btn:hover {
+  border-color: var(--ink-primary);
+}
+
+/* ==========================================================================
+   LAYOUT CONTAINERS & TYPOGRAPHY
+   ========================================================================== */
+
+.container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.section-block {
+  padding: 4.5rem 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--crimson);
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.kicker.emerald {
+  color: var(--emerald);
+}
+
+.kicker.cobalt {
+  color: var(--cobalt);
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 3.8vw, 3.1rem);
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 1.12rem;
+  color: var(--ink-secondary);
+  max-width: 780px;
+  line-height: 1.65;
+}
+
+/* ==========================================================================
+   HERO SECTION (ACT I: THE PREMISE)
+   ========================================================================== */
+
+.hero {
+  padding: 4rem 0 3.5rem;
+  border-bottom: 2px solid var(--border-strong);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.95fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.hero-headline {
+  font-family: var(--font-serif);
+  font-size: clamp(2.5rem, 4.6vw, 4.1rem);
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  margin-bottom: 1.35rem;
+}
+
+.hero-headline span.highlight {
+  color: var(--crimson);
+  font-style: italic;
+}
+
+.hero-headline span.highlight-drc {
+  color: var(--emerald);
+}
+
+.hero-lead {
+  font-size: 1.18rem;
+  color: var(--ink-secondary);
+  margin-bottom: 1.75rem;
+  line-height: 1.68;
+}
+
+.hero-cta-row {
+  display: flex;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.btn-primary {
+  background-color: var(--ink-primary);
+  color: var(--bg-primary);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--ink-primary);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.18s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--crimson);
+  border-color: var(--crimson);
+  color: #FFFFFF;
+}
+
+.btn-drc {
+  background-color: var(--emerald);
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.92rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--emerald);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.18s ease;
+}
+
+.btn-drc:hover {
+  filter: brightness(0.92);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--ink-primary);
+  font-weight: 600;
+  font-size: 0.86rem;
+  padding: 0.65rem 1.1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-outline:hover {
+  background-color: var(--ink-primary);
+  color: var(--bg-primary);
+}
+
+/* Nobel Context Sidebar Card */
+.nobel-brief-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-top: 4px solid var(--crimson);
+  padding: 1.75rem;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-subtle);
+}
+
+.nobel-brief-title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.stat-pillars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.25rem 0;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border-hairline);
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.stat-pillar-num {
+  font-family: var(--font-mono);
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  line-height: 1.1;
+}
+
+.stat-pillar-num.emerald {
+  color: var(--emerald);
+}
+
+.stat-pillar-num.crimson {
+  color: var(--crimson);
+}
+
+.stat-pillar-label {
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  margin-top: 0.25rem;
+}
+
+.laureate-list {
+  font-size: 0.84rem;
+  color: var(--ink-secondary);
+  list-style: none;
+}
+
+.laureate-list li {
+  padding: 0.35rem 0;
+  border-bottom: 1px dashed var(--border-hairline);
+  display: flex;
+  justify-content: space-between;
+}
+
+.laureate-list li:last-child {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   ACT II: INTERACTIVE $75B BUDGET SIMULATOR
+   ========================================================================== */
+
+.simulator-sticky-bar {
+  position: sticky;
+  top: 57px;
+  z-index: 90;
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 1.15rem 1.5rem;
+  margin: 2rem 0;
+  box-shadow: var(--shadow-hover);
+}
+
+.sim-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+}
+
+.sim-metrics {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.sim-metric-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.sim-metric-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+.sim-metric-val {
+  font-family: var(--font-mono);
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.sim-metric-val.benefit-highlight {
+  color: var(--emerald);
+}
+
+.sim-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.budget-progress-track {
+  width: 100%;
+  height: 14px;
+  background-color: var(--bg-secondary);
+  border-radius: 99px;
+  overflow: hidden;
+  border: 1px solid var(--border-hairline);
+  display: flex;
+}
+
+.budget-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--emerald), var(--cobalt));
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.budget-progress-fill.over-warning {
+  background: var(--crimson);
+}
+
+.sim-status-banner {
+  margin-top: 0.6rem;
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  color: var(--ink-secondary);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/* Simulator Intervention Cards Grid */
+.sim-controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.filter-pills {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.filter-pill {
+  background-color: var(--bg-secondary);
+  color: var(--ink-secondary);
+  border: 1px solid var(--border-hairline);
+  padding: 0.4rem 0.85rem;
+  border-radius: 99px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-pill.active,
+.filter-pill:hover {
+  background-color: var(--ink-primary);
+  color: var(--bg-primary);
+  border-color: var(--ink-primary);
+}
+
+.sensitivity-toggles {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--bg-secondary);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-hairline);
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+}
+
+.sensitivity-select {
+  background-color: var(--bg-card);
+  color: var(--ink-primary);
+  border: 1px solid var(--border-hairline);
+  padding: 0.25rem 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  border-radius: 3px;
+}
+
+.interventions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.15rem;
+}
+
+.intervention-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.18s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.intervention-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--ink-muted);
+}
+
+.intervention-card.selected {
+  border: 2px solid var(--emerald);
+  background-color: var(--emerald-soft);
+}
+
+.intervention-card.selected.decoy-card {
+  border-color: var(--crimson);
+  background-color: var(--crimson-soft);
+}
+
+.card-top-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+  gap: 0.5rem;
+}
+
+.rank-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  background-color: var(--bg-secondary);
+  color: var(--ink-primary);
+}
+
+.rank-badge.winner {
+  background-color: var(--emerald);
+  color: #FFFFFF;
+}
+
+.rank-badge.decoy {
+  background-color: var(--amber-soft);
+  color: var(--amber);
+  border: 1px solid var(--amber);
+}
+
+.category-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.card-title {
+  font-family: var(--font-serif);
+  font-size: 1.18rem;
+  font-weight: 700;
+  line-height: 1.28;
+  margin-bottom: 0.5rem;
+}
+
+.card-summary {
+  font-size: 0.85rem;
+  color: var(--ink-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.card-metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding: 0.65rem;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.85rem;
+}
+
+.strip-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.strip-label {
+  font-size: 0.66rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.strip-val {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.strip-val.high-bcr {
+  color: var(--emerald);
+}
+
+.strip-val.low-bcr {
+  color: var(--crimson);
+}
+
+.card-Verdict-box {
+  font-size: 0.78rem;
+  color: var(--ink-secondary);
+  border-left: 2px solid var(--border-strong);
+  padding-left: 0.65rem;
+  margin-bottom: 0.9rem;
+}
+
+.card-action-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.65rem;
+  border-top: 1px dashed var(--border-hairline);
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+}
+
+.fund-toggle-btn {
+  padding: 0.35rem 0.75rem;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  border: 1px solid var(--ink-primary);
+  background: transparent;
+  color: var(--ink-primary);
+  cursor: pointer;
+}
+
+.intervention-card.selected .fund-toggle-btn {
+  background: var(--emerald);
+  border-color: var(--emerald);
+  color: #FFFFFF;
+}
+
+/* ==========================================================================
+   ACT III: MARIMEKKO ROI VISUALIZER (WIDTH = COST, HEIGHT = BCR)
+   ========================================================================== */
+
+.marimekko-panel {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  padding: 1.75rem;
+  border-radius: var(--radius-sm);
+  margin-top: 2.5rem;
+}
+
+.marimekko-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.marimekko-chart-wrap {
+  width: 100%;
+  height: 340px;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 2rem 0.5rem 2.2rem 2.5rem;
+  border-left: 2px solid var(--ink-primary);
+  border-bottom: 2px solid var(--ink-primary);
+  position: relative;
+  overflow-x: auto;
+}
+
+.marimekko-bar {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  min-width: 14px;
+}
+
+.marimekko-bar-fill {
+  width: 100%;
+  background-color: var(--emerald);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  transition: height 0.35s ease, background-color 0.2s ease;
+  position: relative;
+}
+
+.marimekko-bar:hover .marimekko-bar-fill {
+  background-color: var(--crimson);
+}
+
+.marimekko-bar-label {
+  position: absolute;
+  bottom: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  white-space: nowrap;
+  color: var(--ink-muted);
+}
+
+.marimekko-tooltip {
+  margin-top: 1rem;
+  padding: 0.85rem 1.1rem;
+  background-color: var(--bg-secondary);
+  border-left: 4px solid var(--emerald);
+  font-size: 0.88rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* ==========================================================================
+   ACT IV: THE DRC & AFRICA $50+ TRILLION SUPERPOWER BLUEPRINT
+   ========================================================================== */
+
+.drc-showcase-section {
+  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  padding: 5rem 0;
+  border-bottom: 2px solid var(--border-strong);
+}
+
+.endowment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.2rem;
+  margin: 2.25rem 0 3rem;
+}
+
+.endowment-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-top: 3px solid var(--cobalt);
+  padding: 1.35rem;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-subtle);
+}
+
+.endowment-metric {
+  font-family: var(--font-mono);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  margin-bottom: 0.2rem;
+}
+
+.endowment-label {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.endowment-detail {
+  font-size: 0.84rem;
+  color: var(--ink-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.endowment-bottleneck {
+  font-size: 0.76rem;
+  font-family: var(--font-mono);
+  padding: 0.5rem;
+  background-color: var(--crimson-soft);
+  color: var(--ink-primary);
+  border-left: 2px solid var(--crimson);
+}
+
+/* 4-Phase Interactive Sequencing Timeline */
+.phases-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.phase-tab-btn {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  padding: 1rem;
+  text-align: left;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.phase-tab-btn:hover {
+  border-color: var(--ink-primary);
+}
+
+.phase-tab-btn.active {
+  border: 2px solid var(--emerald);
+  background-color: var(--emerald-soft);
+}
+
+.phase-tab-num {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.phase-tab-title {
+  font-family: var(--font-serif);
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  display: block;
+}
+
+.phase-tab-meta {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--emerald);
+  font-weight: 700;
+  margin-top: 0.4rem;
+  display: block;
+}
+
+.phase-detail-panel {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  padding: 2rem;
+  margin-bottom: 3rem;
+  box-shadow: var(--shadow-subtle);
+}
+
+.phase-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-hairline);
+  margin-bottom: 1.5rem;
+}
+
+.phase-interventions-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.phase-subcard {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-hairline);
+  padding: 1.25rem;
+  border-radius: var(--radius-sm);
+}
+
+/* 50-Year DRC Trajectory Chart & Scenario Switcher */
+.trajectory-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  padding: 2rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 3rem;
+}
+
+.scenario-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 1.25rem 0;
+}
+
+.scenario-btn {
+  padding: 0.65rem 1.1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-hairline);
+  background-color: var(--bg-primary);
+  color: var(--ink-primary);
+  font-weight: 600;
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.scenario-btn.active {
+  background-color: var(--ink-primary);
+  color: var(--bg-primary);
+  border-color: var(--ink-primary);
+}
+
+.svg-chart-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0 1.5rem;
+}
+
+.trajectory-milestones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.25rem;
+}
+
+.milestone-card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-hairline);
+  padding: 0.9rem;
+  border-radius: var(--radius-sm);
+}
+
+.milestone-year {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+.milestone-gdp {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--emerald);
+  margin: 0.2rem 0;
+}
+
+.milestone-note {
+  font-size: 0.78rem;
+  color: var(--ink-secondary);
+  line-height: 1.4;
+}
+
+/* Value Chain Table */
+.value-chain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.vc-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  padding: 1.4rem;
+  border-radius: var(--radius-sm);
+}
+
+.vc-bars {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vc-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.vc-bar-raw {
+  height: 10px;
+  background-color: var(--crimson);
+  border-radius: 2px;
+}
+
+.vc-bar-processed {
+  height: 14px;
+  background-color: var(--emerald);
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+.editorial-footer {
+  padding: 3.5rem 0;
+  background-color: var(--bg-secondary);
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+}
+
+@media (max-width: 960px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .phases-tabs {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .phases-tabs {
+    grid-template-columns: 1fr;
+  }
+}
