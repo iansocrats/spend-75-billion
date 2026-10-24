@@ -1556,21 +1556,28 @@
   const raceBarsContainer = document.getElementById("raceBarsContainer");
   const raceProofTableBody = document.getElementById("raceProofTableBody");
 
+  let counterfactual2026BaseActive = false;
+
   // Smooth exponential/compound interpolation between decadal checkpoints
   function getExtraGdpBoostAtYear(blocId, yr) {
     const t = Math.max(0, Math.min(1, (yr - 2026) / 50.0));
     const curve = Math.pow(t, 2.05);
+    let boost = 0;
     if (includeUntappedSectors) {
-      if (blocId === "africa_lomborg") return 38.5 * curve;
-      if (blocId === "kenya_drc_axis") return 15.4 * curve;
+      if (blocId === "africa_lomborg") boost += 38.5 * curve;
+      if (blocId === "kenya_drc_axis") boost += 15.4 * curve;
     }
     if (includeGlobalCoProsperity) {
-      if (blocId === "usa") return 14.5 * curve;
-      if (blocId === "china") return 10.4 * curve;
-      if (blocId === "eu") return 9.2 * curve;
-      if (blocId === "india") return 7.9 * curve;
+      if (blocId === "usa") boost += 14.5 * curve;
+      if (blocId === "china") boost += 10.4 * curve;
+      if (blocId === "eu") boost += 9.2 * curve;
+      if (blocId === "india") boost += 7.9 * curve;
     }
-    return 0;
+    if (counterfactual2026BaseActive) {
+      if (blocId === "africa_lomborg") boost += 24.7 + 62.0 * t;
+      if (blocId === "kenya_drc_axis") boost += 3.1 + 18.5 * t;
+    }
+    return boost;
   }
 
   function interpolateBlocGdp(bloc, yr) {
@@ -2751,6 +2758,218 @@
     }
   });
 
+  // ==========================================================================
+  // 11. HISTORICAL $3.33T AUDIT (ALL-AFRICA) & KENYA $161B AUDIT + TIME MACHINE
+  // ==========================================================================
+  let activeAuditScope = "africa"; // "africa" | "kenya"
+  const sliderHistoricalRedirect = document.getElementById("sliderHistoricalRedirect");
+  const valHistoricalRedirect = document.getElementById("valHistoricalRedirect");
+  const auditSummaryBanner = document.getElementById("auditSummaryBanner");
+  const auditComparisonGrid = document.getElementById("auditComparisonGrid");
+  const auditChannelsGrid = document.getElementById("auditChannelsGrid");
+  const applyCounterfactualBaseBtn = document.getElementById("applyCounterfactualBaseBtn");
+
+  function renderHistoricalAudit() {
+    if (
+      typeof HISTORICAL_AUDIT_MODEL === "undefined" ||
+      !auditComparisonGrid ||
+      !sliderHistoricalRedirect
+    ) {
+      return;
+    }
+
+    const audit =
+      HISTORICAL_AUDIT_MODEL[activeAuditScope] || HISTORICAL_AUDIT_MODEL.africa;
+    const redirectPct = parseFloat(sliderHistoricalRedirect.value);
+    const scaleVsDefault = redirectPct / audit.defaultRedirectPct;
+    const redirectedCapitalB = +(
+      (audit.totalPublicCapitalB * redirectPct) /
+      100
+    ).toFixed(1);
+
+    const bcrNum = activeAuditScope === "kenya" ? 54.2 : 48.7;
+
+    if (valHistoricalRedirect) {
+      valHistoricalRedirect.textContent = `${redirectPct}% Redirected ($${redirectedCapitalB.toLocaleString()}B @ ${bcrNum}:1)`;
+    }
+
+    // Dynamic 2026 Counterfactual Values scaled by slider
+    const cfGdpT = +(
+      audit.actual2026.gdpT +
+      (audit.counterfactualBase2026.gdpT - audit.actual2026.gdpT) *
+        Math.pow(scaleVsDefault, 0.85)
+    ).toFixed(2);
+
+    const cfPerCapita = Math.round(
+      audit.actual2026.perCapitaUsd +
+        (audit.counterfactualBase2026.perCapitaUsd -
+          audit.actual2026.perCapitaUsd) *
+          Math.pow(scaleVsDefault, 0.85)
+    );
+
+    const cfBourseT = +(
+      audit.actual2026.bourseCapT +
+      (audit.counterfactualBase2026.bourseCapT - audit.actual2026.bourseCapT) *
+        Math.pow(scaleVsDefault, 0.92)
+    ).toFixed(2);
+
+    const gdpLostGapT = +(cfGdpT - audit.actual2026.gdpT).toFixed(2);
+    const gdpMultiple = (cfGdpT / audit.actual2026.gdpT).toFixed(1);
+
+    const cfCurrencyText =
+      activeAuditScope === "kenya"
+        ? `KSh ${Math.max(12, Math.round(68 / Math.pow(scaleVsDefault, 0.72)))} per $1 USD`
+        : `REER Index ${Math.round(100 + 240 * Math.pow(scaleVsDefault, 0.8))} (+${Math.round(240 * Math.pow(scaleVsDefault, 0.8))}% Stronger)`;
+
+    if (auditSummaryBanner) {
+      auditSummaryBanner.innerHTML = `
+        <div style="flex: 1; min-width: 260px;">
+          <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--crimson);">
+            ${audit.flag} ${audit.name} • ${audit.period} • ${audit.multipleOf75B}
+          </div>
+          <div style="font-weight: 700; font-size: 1.02rem; margin: 0.25rem 0;">${audit.headline}</div>
+          <div style="font-size: 0.85rem; color: var(--ink-secondary); line-height: 1.5;">${audit.summary}</div>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; text-align: right; min-width: 230px;">
+          <div style="color: var(--crimson);">Historical Realized ROI: ${audit.realizedBcr}</div>
+          <div style="color: var(--emerald);">Lomborg Counterfactual ROI: ${audit.lomborgPotentialBcr}</div>
+          <div style="color: #D97706; margin-top: 0.2rem;">2026 Lost Output Gap: -$${gdpLostGapT}T/yr</div>
+        </div>
+      `;
+    }
+
+    const actGdpDisplay =
+      audit.actual2026.gdpT < 1
+        ? `$${Math.round(audit.actual2026.gdpT * 1000)}B`
+        : `$${audit.actual2026.gdpT.toFixed(2)}T`;
+    const cfGdpDisplay =
+      cfGdpT < 1 ? `$${Math.round(cfGdpT * 1000)}B` : `$${cfGdpT.toFixed(2)}T`;
+
+    const actBourseDisplay =
+      audit.actual2026.bourseCapT < 0.1
+        ? `$${(audit.actual2026.bourseCapT * 1000).toFixed(1)}B`
+        : `$${audit.actual2026.bourseCapT.toFixed(2)}T`;
+    const cfBourseDisplay =
+      cfBourseT < 0.1
+        ? `$${(cfBourseT * 1000).toFixed(1)}B`
+        : `$${cfBourseT.toFixed(2)}T`;
+
+    auditComparisonGrid.innerHTML = `
+      <div class="friedman-kpi-card">
+        <div class="friedman-kpi-label">2026 GDP (Reality vs. Counterfactual)</div>
+        <div class="friedman-kpi-val" style="color: var(--emerald);">${cfGdpDisplay}</div>
+        <div class="friedman-kpi-sub">
+          <span style="color: var(--crimson);">2026 Reality: ${actGdpDisplay}</span> • <strong>${gdpMultiple}× Larger Today!</strong>
+        </div>
+      </div>
+
+      <div class="friedman-kpi-card gold">
+        <div class="friedman-kpi-label">2026 Income Per Capita (Annual)</div>
+        <div class="friedman-kpi-val" style="color: #D97706;">$${cfPerCapita.toLocaleString()}/yr</div>
+        <div class="friedman-kpi-sub">
+          <span style="color: var(--crimson);">2026 Reality: $${audit.actual2026.perCapitaUsd.toLocaleString()}/yr</span> • High-Income Tiger Today
+        </div>
+      </div>
+
+      <div class="friedman-kpi-card">
+        <div class="friedman-kpi-label">2026 Stock Exchange Market Cap</div>
+        <div class="friedman-kpi-val" style="color: var(--emerald);">${cfBourseDisplay}</div>
+        <div class="friedman-kpi-sub">
+          <span style="color: var(--crimson);">2026 Reality: ${actBourseDisplay}</span> • Deep Pension &amp; Land Collateral
+        </div>
+      </div>
+
+      <div class="friedman-kpi-card gold">
+        <div class="friedman-kpi-label">2026 Friedman Currency Valuation</div>
+        <div class="friedman-kpi-val" style="color: #D97706; font-size: 1.35rem;">${cfCurrencyText}</div>
+        <div class="friedman-kpi-sub">
+          <span style="color: var(--crimson);">2026 Reality: ${audit.actual2026.currencyLabel}</span>
+        </div>
+      </div>
+
+      <div class="friedman-kpi-card">
+        <div class="friedman-kpi-label">2026 Tax Eaten by Debt Interest</div>
+        <div class="friedman-kpi-val" style="color: var(--emerald);">${audit.counterfactualBase2026.debtServiceTaxPct.split(" ")[0]}</div>
+        <div class="friedman-kpi-sub">
+          <span style="color: var(--crimson);">2026 Reality: ${audit.actual2026.debtServiceTaxPct}</span> • Zero Debt Distress
+        </div>
+      </div>
+
+      <div class="friedman-kpi-card">
+        <div class="friedman-kpi-label">2026 Power Tariff &amp; Child Stunting</div>
+        <div class="friedman-kpi-val" style="color: var(--emerald); font-size: 1.3rem;">${audit.counterfactualBase2026.powerTariff.split(" ")[0]} • ${audit.counterfactualBase2026.stuntingPct.split(" ")[0]}${audit.counterfactualBase2026.stuntingPct.split(" ")[1] || ""}</div>
+        <div class="friedman-kpi-sub">
+          <span style="color: var(--crimson);">2026 Reality: ${audit.actual2026.powerTariff.split(" ")[0]} &amp; ${audit.actual2026.stuntingPct}</span>
+        </div>
+      </div>
+    `;
+
+    if (auditChannelsGrid) {
+      auditChannelsGrid.innerHTML = audit.inflowChannels
+        .map(
+          (ch) => `
+          <div class="megacap-card" style="border-top: 3px solid var(--crimson);">
+            <div>
+              <div class="megacap-top">
+                <span class="megacap-ticker" style="background-color: var(--crimson);">${ch.realizedBcr}</span>
+                <span class="megacap-cap" style="color: var(--ink-primary);">${ch.amountLabel}</span>
+              </div>
+              <div style="font-weight: 700; font-size: 0.94rem; margin-top: 0.45rem; line-height: 1.25;">
+                ${ch.title}
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 0.68rem; color: #D97706; font-weight: 700; margin-top: 0.2rem;">
+                Scale: ${ch.multipleLabel}
+              </div>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--ink-secondary); line-height: 1.48; margin: 0;">
+              ${ch.leakageDiagnosis}
+            </p>
+          </div>
+        `
+        )
+        .join("");
+    }
+  }
+
+  document.querySelectorAll("[data-audit-scope]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const scope = btn.getAttribute("data-audit-scope");
+      if (!HISTORICAL_AUDIT_MODEL || !HISTORICAL_AUDIT_MODEL[scope]) return;
+      activeAuditScope = scope;
+      document.querySelectorAll("[data-audit-scope]").forEach((b) => {
+        b.classList.toggle("active", b === btn);
+      });
+      if (sliderHistoricalRedirect) {
+        sliderHistoricalRedirect.value =
+          HISTORICAL_AUDIT_MODEL[scope].defaultRedirectPct;
+      }
+      renderHistoricalAudit();
+    });
+  });
+
+  if (sliderHistoricalRedirect) {
+    sliderHistoricalRedirect.addEventListener("input", () => {
+      renderHistoricalAudit();
+    });
+  }
+
+  if (applyCounterfactualBaseBtn) {
+    applyCounterfactualBaseBtn.addEventListener("click", () => {
+      counterfactual2026BaseActive = !counterfactual2026BaseActive;
+      applyCounterfactualBaseBtn.textContent = counterfactual2026BaseActive
+        ? "✓ Counterfactual 2026 Base Active ($28.4T Start — Click to Reset to $3.7T)"
+        : "🚀 Launch Overtake Race From Counterfactual 2026 Base ($28.4T Africa)";
+      raceYear = 2026;
+      prevBlocRanks = {};
+      renderOvertakeRace(false);
+      renderOvertakeProofTable();
+      const raceSec = document.getElementById("overtake-race");
+      if (raceSec) {
+        raceSec.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  }
+
   function renderAllBlueprintSections() {
     renderBlueprintHeader();
     renderDrcEndowments();
@@ -2765,6 +2984,7 @@
   renderAfricaSvgMap();
   renderCountryDossier();
   initWebGlMap();
+  renderHistoricalAudit();
   renderOvertakeRace();
   renderOvertakeProofTable();
   renderUntappedSectorsAndCoProsperity();
