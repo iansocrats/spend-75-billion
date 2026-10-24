@@ -1,5 +1,5 @@
 // ============================================================================
-// APPLICATION CONTROLLER: HOW TO SPEND $75 BILLION + DRC SUPERPOWER BLUEPRINT
+// APPLICATION CONTROLLER: HOW TO SPEND $75 BILLION + DRC & KENYA BLUEPRINTS
 // ============================================================================
 
 (function () {
@@ -12,6 +12,7 @@
   let activeCategory = "ALL";
   let discountRate = "3"; // "3" or "5"
   let dalyValuation = "base"; // "base" ($1k) or "high" ($5k)
+  let activeCountryKey = "drc"; // "drc", "kenya", or "twinAxis"
   let activeDrcPhase = 1;
   let activeScenarioKey = "lomborg";
 
@@ -22,6 +23,11 @@
     const bcr = +(baseBcr * multiplier).toFixed(1);
     const benefitB = +(item.costBillions * bcr).toFixed(1);
     return { bcr, benefitB };
+  }
+
+  // Helper: Get currently active African Blueprint object
+  function getActiveBlueprint() {
+    return AFRICAN_BLUEPRINTS[activeCountryKey] || AFRICAN_BLUEPRINTS.drc;
   }
 
   // ==========================================================================
@@ -73,7 +79,9 @@
 
     simSpentDisplay.textContent = `$${totalCost.toFixed(1)}B / $${MAX_BUDGET_B.toFixed(1)}B`;
     simRemainingDisplay.textContent =
-      remaining >= 0 ? `$${remaining.toFixed(1)}B` : `-$${Math.abs(remaining).toFixed(1)}B (Over!)`;
+      remaining >= 0
+        ? `$${remaining.toFixed(1)}B`
+        : `-$${Math.abs(remaining).toFixed(1)}B (Over!)`;
     simBenefitDisplay.textContent = `$${totalBenefit.toLocaleString("en-US", {
       minimumFractionDigits: 1,
       maximumFractionDigits: 1,
@@ -85,7 +93,11 @@
 
     if (totalCost > MAX_BUDGET_B) {
       simProgressBar.classList.add("over-warning");
-      simVerdictText.innerHTML = `<strong style="color: var(--crimson);">⚠ Over Budget by $${Math.abs(remaining).toFixed(1)}B!</strong> Deselect lower-ROI proposals to stay within the $75B cap.`;
+      simVerdictText.innerHTML = `<strong style="color: var(--crimson);">⚠ Over Budget by $${Math.abs(
+        remaining
+      ).toFixed(
+        1
+      )}B!</strong> Deselect lower-ROI proposals to stay within the $75B cap.`;
     } else {
       simProgressBar.classList.remove("over-warning");
       if (count === 16 && !hasDecoys && Math.abs(totalCost - 75.0) < 0.5) {
@@ -95,7 +107,9 @@
       } else if (totalCost === 0) {
         simVerdictText.innerHTML = `Select interventions below to allocate your $75.0B budget.`;
       } else {
-        simVerdictText.innerHTML = `You have <strong>$${remaining.toFixed(1)}B</strong> left to allocate. Prioritize high Benefit-Cost Ratio cards for maximum human good.`;
+        simVerdictText.innerHTML = `You have <strong>$${remaining.toFixed(
+          1
+        )}B</strong> left to allocate. Prioritize high Benefit-Cost Ratio cards for maximum human good.`;
       }
     }
 
@@ -152,7 +166,7 @@
           </div>
 
           <div class="card-Verdict-box">
-            <strong>DRC / Global Logic:</strong> ${item.drcRelevance}
+            <strong>DRC &amp; Kenya Relevance:</strong> ${item.drcRelevance}
           </div>
         </div>
 
@@ -190,12 +204,11 @@
   });
 
   document.getElementById("loadTrapBtn").addEventListener("click", () => {
-    // Select the 4 low-BCR decoy traps ($25B + $30B + $15B = $70B + $4B early warning)
     selectedIds = new Set([
       "blanket-carbon-cuts",
       "megaproject-prestige",
       "untargeted-school-spending",
-      "early-warning"
+      "early-warning",
     ]);
     updateSimulatorSummary();
     renderInterventionsGrid();
@@ -210,24 +223,28 @@
   });
 
   // Category Filter Pills
-  document.querySelectorAll("#categoryFilterGroup .filter-pill").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document
-        .querySelectorAll("#categoryFilterGroup .filter-pill")
-        .forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeCategory = btn.getAttribute("data-category");
-      renderInterventionsGrid();
+  document
+    .querySelectorAll("#categoryFilterGroup .filter-pill")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document
+          .querySelectorAll("#categoryFilterGroup .filter-pill")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeCategory = btn.getAttribute("data-category");
+        renderInterventionsGrid();
+      });
     });
-  });
 
   // Sensitivity Selects
-  document.getElementById("discountRateSelect").addEventListener("change", (e) => {
-    discountRate = e.target.value;
-    updateSimulatorSummary();
-    renderInterventionsGrid();
-    renderMarimekkoChart();
-  });
+  document
+    .getElementById("discountRateSelect")
+    .addEventListener("change", (e) => {
+      discountRate = e.target.value;
+      updateSimulatorSummary();
+      renderInterventionsGrid();
+      renderMarimekkoChart();
+    });
 
   document.getElementById("dalyValueSelect").addEventListener("change", (e) => {
     dalyValuation = e.target.value;
@@ -263,7 +280,10 @@
     const totalCost = fundedItems.reduce((acc, i) => acc + i.costBillions, 0);
 
     fundedItems.forEach((item) => {
-      const widthPct = Math.max(2.5, (item.costBillions / Math.max(totalCost, 1)) * 100);
+      const widthPct = Math.max(
+        2.5,
+        (item.costBillions / Math.max(totalCost, 1)) * 100
+      );
       const heightPct = Math.max(6, (item.effectiveBcr / maxBcr) * 100);
 
       const bar = document.createElement("div");
@@ -302,14 +322,37 @@
   }
 
   // ==========================================================================
-  // 4. DRC & AFRICA $50+ TRILLION SUPERPOWER BLUEPRINT
+  // 4. DRC, KENYA & TWIN-AXIS SUPERPOWER BLUEPRINT ENGINE
   // ==========================================================================
 
+  // Country Switcher Buttons
+  document
+    .querySelectorAll("#countrySwitcherBar .country-switch-btn")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document
+          .querySelectorAll("#countrySwitcherBar .country-switch-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeCountryKey = btn.getAttribute("data-country");
+        activeDrcPhase = 1;
+        renderAllBlueprintSections();
+      });
+    });
+
+  function renderBlueprintHeader() {
+    const bp = getActiveBlueprint();
+    document.getElementById("blueprintBadge").textContent = bp.badge;
+    document.getElementById("blueprintHeadline").textContent = bp.headline;
+    document.getElementById("blueprintIntro").textContent = bp.intro;
+  }
+
   function renderDrcEndowments() {
+    const bp = getActiveBlueprint();
     const grid = document.getElementById("drcEndowmentGrid");
     grid.innerHTML = "";
 
-    DRC_ENDOWMENTS.forEach((endow) => {
+    bp.endowments.forEach((endow) => {
       const card = document.createElement("div");
       card.className = "endowment-card";
       card.innerHTML = `
@@ -317,7 +360,7 @@
         <div class="endowment-label">${endow.label}</div>
         <p class="endowment-detail">${endow.detail}</p>
         <div class="endowment-bottleneck">
-          <strong>Why It's Currently Locked:</strong> ${endow.bottleneck}
+          <strong>Bottleneck / Unlock:</strong> ${endow.bottleneck}
         </div>
       `;
       grid.appendChild(card);
@@ -325,18 +368,28 @@
   }
 
   function renderDrcPhases() {
+    const bp = getActiveBlueprint();
     const tabsContainer = document.getElementById("drcPhaseTabs");
     const detailContainer = document.getElementById("drcPhaseDetail");
     tabsContainer.innerHTML = "";
 
-    DRC_PHASES.forEach((p) => {
+    bp.phases.forEach((p) => {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = `phase-tab-btn ${p.phaseNumber === activeDrcPhase ? "active" : ""}`;
+      btn.className = `phase-tab-btn ${
+        p.phaseNumber === activeDrcPhase ? "active" : ""
+      }`;
       btn.innerHTML = `
-        <span class="phase-tab-num">STEP 0${p.phaseNumber} • $${p.budgetBillions}B ALLOCATION</span>
-        <span class="phase-tab-title">${p.phaseTitle.replace(/^Phase [I|V]+:\s*/, "")}</span>
-        <span class="phase-tab-meta">Avg ROI: ${p.avgBcr}:1 → +$${p.directEconomicBenefitBillions}B Good</span>
+        <span class="phase-tab-num">STEP 0${p.phaseNumber} • $${
+        p.budgetBillions
+      }B ALLOCATION</span>
+        <span class="phase-tab-title">${p.phaseTitle.replace(
+          /^Phase [I|V]+:\s*/,
+          ""
+        )}</span>
+        <span class="phase-tab-meta">Avg ROI: ${p.avgBcr}:1 → +$${
+        p.directEconomicBenefitBillions
+      }B Good</span>
       `;
       btn.addEventListener("click", () => {
         activeDrcPhase = p.phaseNumber;
@@ -345,14 +398,16 @@
       tabsContainer.appendChild(btn);
     });
 
-    const currentPhase = DRC_PHASES.find((p) => p.phaseNumber === activeDrcPhase);
+    const currentPhase = bp.phases.find(
+      (p) => p.phaseNumber === activeDrcPhase
+    );
     if (!currentPhase) return;
 
     const subcardsHtml = currentPhase.interventions
       .map(
         (intv) => `
         <div class="phase-subcard">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem; flex-wrap: wrap; gap: 0.4rem;">
             <span class="rank-badge winner">${intv.lomborgRef}</span>
             <span style="font-family: var(--font-mono); font-weight: 700; color: var(--emerald);">
               $${intv.costB}B × ${intv.bcr}:1 = $${intv.benefitB}B Benefit
@@ -408,12 +463,22 @@
   }
 
   // ==========================================================================
-  // 5. 50-YEAR DRC COMPOUNDING GDP TRAJECTORY CHART (SVG)
+  // 5. 50-YEAR COMPOUNDING GDP TRAJECTORY CHART (SVG)
   // ==========================================================================
 
   function renderTrajectoryChart() {
+    const bp = getActiveBlueprint();
+    const trajectories = bp.trajectories;
     const svgWrap = document.getElementById("trajectorySvgWrap");
     const milestonesWrap = document.getElementById("trajectoryMilestones");
+
+    // Update scenario button labels dynamically
+    document.getElementById("scenBtnLomborg").textContent =
+      "1. " + trajectories.lomborg.name;
+    document.getElementById("scenBtnMega").textContent =
+      "2. " + trajectories.megaproject.name;
+    document.getElementById("scenBtnStatusQuo").textContent =
+      "3. " + trajectories.statusQuo.name;
 
     const width = 920;
     const height = 310;
@@ -423,9 +488,9 @@
     const padBottom = 42;
     const plotW = width - padLeft - padRight;
     const plotH = height - padTop - padBottom;
-    const maxGdp = 60.0; // $60 Trillion Y-axis ceiling
+    const maxGdp = trajectories.maxAxisT || 60.0;
 
-    const years = DRC_TRAJECTORY_SCENARIOS.lomborg.points.map((p) => p.year);
+    const years = trajectories.lomborg.points.map((p) => p.year);
 
     function getX(idx) {
       return padLeft + (idx / (years.length - 1)) * plotW;
@@ -435,14 +500,21 @@
       return padTop + plotH - (gdpT / maxGdp) * plotH;
     }
 
-    // Build grid lines
-    const yTicks = [0, 15, 30, 45, 60];
+    // Build 5 evenly spaced Y-axis ticks
+    const step = maxGdp / 4;
+    const yTicks = [0, step, step * 2, step * 3, maxGdp];
     const gridLines = yTicks
       .map((val) => {
         const y = getY(val);
         return `
-          <line x1="${padLeft}" y1="${y}" x2="${width - padRight}" y2="${y}" stroke="var(--border-hairline)" stroke-dasharray="4 4" />
-          <text x="${padLeft - 10}" y="${y + 4}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink-muted)">$${val}T</text>
+          <line x1="${padLeft}" y1="${y}" x2="${
+          width - padRight
+        }" y2="${y}" stroke="var(--border-hairline)" stroke-dasharray="4 4" />
+          <text x="${
+            padLeft - 10
+          }" y="${y + 4}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink-muted)">$${val.toFixed(
+          0
+        )}T</text>
         `;
       })
       .join("");
@@ -451,17 +523,20 @@
     const xLabels = years
       .map((yr, idx) => {
         const x = getX(idx);
-        return `<text x="${x}" y="${height - 12}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink-muted)">${yr}</text>`;
+        return `<text x="${x}" y="${
+          height - 12
+        }" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink-muted)">${yr}</text>`;
       })
       .join("");
 
-    // Draw lines for all 3 scenarios, highlighting activeScenarioKey
     const scenarioOrder = ["statusQuo", "megaproject", "lomborg"];
     const pathsHtml = scenarioOrder
       .map((key) => {
-        const scen = DRC_TRAJECTORY_SCENARIOS[key];
+        const scen = trajectories[key];
         const isActive = key === activeScenarioKey;
-        const coords = scen.points.map((pt, idx) => `${getX(idx)},${getY(pt.gdpT)}`);
+        const coords = scen.points.map(
+          (pt, idx) => `${getX(idx)},${getY(pt.gdpT)}`
+        );
         const d = `M ${coords.join(" L ")}`;
 
         const circles = scen.points
@@ -469,10 +544,16 @@
             const cx = getX(idx);
             const cy = getY(pt.gdpT);
             return `
-              <circle cx="${cx}" cy="${cy}" r="${isActive ? 6 : 3.5}" fill="${scen.color}" stroke="var(--bg-card)" stroke-width="2" />
+              <circle cx="${cx}" cy="${cy}" r="${
+              isActive ? 6 : 3.5
+            }" fill="${scen.color}" stroke="var(--bg-card)" stroke-width="2" />
               ${
                 isActive
-                  ? `<text x="${cx}" y="${cy - 11}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="var(--ink-primary)">$${pt.gdpT}T</text>`
+                  ? `<text x="${cx}" y="${
+                      cy - 11
+                    }" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="var(--ink-primary)">$${
+                      pt.gdpT
+                    }T</text>`
                   : ""
               }
             `;
@@ -497,13 +578,17 @@
     `;
 
     // Render milestone cards for active scenario
-    const activeScen = DRC_TRAJECTORY_SCENARIOS[activeScenarioKey];
+    const activeScen = trajectories[activeScenarioKey];
     milestonesWrap.innerHTML = activeScen.points
       .map(
         (pt) => `
-        <div class="milestone-card" style="border-top: 3px solid ${activeScen.color};">
+        <div class="milestone-card" style="border-top: 3px solid ${
+          activeScen.color
+        };">
           <div class="milestone-year">${pt.year}</div>
-          <div class="milestone-gdp" style="color: ${activeScen.color};">$${pt.gdpT.toFixed(2)} Trillion</div>
+          <div class="milestone-gdp" style="color: ${
+            activeScen.color
+          };">$${pt.gdpT.toFixed(2)} Trillion</div>
           <p class="milestone-note">${pt.note}</p>
         </div>
       `
@@ -511,25 +596,33 @@
       .join("");
   }
 
-  document.querySelectorAll("#scenarioButtonGroup .scenario-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document
-        .querySelectorAll("#scenarioButtonGroup .scenario-btn")
-        .forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeScenarioKey = btn.getAttribute("data-scenario");
-      renderTrajectoryChart();
+  document
+    .querySelectorAll("#scenarioButtonGroup .scenario-btn")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document
+          .querySelectorAll("#scenarioButtonGroup .scenario-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeScenarioKey = btn.getAttribute("data-scenario");
+        renderTrajectoryChart();
+      });
     });
-  });
 
   // ==========================================================================
   // 6. ONSHORE VALUE-CHAIN MULTIPLIER CARDS
   // ==========================================================================
   function renderValueChains() {
+    const bp = getActiveBlueprint();
     const grid = document.getElementById("valueChainGrid");
     grid.innerHTML = "";
 
-    DRC_VALUE_CHAINS.forEach((vc) => {
+    const maxProcessed = Math.max(
+      ...bp.valueChains.map((v) => v.onshoreProcessedValueB),
+      500
+    );
+
+    bp.valueChains.forEach((vc) => {
       const card = document.createElement("div");
       card.className = "vc-card";
       card.innerHTML = `
@@ -542,14 +635,22 @@
         </h4>
         <div class="vc-bars">
           <div class="vc-bar-row">
-            <span style="width: 115px; color: var(--ink-muted);">Raw Ore Status Quo:</span>
-            <div class="vc-bar-raw" style="width: ${Math.max(4, (vc.rawExportValueB / 950) * 100)}%;"></div>
+            <span style="width: 115px; color: var(--ink-muted);">Raw Commodity:</span>
+            <div class="vc-bar-raw" style="width: ${Math.max(
+              4,
+              (vc.rawExportValueB / maxProcessed) * 100
+            )}%;"></div>
             <strong>$${vc.rawExportValueB}B/yr</strong>
           </div>
           <div class="vc-bar-row">
             <span style="width: 115px; color: var(--emerald); font-weight: 700;">Onshore Processed:</span>
-            <div class="vc-bar-processed" style="width: ${Math.max(15, (vc.onshoreProcessedValueB / 950) * 65)}%;"></div>
-            <strong style="color: var(--emerald);">$${vc.onshoreProcessedValueB}B/yr</strong>
+            <div class="vc-bar-processed" style="width: ${Math.max(
+              15,
+              (vc.onshoreProcessedValueB / maxProcessed) * 65
+            )}%;"></div>
+            <strong style="color: var(--emerald);">$${
+              vc.onshoreProcessedValueB
+            }B/yr</strong>
           </div>
         </div>
         <p style="font-size: 0.84rem; color: var(--ink-secondary); line-height: 1.5;">
@@ -560,12 +661,17 @@
     });
   }
 
+  function renderAllBlueprintSections() {
+    renderBlueprintHeader();
+    renderDrcEndowments();
+    renderDrcPhases();
+    renderTrajectoryChart();
+    renderValueChains();
+  }
+
   // Initial Boot
   updateSimulatorSummary();
   renderInterventionsGrid();
   renderMarimekkoChart();
-  renderDrcEndowments();
-  renderDrcPhases();
-  renderTrajectoryChart();
-  renderValueChains();
+  renderAllBlueprintSections();
 })();

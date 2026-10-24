@@ -799,13 +799,61 @@ body {
 }
 
 /* ==========================================================================
-   ACT IV: THE DRC & AFRICA $50+ TRILLION SUPERPOWER BLUEPRINT
+   ACT IV: THE DRC, KENYA & AFRICA SUPERPOWER BLUEPRINT
    ========================================================================== */
 
 .drc-showcase-section {
   background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
   padding: 5rem 0;
   border-bottom: 2px solid var(--border-strong);
+}
+
+.country-switcher-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 2rem 0 2.25rem;
+}
+
+.country-switch-btn {
+  background-color: var(--bg-card);
+  border: 2px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.35rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-subtle);
+}
+
+.country-switch-btn:hover {
+  border-color: var(--ink-primary);
+  transform: translateY(-2px);
+}
+
+.country-switch-btn.active {
+  border-color: var(--emerald);
+  background-color: var(--emerald-soft);
+  box-shadow: var(--shadow-hover);
+}
+
+.country-switch-badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--emerald);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.country-switch-title {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink-primary);
+  display: block;
 }
 
 .endowment-grid {
@@ -1074,6 +1122,9 @@ body {
   }
   .phases-tabs {
     grid-template-columns: 1fr 1fr;
+  }
+  .country-switcher-bar {
+    grid-template-columns: 1fr;
   }
 }
 
