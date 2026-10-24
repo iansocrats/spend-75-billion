@@ -2242,7 +2242,8 @@ app-root[data-breakpoint="mobile"] .mobile-hamburger-btn {
     height: 360px;
   }
   #maplibreContainer,
-  .africa-svg-map {
+  .africa-svg-map,
+  .kenya-county-svg-map {
     height: 360px;
   }
   .simulator-sticky-bar {
@@ -2357,7 +2358,8 @@ app-root[data-breakpoint="mobile"] .race-track {
 
 app-root[data-breakpoint="mobile"] .webgl-map-stage,
 app-root[data-breakpoint="mobile"] #maplibreContainer,
-app-root[data-breakpoint="mobile"] .africa-svg-map {
+app-root[data-breakpoint="mobile"] .africa-svg-map,
+app-root[data-breakpoint="mobile"] .kenya-county-svg-map {
   height: 350px;
 }
 
@@ -3160,6 +3162,95 @@ html[data-ux-step="4"] [data-step-panel="4"] {
     justify-content: center;
     text-align: center;
   }
+}
+
+/* ==========================================================================
+   KENYA 47 COUNTIES MAP & MATRIX EXPLORER STYLING
+   ========================================================================== */
+.kenya-county-svg-map {
+  width: 100%;
+  height: 100%;
+  display: none;
+  background: radial-gradient(circle at 50% 50%, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+}
+
+.county-svg-node {
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), stroke 0.15s ease, filter 0.2s ease;
+}
+
+.county-svg-node:hover {
+  filter: drop-shadow(0 0 8px rgba(217, 119, 6, 0.6));
+}
+
+.county-svg-node.active circle {
+  stroke: #D97706 !important;
+  stroke-width: 3.5px !important;
+  filter: drop-shadow(0 0 10px rgba(217, 119, 6, 0.9));
+}
+
+.county-svg-label {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  fill: var(--ink-primary);
+  pointer-events: none;
+  user-select: none;
+}
+
+.county-svg-corridor {
+  stroke-dasharray: 4, 3;
+  animation: dashKenyaFlow 20s linear infinite;
+}
+
+@keyframes dashKenyaFlow {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+.county-filter-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 1rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+}
+
+.county-search-input {
+  width: 100%;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--ink-primary);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.county-search-input:focus {
+  border-color: #D97706;
+}
+
+.kenya-counties-table tr {
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+
+.kenya-counties-table tr:hover {
+  background-color: rgba(217, 119, 6, 0.08);
+}
+
+.kenya-counties-table tr.selected {
+  background-color: rgba(217, 119, 6, 0.16) !important;
+  font-weight: 700;
 }
 
 

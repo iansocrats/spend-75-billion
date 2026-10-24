@@ -418,21 +418,34 @@
       btn.classList.toggle("active", btn.getAttribute("data-engine-mode") === mode);
     });
 
-    if (mode === "svg") {
-      maplibreContainer.style.display = "none";
-      africaSvgMap.style.display = "block";
-      renderAfricaSvgMap();
+    const isKenya = activeCountryScope === "kenya";
+    if (isKenya) {
+      if (maplibreContainer) maplibreContainer.style.display = "none";
+      if (africaSvgMap) africaSvgMap.style.display = "none";
+      if (kenyaCountySvgMap) {
+        kenyaCountySvgMap.style.display = "block";
+        renderKenyaCountyMap();
+      }
     } else {
-      maplibreContainer.style.display = "block";
-      africaSvgMap.style.display = "none";
-      syncGeoJsonMetrics();
-      if (glMap) {
-        glMap.resize();
-        glMap.easeTo({
-          pitch: mode === "3d" ? 50 : 0,
-          bearing: mode === "3d" ? -8 : 0,
-          duration: 700,
-        });
+      if (kenyaCountySvgMap) kenyaCountySvgMap.style.display = "none";
+      if (mode === "svg") {
+        if (maplibreContainer) maplibreContainer.style.display = "none";
+        if (africaSvgMap) {
+          africaSvgMap.style.display = "block";
+          renderAfricaSvgMap();
+        }
+      } else {
+        if (maplibreContainer) maplibreContainer.style.display = "block";
+        if (africaSvgMap) africaSvgMap.style.display = "none";
+        syncGeoJsonMetrics();
+        if (glMap) {
+          glMap.resize();
+          glMap.easeTo({
+            pitch: mode === "3d" ? 50 : 0,
+            bearing: mode === "3d" ? -8 : 0,
+            duration: 700,
+          });
+        }
       }
     }
   }
@@ -723,6 +736,10 @@
   }
 
   function renderCountryDossier() {
+    if (activeCountryScope === "kenya") {
+      renderCountyDossier();
+      return;
+    }
     if (typeof AFRICA_MAP_COUNTRIES === "undefined" || !countryDossierCard) return;
     const c = AFRICA_MAP_COUNTRIES[selectedMapIso] || AFRICA_MAP_COUNTRIES["COD"];
 
@@ -906,6 +923,356 @@
           glMap.setLayoutProperty("corridors-core", "visibility", vis);
       }
       renderAfricaSvgMap();
+    });
+  }
+
+  // ==========================================================================
+  // 2B. KENYA 47 COUNTIES MAP, EXPLORER & BREAKTHROUGH ENGINES MODULE
+  // ==========================================================================
+  let selectedCountyCode = "047"; // Default Nairobi Metropolis
+  let activeCountyBloc = "ALL";
+  let countySearchQuery = "";
+
+  const kenyaCountyControlsBar = document.getElementById("kenyaCountyControlsBar");
+  const africaMapControlsBar = document.getElementById("africaMapControlsBar");
+  const countySelectDropdown = document.getElementById("countySelectDropdown");
+  const kenyaCountySvgMap = document.getElementById("kenyaCountySvgMap");
+  const kenyaCountiesMatrixSection = document.getElementById("kenyaCountiesMatrixSection");
+  const kenyaCountiesTableBody = document.getElementById("kenyaCountiesTableBody");
+  const countySearchInput = document.getElementById("countySearchInput");
+  const kenyaBreakthroughGrid = document.getElementById("kenyaBreakthroughGrid");
+
+  const COUNTY_BLOC_COLORS = {
+    NAIROBI: "#D97706",
+    RIFT: "#059669",
+    PWANI: "#0284C7",
+    LAKE: "#6366F1",
+    MT_KENYA: "#8B5CF6",
+    FRONTIER: "#EA580C",
+    SEKEB: "#10B981"
+  };
+
+  function initKenyaCountyExplorer() {
+    if (typeof KENYA_47_COUNTIES_DATA === "undefined" || !countySelectDropdown) return;
+    if (countySelectDropdown.options.length === 0) {
+      countySelectDropdown.innerHTML = Object.values(KENYA_47_COUNTIES_DATA)
+        .map((c) => `<option value="${c.code}">County ${c.code} • ${c.name} (${c.roleBadge.split("•")[0].trim()}) - $${c.gcp2076T}T</option>`)
+        .join("");
+
+      countySelectDropdown.addEventListener("change", (e) => {
+        selectKenyaCounty(e.target.value, true);
+      });
+    }
+
+    if (countySelectDropdown) {
+      countySelectDropdown.value = selectedCountyCode;
+    }
+  }
+
+  function selectKenyaCounty(code, flyCamera = true) {
+    if (typeof KENYA_47_COUNTIES_DATA === "undefined") return;
+    const c = KENYA_47_COUNTIES_DATA[code] || KENYA_47_COUNTIES_DATA["047"];
+    selectedCountyCode = c.code;
+
+    if (countySelectDropdown) {
+      countySelectDropdown.value = c.code;
+    }
+
+    document.querySelectorAll("[data-quick-county]").forEach((btn) => {
+      btn.classList.toggle("active", btn.getAttribute("data-quick-county") === c.code);
+    });
+
+    if (kenyaCountySvgMap) {
+      kenyaCountySvgMap.querySelectorAll(".county-svg-node").forEach((node) => {
+        node.classList.toggle("active", node.getAttribute("data-county-code") === c.code);
+      });
+    }
+
+    if (kenyaCountiesTableBody) {
+      kenyaCountiesTableBody.querySelectorAll("tr").forEach((tr) => {
+        tr.classList.toggle("selected", tr.getAttribute("data-county-code") === c.code);
+      });
+    }
+
+    if (glMap && flyCamera) {
+      glMap.flyTo({
+        center: [36.82, -1.29],
+        zoom: 5.6,
+        pitch: mapEngineMode === "3d" ? 48 : 0,
+        bearing: -8,
+        duration: 1100
+      });
+    }
+
+    renderCountyDossier(c);
+  }
+
+  function renderCountyDossier(county) {
+    if (!countryDossierCard || typeof KENYA_47_COUNTIES_DATA === "undefined") return;
+    const c = county || KENYA_47_COUNTIES_DATA[selectedCountyCode] || KENYA_47_COUNTIES_DATA["047"];
+    const gainB = +(c.gcpShouldBe2026B - c.gcp2026B).toFixed(1);
+    const multiplier = (c.gcpShouldBe2026B / c.gcp2026B).toFixed(1);
+
+    countryDossierCard.innerHTML = `
+      <div class="dossier-header">
+        <div>
+          <div class="kicker" style="color: #D97706;">COUNTY ${c.code} • ${KENYA_ECONOMIC_BLOCS[c.bloc]?.name || c.bloc}</div>
+          <h3 class="dossier-country-title">🇰🇪 ${c.name} County</h3>
+        </div>
+        <span class="filter-pill active" style="font-size: 0.74rem; border-color: #D97706; color: #D97706;">
+          ${c.roleBadge}
+        </span>
+      </div>
+
+      <div class="dossier-metrics-grid">
+        <div class="dossier-metric-box">
+          <span class="dossier-metric-label">Current 2026 GCP (KNBS)</span>
+          <span class="dossier-metric-val" style="color: var(--crimson);">$${c.gcp2026B.toFixed(1)}B</span>
+        </div>
+        <div class="dossier-metric-box">
+          <span class="dossier-metric-label">Should Have Been (2026)</span>
+          <span class="dossier-metric-val" style="color: #D97706;">$${c.gcpShouldBe2026B.toFixed(1)}B</span>
+        </div>
+        <div class="dossier-metric-box">
+          <span class="dossier-metric-label">Immediate Unlock Gain</span>
+          <span class="dossier-metric-val emerald">+$${gainB}B (${multiplier}×)</span>
+        </div>
+        <div class="dossier-metric-box">
+          <span class="dossier-metric-label">2076 Superpower Potential</span>
+          <span class="dossier-metric-val emerald">$${c.gcp2076T.toFixed(2)} Trillion</span>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.65rem 0.85rem; background: var(--bg-secondary); border-left: 3px solid #D97706; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.73rem;">
+        <span>🏛️ <strong>County Bourse Capitalization (1.8× GCP):</strong> <strong style="color: var(--emerald);">$${(c.gcp2076T * 1.8).toFixed(2)}T Value</strong></span>
+        <span>👥 <strong>Population (2026):</strong> <strong>${c.pop2026M} Million Citizens</strong></span>
+      </div>
+
+      <div>
+        <div style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--emerald); font-weight: 700; margin-bottom: 0.25rem;">
+          🌟 Unique County Economic Superpower:
+        </div>
+        <p style="font-size: 0.86rem; color: var(--ink-primary); margin-bottom: 0.85rem; line-height: 1.45;">
+          ${c.superpower}
+        </p>
+      </div>
+
+      <div class="endowment-bottleneck" style="margin-bottom: 0.85rem;">
+        <strong>Historical Bottleneck / Drag:</strong> ${c.bottleneck}
+      </div>
+
+      <div style="background: var(--bg-secondary); border: 1px solid var(--border-hairline); border-left: 4px solid var(--cobalt); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 0.85rem;">
+        <strong style="color: var(--cobalt); font-family: var(--font-mono); text-transform: uppercase; font-size: 0.72rem; display: block; margin-bottom: 0.25rem;">
+          ⚡ Bjørn Lomborg High-Return Unlock:
+        </strong>
+        <span style="font-size: 0.84rem; line-height: 1.45; color: var(--ink-primary);">
+          ${c.lomborgUnlock}
+        </span>
+      </div>
+
+      <div style="background: var(--emerald-soft); border-left: 4px solid var(--emerald); padding: 0.85rem 1rem; border-radius: var(--radius-sm); font-size: 0.84rem;">
+        <strong style="color: var(--emerald); font-family: var(--font-mono); text-transform: uppercase; font-size: 0.72rem; display: block; margin-bottom: 0.25rem;">
+          🛡️ Broken Pipeline / Corruption Leak Plugged:
+        </strong>
+        <span style="line-height: 1.45; color: var(--ink-primary);">
+          ${c.leakFixed}
+        </span>
+      </div>
+    `;
+  }
+
+  function renderKenyaCountyMap() {
+    if (typeof KENYA_47_COUNTIES_DATA === "undefined" || !kenyaCountySvgMap) return;
+    kenyaCountySvgMap.innerHTML = "";
+
+    const corridors = [
+      {
+        name: "SGR & Northern Trade Corridor",
+        stroke: "#D97706",
+        points: [[480, 630], [420, 550], [390, 470], [360, 440], [340, 420], [270, 430], [240, 410]]
+      },
+      {
+        name: "LAPSSET Northern Gateway Corridor",
+        stroke: "#0284C7",
+        points: [[580, 500], [500, 420], [410, 360], [380, 240], [410, 160]]
+      },
+      {
+        name: "10 GW Rift Geothermal Energy Backbone",
+        stroke: "#059669",
+        points: [[300, 200], [330, 370], [340, 420], [370, 460], [400, 520]]
+      }
+    ];
+
+    corridors.forEach((corridor) => {
+      const poly = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+      poly.setAttribute("points", corridor.points.map((p) => `${p[0]},${p[1]}`).join(" "));
+      poly.setAttribute("fill", "none");
+      poly.setAttribute("stroke", corridor.stroke);
+      poly.setAttribute("stroke-width", "3");
+      poly.setAttribute("stroke-opacity", "0.4");
+      poly.setAttribute("class", "county-svg-corridor");
+      kenyaCountySvgMap.appendChild(poly);
+    });
+
+    const counties = Object.values(KENYA_47_COUNTIES_DATA);
+
+    counties.forEach((c) => {
+      const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      group.setAttribute("class", `county-svg-node ${c.code === selectedCountyCode ? "active" : ""}`);
+      group.setAttribute("data-county-code", c.code);
+
+      const radius = Math.max(9, Math.min(26, Math.round(Math.sqrt(c.gcp2076T * 42))));
+      const color = COUNTY_BLOC_COLORS[c.bloc] || "#D97706";
+
+      const halo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      halo.setAttribute("cx", c.cx);
+      halo.setAttribute("cy", c.cy);
+      halo.setAttribute("r", radius + 4);
+      halo.setAttribute("fill", color);
+      halo.setAttribute("fill-opacity", "0.15");
+      group.appendChild(halo);
+
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", c.cx);
+      circle.setAttribute("cy", c.cy);
+      circle.setAttribute("r", radius);
+      circle.setAttribute("fill", color);
+      circle.setAttribute("fill-opacity", "0.85");
+      circle.setAttribute("stroke", "#FFFFFF");
+      circle.setAttribute("stroke-width", c.code === selectedCountyCode ? "3.5" : "1.5");
+      group.appendChild(circle);
+
+      const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      txt.setAttribute("x", c.cx);
+      txt.setAttribute("y", c.cy + radius + 11);
+      txt.setAttribute("text-anchor", "middle");
+      txt.setAttribute("class", "county-svg-label");
+      txt.textContent = `${c.code} ${c.name}`;
+      group.appendChild(txt);
+
+      group.addEventListener("mouseenter", () => {
+        if (mapFloatingTooltip) {
+          mapFloatingTooltip.innerHTML = `
+            <strong>🇰🇪 County ${c.code} • ${c.name}</strong> (${c.roleBadge})<br/>
+            Current GCP: <strong style="color: var(--crimson);">$${c.gcp2026B}B</strong> •
+            Should Have Been: <strong style="color: #D97706;">$${c.gcpShouldBe2026B}B</strong><br/>
+            2076 Superpower Potential: <strong style="color: var(--emerald);">$${c.gcp2076T} Trillion</strong>
+          `;
+        }
+      });
+
+      group.addEventListener("click", () => {
+        selectKenyaCounty(c.code, true);
+      });
+
+      kenyaCountySvgMap.appendChild(group);
+    });
+  }
+
+  function renderKenyaCountiesTable(filterBloc = "ALL", searchQuery = "") {
+    if (typeof KENYA_47_COUNTIES_DATA === "undefined" || !kenyaCountiesTableBody) return;
+    const counties = Object.values(KENYA_47_COUNTIES_DATA);
+    const q = (searchQuery || "").trim().toLowerCase();
+
+    const filtered = counties.filter((c) => {
+      const matchBloc = filterBloc === "ALL" || c.bloc === filterBloc;
+      const matchSearch =
+        !q ||
+        c.name.toLowerCase().includes(q) ||
+        c.code.includes(q) ||
+        c.roleBadge.toLowerCase().includes(q) ||
+        c.superpower.toLowerCase().includes(q);
+      return matchBloc && matchSearch;
+    });
+
+    kenyaCountiesTableBody.innerHTML = filtered
+      .map((c) => {
+        const gainB = +(c.gcpShouldBe2026B - c.gcp2026B).toFixed(1);
+        const isSelected = c.code === selectedCountyCode;
+        const blocName = KENYA_ECONOMIC_BLOCS[c.bloc]?.name.split("(")[0].trim() || c.bloc;
+        return `
+          <tr class="${isSelected ? "selected" : ""}" data-county-code="${c.code}">
+            <td style="font-family: var(--font-mono); font-weight: 700; color: #D97706;">${c.code}</td>
+            <td style="font-weight: 700;">${c.name}</td>
+            <td style="font-size: 0.76rem; color: var(--ink-secondary);">${blocName}</td>
+            <td style="font-family: var(--font-mono); font-size: 0.78rem;">${c.pop2026M}M</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--crimson); font-weight: 700;">$${c.gcp2026B.toFixed(1)}B</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: #D97706; font-weight: 700;">$${c.gcpShouldBe2026B.toFixed(1)}B</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--emerald); font-weight: 700;">+$${gainB}B</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--emerald); font-weight: 700;">$${c.gcp2076T.toFixed(2)}T</td>
+            <td style="font-size: 0.78rem; max-width: 200px; line-height: 1.35;">${c.superpower}</td>
+            <td style="font-size: 0.78rem; max-width: 220px; line-height: 1.35; color: var(--cobalt);">${c.lomborgUnlock}</td>
+          </tr>
+        `;
+      })
+      .join("");
+
+    kenyaCountiesTableBody.querySelectorAll("tr").forEach((tr) => {
+      tr.addEventListener("click", () => {
+        const code = tr.getAttribute("data-county-code");
+        if (code) {
+          selectKenyaCounty(code, true);
+        }
+      });
+    });
+  }
+
+  function renderKenyaBreakthroughEngines() {
+    if (typeof KENYA_HOMEGROWN_ENGINES === "undefined" || !kenyaBreakthroughGrid) return;
+    kenyaBreakthroughGrid.innerHTML = KENYA_HOMEGROWN_ENGINES.map((e) => `
+      <div class="megacap-card" style="border-top-color: #D97706;">
+        <div class="megacap-header">
+          <div>
+            <div class="kicker" style="color: #D97706;">ENGINE ${e.num} • ${e.kicker}</div>
+            <h4 style="font-family: var(--font-serif); font-size: 1.15rem; margin: 0.2rem 0 0.5rem 0;">${e.title}</h4>
+          </div>
+        </div>
+        <div style="font-size: 0.8rem; margin-bottom: 0.6rem;">
+          <strong style="color: var(--crimson);">Bottleneck Broken:</strong> ${e.currentPain}
+        </div>
+        <div style="font-size: 0.8rem; margin-bottom: 0.6rem;">
+          <strong style="color: var(--cobalt);">Lomborg Solution:</strong> ${e.lomborgSolution}
+        </div>
+        <div style="background: var(--emerald-soft); border-left: 3px solid var(--emerald); padding: 0.5rem 0.65rem; border-radius: var(--radius-sm); font-size: 0.8rem;">
+          <strong style="color: var(--emerald);">Economic Compound:</strong> ${e.economicImpact}
+        </div>
+      </div>
+    `).join("");
+  }
+
+  // Quick county pills click listener
+  document.querySelectorAll("[data-quick-county]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const code = btn.getAttribute("data-quick-county");
+      selectKenyaCounty(code, true);
+    });
+  });
+
+  // County bloc filters in controls bar
+  document.querySelectorAll("#kenyaCountyControlsBar [data-county-bloc]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#kenyaCountyControlsBar [data-county-bloc]").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeCountyBloc = btn.getAttribute("data-county-bloc");
+      renderKenyaCountiesTable(activeCountyBloc, countySearchQuery);
+    });
+  });
+
+  // Table bloc filters in matrix section
+  document.querySelectorAll("#kenyaCountiesMatrixSection [data-table-bloc]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("#kenyaCountiesMatrixSection [data-table-bloc]").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeCountyBloc = btn.getAttribute("data-table-bloc");
+      renderKenyaCountiesTable(activeCountyBloc, countySearchQuery);
+    });
+  });
+
+  // Search input listener
+  if (countySearchInput) {
+    countySearchInput.addEventListener("input", (e) => {
+      countySearchQuery = e.target.value;
+      renderKenyaCountiesTable(activeCountyBloc, countySearchQuery);
     });
   }
 
@@ -2948,6 +3315,11 @@
 
     syncValveCardsUI();
 
+    const kenyaLedger = document.getElementById("kenyaExclusiveBorrowingLedger");
+    if (kenyaLedger) {
+      kenyaLedger.style.display = activeAuditScope === "kenya" ? "block" : "none";
+    }
+
     const audit =
       HISTORICAL_AUDIT_MODEL[activeAuditScope] || HISTORICAL_AUDIT_MODEL.africa;
     const redirectPct = parseFloat(sliderHistoricalRedirect.value);
@@ -3564,9 +3936,36 @@
         : `Every African nation has a unique superpower—from the <strong>DRC’s $24 Trillion in critical green minerals and hydro power</strong> and <strong>Kenya’s tech hub & geothermal energy</strong>, to <strong>Nigeria’s massive youth workforce</strong> and <strong>Mali’s solar basin</strong>. Click any country below to see its customized 4-step path to prosperity:`;
     }
     if (isKenya) {
-      selectMapCountry("KEN", true);
+      if (africaMapControlsBar) africaMapControlsBar.style.display = "none";
+      if (kenyaCountyControlsBar) kenyaCountyControlsBar.style.display = "flex";
+      if (africaSvgMap) africaSvgMap.style.display = "none";
+      if (maplibreContainer) maplibreContainer.style.display = "none";
+      if (kenyaCountySvgMap) {
+        kenyaCountySvgMap.style.display = "block";
+        renderKenyaCountyMap();
+      }
+      if (kenyaCountiesMatrixSection) kenyaCountiesMatrixSection.style.display = "block";
+      initKenyaCountyExplorer();
+      renderKenyaCountiesTable(activeCountyBloc, countySearchQuery);
+      renderKenyaBreakthroughEngines();
+      selectKenyaCounty(selectedCountyCode, true);
     } else {
-      selectMapCountry("COD", false);
+      if (africaMapControlsBar) africaMapControlsBar.style.display = "flex";
+      if (kenyaCountyControlsBar) kenyaCountyControlsBar.style.display = "none";
+      if (kenyaCountySvgMap) kenyaCountySvgMap.style.display = "none";
+      if (mapEngineMode === "svg") {
+        if (maplibreContainer) maplibreContainer.style.display = "none";
+        if (africaSvgMap) {
+          africaSvgMap.style.display = "block";
+          renderAfricaSvgMap();
+        }
+      } else {
+        if (maplibreContainer) maplibreContainer.style.display = "block";
+        if (africaSvgMap) africaSvgMap.style.display = "none";
+        if (glMap) glMap.resize();
+      }
+      if (kenyaCountiesMatrixSection) kenyaCountiesMatrixSection.style.display = "none";
+      selectMapCountry(selectedMapIso || "COD", true);
     }
 
     // 10. Step 4 Blueprint Showcase
@@ -3772,5 +4171,9 @@
   updateSimulatorSummary();
   renderInterventionsGrid();
   renderMarimekkoChart();
+  initKenyaCountyExplorer();
+  renderKenyaCountyMap();
+  renderKenyaCountiesTable();
+  renderKenyaBreakthroughEngines();
   renderAllBlueprintSections();
 })();

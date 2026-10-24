@@ -250,6 +250,51 @@
           </div>
         </details>
 
+        <!-- Kenya Exclusive Debt & Borrowing Breakdown (Active in Kenya Scope) -->
+        <div id="kenyaExclusiveBorrowingLedger" class="kenya-exclusive-ledger" style="display: none; margin-top: 1.5rem; background: var(--bg-card); border: 2px solid #D97706; border-radius: var(--radius-md); padding: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.75rem;">
+            <div>
+              <div class="kicker" style="color: #D97706;">EXCLUSIVELY KENYA • THE $161 BILLION BORROWING &amp; AID LEDGER</div>
+              <h3 style="font-family: var(--font-serif); font-size: 1.45rem; margin: 0.25rem 0;">
+                Where Kenya Borrowed $161 Billion: The Complete Debt &amp; Aid Inventory (1963–2026)
+              </h3>
+            </div>
+            <span style="font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700; background: rgba(217, 119, 6, 0.15); color: #D97706; padding: 0.25rem 0.65rem; border-radius: 999px;">
+              65% of KRA Taxes Consumed by Debt
+            </span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border-hairline); padding: 1rem; border-radius: var(--radius-sm);">
+              <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-muted); text-transform: uppercase;">1. Eurobond Sovereign Notes</div>
+              <div style="font-family: var(--font-mono); font-size: 1.35rem; font-weight: 700; color: #D97706; margin: 0.2rem 0;">$7.1 Billion</div>
+              <p style="font-size: 0.76rem; color: var(--ink-secondary); line-height: 1.4; margin: 0;">5 issuances (2014, 2018, 2019, 2021, 2024) at 7.25% to 10.375% coupon yields, eating $680M/yr in foreign interest.</p>
+            </div>
+
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border-hairline); padding: 1rem; border-radius: var(--radius-sm);">
+              <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-muted); text-transform: uppercase;">2. China Exim Bank (SGR Loans)</div>
+              <div style="font-family: var(--font-mono); font-size: 1.35rem; font-weight: 700; color: #D97706; margin: 0.2rem 0;">$5.2 Billion</div>
+              <p style="font-size: 0.76rem; color: var(--ink-secondary); line-height: 1.4; margin: 0;">Mombasa–Nairobi–Naivasha rail constructed without customs automation (95:1) or completion to Malaba/Uganda.</p>
+            </div>
+
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border-hairline); padding: 1rem; border-radius: var(--radius-sm);">
+              <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-muted); text-transform: uppercase;">3. Domestic Banking &amp; T-Bills</div>
+              <div style="font-family: var(--font-mono); font-size: 1.35rem; font-weight: 700; color: #D97706; margin: 0.2rem 0;">KSh 5.6+ Trillion ($42.0B)</div>
+              <p style="font-size: 0.76rem; color: var(--ink-secondary); line-height: 1.4; margin: 0;">Borrowed from commercial banks at 14%–17% interest, starving local SMEs of affordable credit.</p>
+            </div>
+
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border-hairline); padding: 1rem; border-radius: var(--radius-sm);">
+              <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-muted); text-transform: uppercase;">4. World Bank, IMF &amp; Bilateral Aid</div>
+              <div style="font-family: var(--font-mono); font-size: 1.35rem; font-weight: 700; color: #D97706; margin: 0.2rem 0;">$30.2B Debt + $76.5B Aid</div>
+              <p style="font-size: 0.76rem; color: var(--ink-secondary); line-height: 1.4; margin: 0;">Concessional development loans paired with $76.5B in historical bilateral ODA aid grants from USAID, UK, Japan &amp; EU.</p>
+            </div>
+          </div>
+
+          <div style="background: rgba(13, 148, 136, 0.08); border-left: 4px solid var(--emerald); padding: 0.85rem 1.15rem; border-radius: var(--radius-sm); font-size: 0.85rem; line-height: 1.55;">
+            <strong>The Opportunity Cost Verdict:</strong> Kenya spent <strong>2.15× more money</strong> than Bjørn Lomborg's entire continental fund ($75B). Had just <strong>28% ($45.1B)</strong> been directed into <strong>Busia Deworming (60:1)</strong>, <strong>Tusome EdTech (65:1)</strong>, <strong>Olkaria Geothermal (38:1)</strong>, <strong>Mombasa Paperless Port (95:1)</strong>, and <strong>ArdhiSasa Land Titling (55:1)</strong>, Kenya <strong>today in 2026 would have a $1.18 Trillion GDP</strong> with every citizen earning <strong>$20,400/year</strong> and zero debt crises!
+          </div>
+        </div>
+
         <!-- Step 1 Bottom Guided Navigation CTA -->
         <div class="ux-step-footer-nav">
           <div class="ux-step-footer-hint">
@@ -840,8 +885,8 @@
         Every African nation has a unique superpower—from the <strong>DRC’s $24 Trillion in critical green minerals and hydro power</strong> and <strong>Kenya’s tech hub &amp; geothermal energy</strong>, to <strong>Nigeria’s massive youth workforce</strong> and <strong>Mali’s solar basin</strong>. Click any country below to see its customized 4-step path to prosperity:
       </p>
 
-      <!-- Map Controls Bar -->
-      <div class="map-controls-bar">
+      <!-- Map Controls Bar (Africa Mode) -->
+      <div id="africaMapControlsBar" class="map-controls-bar">
         <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
           <label for="countrySelectDropdown" style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700;">JUMP TO NATION:</label>
           <select id="countrySelectDropdown" class="sensitivity-select" style="min-width: 0; max-width: 100%; font-weight: 600;"></select>
@@ -867,6 +912,34 @@
             <input type="checkbox" id="toggleCorridorsCheckbox" checked />
             Show Trade Corridors
           </label>
+        </div>
+      </div>
+
+      <!-- Kenya 47 Counties Controls Bar (Kenya Mode Only) -->
+      <div id="kenyaCountyControlsBar" class="map-controls-bar" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+          <label for="countySelectDropdown" style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: #D97706;">SELECT COUNTY (001–047):</label>
+          <select id="countySelectDropdown" class="sensitivity-select" style="min-width: 220px; max-width: 100%; font-weight: 600; border-color: #D97706;"></select>
+
+          <button type="button" class="filter-pill active" data-quick-county="047">🏙️ 047 Nairobi ($3.85T)</button>
+          <button type="button" class="filter-pill" data-quick-county="001">⚓ 001 Mombasa ($1.25T)</button>
+          <button type="button" class="filter-pill" data-quick-county="032">🌋 032 Nakuru ($1.15T)</button>
+          <button type="button" class="filter-pill" data-quick-county="027">🌾 027 Uasin Gishu ($0.82T)</button>
+          <button type="button" class="filter-pill" data-quick-county="042">🐟 042 Kisumu ($0.88T)</button>
+          <button type="button" class="filter-pill" data-quick-county="011">🐫 011 Isiolo ($0.28T)</button>
+          <button type="button" class="filter-pill" data-quick-county="023">💨 023 Turkana ($0.42T)</button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700;">Regional Blocs:</span>
+          <button type="button" class="speed-pill-btn active" data-county-bloc="ALL">All 47</button>
+          <button type="button" class="speed-pill-btn" data-county-bloc="NAIROBI">Nairobi</button>
+          <button type="button" class="speed-pill-btn" data-county-bloc="RIFT">NOREB (Rift)</button>
+          <button type="button" class="speed-pill-btn" data-county-bloc="PWANI">Pwani (Coast)</button>
+          <button type="button" class="speed-pill-btn" data-county-bloc="LAKE">LREB (Lake)</button>
+          <button type="button" class="speed-pill-btn" data-county-bloc="MT_KENYA">COMEB (Mt Kenya)</button>
+          <button type="button" class="speed-pill-btn" data-county-bloc="FRONTIER">FCDC (Frontier)</button>
+          <button type="button" class="speed-pill-btn" data-county-bloc="SEKEB">SEKEB (South East)</button>
         </div>
       </div>
 
@@ -948,6 +1021,7 @@
             </div>
             <div id="maplibreContainer"></div>
             <svg id="africaSvgMap" class="africa-svg-map" viewBox="0 0 800 860" role="img" aria-label="Interactive map of all African countries"></svg>
+            <svg id="kenyaCountySvgMap" class="kenya-county-svg-map" viewBox="0 0 800 860" role="img" aria-label="Interactive map of Kenya's 47 counties" style="display: none;"></svg>
           </div>
 
           <div class="map-legend-row">
@@ -968,6 +1042,116 @@
 
         <!-- Right: Dynamic Selected Country Dossier -->
         <div id="countryDossierCard" class="country-dossier-card"></div>
+      </div>
+
+      <!-- ================================================================
+           KENYA 47 COUNTIES MATRIX & BREAKTHROUGH ENGINES (KENYA MODE)
+           ================================================================ -->
+      <div id="kenyaCountiesMatrixSection" class="kenya-counties-matrix-section" style="display: none; margin-top: 2.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.65rem;">
+          <div>
+            <div class="kicker" style="color: #D97706;">🇰🇪 ALL 47 KENYAN COUNTIES • KNBS GCP ACTUAL VS. WHAT IT SHOULD HAVE BEEN TODAY</div>
+            <h3 style="font-family: var(--font-serif); font-size: 1.7rem; margin-bottom: 0.35rem;">
+              Kenya 47-County Economic Balance Sheet &amp; 2076 Superpower Potential
+            </h3>
+          </div>
+          <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: #D97706;">
+            KNBS 2026 Actual ($136B) vs. Counterfactual ($1.18T) vs. 2076 ($18.6T)
+          </span>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--ink-secondary); margin-bottom: 1.25rem; max-width: 950px;">
+          If Kenya's <strong>$161 Billion</strong> in aid and debt had been invested through Lomborg's high-return blueprint (zero pending bills, ArdhiSasa digital titles, direct Olkaria geothermal steam, universal school deworming, and paperless customs), Kenya's GDP would be <strong>$1.18 Trillion today ($20,400 per person)</strong> instead of $136 Billion. Examine what each county produces now vs. what it was robbed of, and its 2076 superpower potential:
+        </p>
+
+        <!-- County Aggregate Summary KPIs -->
+        <div class="friedman-kpi-grid" style="margin-bottom: 1.5rem;">
+          <div class="friedman-kpi-card" style="border-left-color: var(--crimson);">
+            <span class="friedman-kpi-label">Current 47-County Total GCP (KNBS 2026)</span>
+            <span class="friedman-kpi-val" style="color: var(--crimson);">$136.0 Billion</span>
+            <span class="friedman-kpi-sub">KSh 17.7 Trillion • $2,340 per capita</span>
+          </div>
+          <div class="friedman-kpi-card" style="border-left-color: #D97706;">
+            <span class="friedman-kpi-label">What Kenya Should Have Been Today</span>
+            <span class="friedman-kpi-val" style="color: #D97706;">$1,180.0 Billion ($1.18T)</span>
+            <span class="friedman-kpi-sub">8.68× Higher • $20,400 per capita</span>
+          </div>
+          <div class="friedman-kpi-card" style="border-left-color: var(--emerald);">
+            <span class="friedman-kpi-label">Economic Value Stolen / Trapped</span>
+            <span class="friedman-kpi-val emerald">+$1,044.0 Billion (+$1.04T)</span>
+            <span class="friedman-kpi-sub">Unbankable land, ghost bills &amp; high power</span>
+          </div>
+          <div class="friedman-kpi-card" style="border-left-color: var(--cobalt);">
+            <span class="friedman-kpi-label">Kenya 2076 Superpower Potential</span>
+            <span class="friedman-kpi-val cobalt">$18.60 Trillion</span>
+            <span class="friedman-kpi-sub">Top 10 Global Economy • Silicon Savannah</span>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="county-filter-toolbar">
+          <div style="flex: 1; min-width: 240px;">
+            <input
+              type="text"
+              id="countySearchInput"
+              class="county-search-input"
+              placeholder="🔍 Search county name or code (e.g. 047, Nairobi, Nakuru, Kisumu, Kilifi)..."
+            />
+          </div>
+          <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; align-items: center;">
+            <span style="font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700;">Bloc:</span>
+            <button type="button" class="speed-pill-btn active" data-table-bloc="ALL">All (47)</button>
+            <button type="button" class="speed-pill-btn" data-table-bloc="NAIROBI">Nairobi</button>
+            <button type="button" class="speed-pill-btn" data-table-bloc="RIFT">NOREB (14)</button>
+            <button type="button" class="speed-pill-btn" data-table-bloc="PWANI">Pwani (6)</button>
+            <button type="button" class="speed-pill-btn" data-table-bloc="LAKE">LREB (10)</button>
+            <button type="button" class="speed-pill-btn" data-table-bloc="MT_KENYA">COMEB (8)</button>
+            <button type="button" class="speed-pill-btn" data-table-bloc="FRONTIER">FCDC (5)</button>
+            <button type="button" class="speed-pill-btn" data-table-bloc="SEKEB">SEKEB (3)</button>
+          </div>
+        </div>
+
+        <!-- 47-Counties Interactive Table -->
+        <div class="race-proof-table-wrap" style="max-height: 480px; overflow-y: auto;">
+          <table class="race-proof-table kenya-counties-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Code</th>
+                <th>County</th>
+                <th>Bloc</th>
+                <th>Pop (2026)</th>
+                <th>Current GCP (2026)</th>
+                <th>Should Have Been (2026)</th>
+                <th>Immediate Gain</th>
+                <th>2076 Superpower</th>
+                <th>County Superpower</th>
+                <th>Specific Lomborg Unlock</th>
+              </tr>
+            </thead>
+            <tbody id="kenyaCountiesTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- ================================================================
+             6 HOMEGROWN KENYAN BREAKTHROUGH ENGINES (PROACTIVE SUGGESTIONS)
+             ================================================================ -->
+        <div id="kenyaBreakthroughEnginesSection" style="margin-top: 2.75rem; padding-top: 1.75rem; border-top: 2px solid var(--border-strong);">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.65rem;">
+            <div>
+              <div class="kicker" style="color: #D97706;">HOMEGROWN GAMECHANGERS • PROACTIVE KENYAN BREAKTHROUGHS</div>
+              <h3 style="font-family: var(--font-serif); font-size: 1.65rem; margin-bottom: 0.35rem;">
+                6 Homegrown Kenyan Economic Breakthrough Engines
+              </h3>
+            </div>
+            <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--emerald);">
+              $160B Escrow • $150B Land • $0.038 Geothermal • M-Pesa Equity
+            </span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--ink-secondary); margin-bottom: 1.25rem; max-width: 950px;">
+            Kenya doesn't need more foreign debt, high-interest commercial loans, or foreign consulting missions. Kenya needs to unleash its own proven homegrown engines—from <strong>Olkaria's volcanic steam</strong> to <strong>M-Pesa's transactional rails</strong> and <strong>ArdhiSasa digital property deeds</strong>. Explore the 6 breakthroughs below:
+          </p>
+
+          <div id="kenyaBreakthroughGrid" class="megacap-board-grid"></div>
+        </div>
       </div>
     </section>
 
@@ -1279,6 +1463,7 @@
   </app-root>
 
   <script src="africa-map-data.js"></script>
+  <script src="kenya-counties-data.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
