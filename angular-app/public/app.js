@@ -875,6 +875,9 @@
 
   document.querySelectorAll("[data-quick-iso]").forEach((btn) => {
     btn.addEventListener("click", () => {
+      if (typeof window.goToUxStep === "function") {
+        window.goToUxStep("4", false);
+      }
       selectMapCountry(btn.getAttribute("data-quick-iso"), true);
     });
   });
@@ -3076,9 +3079,13 @@
       prevBlocRanks = {};
       renderOvertakeRace(false);
       renderOvertakeProofTable();
-      const raceSec = document.getElementById("overtake-race");
-      if (raceSec) {
-        raceSec.scrollIntoView({ behavior: "smooth" });
+      if (typeof window.goToUxStep === "function") {
+        window.goToUxStep("3", true);
+      } else {
+        const raceSec = document.getElementById("overtake-race");
+        if (raceSec) {
+          raceSec.scrollIntoView({ behavior: "smooth" });
+        }
       }
     });
   }
@@ -3219,7 +3226,84 @@
     });
   }
 
-  // 45-Second Interactive Auto-Tour
+  // ==========================================================================
+  // 13. 4-STEP GUIDED INTERACTIVE WIZARD & EXPANDABLE DRAWER CONTROLLER
+  // ==========================================================================
+  function goToUxStep(stepId, shouldScrollTop = true) {
+    const stepStr = String(stepId || "1");
+    const html = document.documentElement;
+    html.setAttribute("data-ux-step", stepStr);
+
+    // Sync active state on header stepper tabs & mobile bottom tabs
+    document.querySelectorAll("[data-step-btn]").forEach((btn) => {
+      btn.classList.toggle(
+        "active",
+        btn.getAttribute("data-step-btn") === stepStr
+      );
+    });
+
+    // If switching to Step 4 or All, resize MapLibre WebGL canvas & SVG map
+    if (stepStr === "4" || stepStr === "all") {
+      setTimeout(() => {
+        if (glMap && typeof glMap.resize === "function") {
+          glMap.resize();
+        }
+        renderAfricaSvgMap();
+        renderTrajectoryChart();
+      }, 65);
+    }
+
+    // If switching to Step 2 or All, refresh Marimekko chart
+    if (stepStr === "2" || stepStr === "all") {
+      setTimeout(() => {
+        renderMarimekkoChart();
+      }, 65);
+    }
+
+    // If switching to Step 3 or All, refresh Overtake Race row positions
+    if (stepStr === "3" || stepStr === "all") {
+      setTimeout(() => {
+        renderOvertakeRace(false);
+        renderStockMarketRace(false);
+      }, 45);
+    }
+
+    if (shouldScrollTop) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+  window.goToUxStep = goToUxStep;
+
+  document.addEventListener("click", (e) => {
+    const stepBtn = e.target.closest("[data-step-btn]");
+    if (stepBtn) {
+      const targetStep = stepBtn.getAttribute("data-step-btn");
+      goToUxStep(targetStep, true);
+      return;
+    }
+
+    const gotoBtn = e.target.closest("[data-goto-step]");
+    if (gotoBtn) {
+      e.preventDefault();
+      const targetStep = gotoBtn.getAttribute("data-goto-step");
+      goToUxStep(targetStep, true);
+    }
+  });
+
+  // Re-render charts inside <details class="ux-deep-drawer"> when expanded
+  document.querySelectorAll("details.ux-deep-drawer").forEach((det) => {
+    det.addEventListener("toggle", () => {
+      if (det.open) {
+        setTimeout(() => {
+          renderMarimekkoChart();
+          renderStockMarketRace(false);
+          renderTrajectoryChart();
+        }, 50);
+      }
+    });
+  });
+
+  // 45-Second Interactive Auto-Tour (Steps 1 -> 2 -> 3 -> 4)
   const autoTourBtn = document.getElementById("autoTourBtn");
   let autoTourTimers = [];
 
@@ -3237,9 +3321,8 @@
       }
       autoTourBtn.textContent = "⏹ Stop Tour";
 
-      // Step 1: Scroll to Leaky Pipe Audit & Switch to Kenya -> Lock Valves
-      const auditEl = document.getElementById("historical-audit");
-      if (auditEl) auditEl.scrollIntoView({ behavior: "smooth" });
+      // Step 1: Leaky Pipe Audit — Open leaks then lock all 3 valves on Kenya & Africa
+      goToUxStep("1", true);
       if (openAllValvesLeakBtn) openAllValvesLeakBtn.click();
 
       autoTourTimers.push(
@@ -3250,37 +3333,38 @@
         }, 2500)
       );
 
-      // Step 2: Scroll to Global GDP Overtake Race & Play at 2x Speed
+      // Step 2: The $75B Fix — Show 1324 Trap vs Max Sankore on the 4 Dials
       autoTourTimers.push(
         setTimeout(() => {
-          const raceEl = document.getElementById("overtake-race");
-          if (raceEl) raceEl.scrollIntoView({ behavior: "smooth" });
+          goToUxStep("2", true);
+          if (eqPresetTrapBtn) eqPresetTrapBtn.click();
+        }, 6500)
+      );
+
+      autoTourTimers.push(
+        setTimeout(() => {
+          if (eqPresetMaxBtn) eqPresetMaxBtn.click();
+        }, 9000)
+      );
+
+      // Step 3: Global GDP Overtake Race at 2x Speed
+      autoTourTimers.push(
+        setTimeout(() => {
+          goToUxStep("3", true);
           raceSpeedMultiplier = 2;
           raceYear = 2026;
           startRacePlayback();
-        }, 6000)
+        }, 12500)
       );
 
-      // Step 3: Scroll to $330T Stock Market Race & Play at 2x Speed
+      // Step 4: 54-Country 3D Map & 3D Extrusion Growth
       autoTourTimers.push(
         setTimeout(() => {
-          const stockEl = document.getElementById("friedman-markets");
-          if (stockEl) stockEl.scrollIntoView({ behavior: "smooth" });
-          stockRaceSpeedMultiplier = 2;
-          stockRaceYear = 2026;
-          startStockRacePlayback();
-        }, 14500)
-      );
-
-      // Step 4: Scroll to 54-Country 3D Map & Play 3D Extrusion Growth
-      autoTourTimers.push(
-        setTimeout(() => {
-          const mapEl = document.getElementById("africa-map");
-          if (mapEl) mapEl.scrollIntoView({ behavior: "smooth" });
+          goToUxStep("4", true);
           mapSpeedMultiplier = 2;
           mapSimYear = 2026;
           startMapPlayback();
-        }, 23000)
+        }, 22000)
       );
 
       autoTourTimers.push(
