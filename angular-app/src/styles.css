@@ -2893,196 +2893,65 @@ input[type="range"] {
 }
 
 /* ============================================================================
-   COUNTRY SELECTION LANDING PORTAL (AFRICA VS KENYA ENTRY)
+   COUNTRY SCOPE SWITCHER NAVBAR (ALL-AFRICA VS KENYA)
    ============================================================================ */
-.portal-badge-btn {
+.country-scope-navbar {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border-hairline);
+  padding: 0.18rem;
+  border-radius: 999px;
+  gap: 0.2rem;
+  margin-left: 0.75rem;
+}
+
+.scope-nav-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-hairline);
-  padding: 0.25rem 0.65rem;
+  padding: 0.28rem 0.75rem;
   border-radius: 999px;
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  font-weight: 700;
-  color: var(--ink-primary);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-left: 0.5rem;
-}
-
-.portal-badge-btn:hover {
-  border-color: var(--emerald);
-  background: var(--emerald-soft);
-  transform: translateY(-1px);
-}
-
-.country-portal-hero {
-  padding: 3rem 1.25rem 4rem;
-  background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-  border-bottom: 2px solid var(--border-strong);
-}
-
-.portal-container {
-  max-width: 1040px;
-  margin: 0 auto;
-}
-
-.portal-header {
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto 2.5rem;
-}
-
-.portal-headline {
-  font-family: var(--font-serif);
-  font-size: clamp(1.8rem, 4vw, 2.75rem);
-  line-height: 1.15;
-  margin: 0.5rem 0 1rem;
-}
-
-.portal-sub {
-  font-size: 1.05rem;
+  border: none;
+  background: transparent;
   color: var(--ink-secondary);
-  line-height: 1.55;
-}
-
-.portal-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.75rem;
-  margin-bottom: 2rem;
-}
-
-.portal-card {
-  background: var(--bg-card);
-  border: 2px solid var(--border-hairline);
-  border-radius: var(--radius-md);
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: var(--shadow-subtle);
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  white-space: nowrap;
 }
 
-.portal-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--emerald);
-  box-shadow: 0 14px 34px rgba(13, 148, 136, 0.16);
+.scope-nav-btn:hover {
+  color: var(--ink-primary);
+  background: rgba(0, 0, 0, 0.04);
 }
 
-.portal-card.featured {
-  border-color: #D97706;
+.scope-nav-btn.active {
+  background: var(--bg-card);
+  color: var(--ink-primary);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.portal-card.featured:hover {
-  box-shadow: 0 14px 34px rgba(217, 119, 6, 0.2);
-}
-
-.portal-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.portal-card-flag {
-  font-size: 2.5rem;
+.scope-nav-flag {
+  font-size: 0.95rem;
   line-height: 1;
 }
 
-.portal-card-badge {
+.scope-nav-pill {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 0.22rem 0.55rem;
+  padding: 0.1rem 0.4rem;
   border-radius: 999px;
   background: var(--emerald-soft);
   color: var(--emerald);
-  border: 1px solid var(--emerald);
 }
 
-.portal-card-badge.gold {
-  background: rgba(217, 119, 6, 0.12);
+.scope-nav-btn[data-scope-btn="kenya"].active .scope-nav-pill {
+  background: rgba(217, 119, 6, 0.15);
   color: #D97706;
-  border-color: #D97706;
-}
-
-.portal-card-title {
-  font-family: var(--font-serif);
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin-bottom: 0.65rem;
-}
-
-.portal-card-desc {
-  font-size: 0.92rem;
-  color: var(--ink-secondary);
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
-  flex-grow: 1;
-}
-
-.portal-card-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-hairline);
-  border-radius: var(--radius-sm);
-  padding: 0.85rem 0.65rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.portal-stat-num {
-  font-family: var(--font-mono);
-  font-size: 1.15rem;
-  font-weight: 700;
-  display: block;
-}
-
-.portal-stat-lbl {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-  display: block;
-  margin-top: 0.2rem;
-}
-
-.portal-card-btn {
-  width: 100%;
-  padding: 0.8rem 1rem;
-  font-size: 0.94rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-}
-
-.portal-footer-hint {
-  text-align: center;
-  font-size: 0.85rem;
-  color: var(--ink-muted);
-}
-
-/* Page View Visibility: In 'portal' mode, only the country selector shows */
-html[data-view-mode="portal"] .masthead .ux-stepper-bar,
-html[data-view-mode="portal"] main.container,
-html[data-view-mode="portal"] section.drc-showcase-section,
-html[data-view-mode="portal"] nav.mobile-bottom-nav,
-html[data-view-mode="portal"] footer.editorial-footer {
-  display: none !important;
-}
-
-html[data-view-mode="detail"] #country-portal {
-  display: none !important;
 }
 
 /* Step Visibility Rules: Show only active step panel unless data-ux-step="all" */

@@ -3227,81 +3227,54 @@
   }
 
   // ==========================================================================
-  // 13. COUNTRY PORTAL & 4-STEP GUIDED INTERACTIVE WIZARD
+  // 13. COUNTRY SCOPE NAVBAR & 4-STEP GUIDED INTERACTIVE WIZARD
   // ==========================================================================
-  function setViewMode(mode, targetScope = null) {
+  function setCountryScope(targetScope) {
+    if (!targetScope || (targetScope !== "africa" && targetScope !== "kenya")) {
+      targetScope = "africa";
+    }
+
     const html = document.documentElement;
-    html.setAttribute("data-view-mode", mode); // "portal" | "detail"
+    html.setAttribute("data-country-scope", targetScope);
 
-    if (mode === "detail" && targetScope) {
-      // Set audit scope to africa or kenya
-      activeAuditScope = targetScope;
-      document.querySelectorAll("[data-audit-scope]").forEach((b) => {
-        b.classList.toggle("active", b.getAttribute("data-audit-scope") === targetScope);
-      });
-      if (sliderHistoricalRedirect && HISTORICAL_AUDIT_MODEL[targetScope]) {
-        sliderHistoricalRedirect.value = HISTORICAL_AUDIT_MODEL[targetScope].defaultRedirectPct;
-      }
-      renderHistoricalAudit();
+    // Update active tab in header country navbar
+    document.querySelectorAll("[data-scope-btn]").forEach((btn) => {
+      const isMatch = btn.getAttribute("data-scope-btn") === targetScope;
+      btn.classList.toggle("active", isMatch);
+      btn.setAttribute("aria-selected", isMatch ? "true" : "false");
+    });
 
-      // If Kenya selected, also preset 3D map nation to KEN
-      if (targetScope === "kenya") {
-        selectMapCountry("KEN", false);
-      } else {
-        selectMapCountry("COD", false);
-      }
+    // Sync Step 1 Audit scope
+    activeAuditScope = targetScope;
+    document.querySelectorAll("[data-audit-scope]").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-audit-scope") === targetScope);
+    });
+    if (sliderHistoricalRedirect && HISTORICAL_AUDIT_MODEL[targetScope]) {
+      sliderHistoricalRedirect.value = HISTORICAL_AUDIT_MODEL[targetScope].defaultRedirectPct;
+    }
+    renderHistoricalAudit();
 
-      // Update top bar badge
-      const flagEl = document.getElementById("activeScopeFlag");
-      const labelEl = document.getElementById("activeScopeLabel");
-      if (flagEl && labelEl) {
-        if (targetScope === "kenya") {
-          flagEl.textContent = "🇰🇪";
-          labelEl.textContent = "Kenya";
-        } else {
-          flagEl.textContent = "🌍";
-          labelEl.textContent = "All-Africa";
-        }
-      }
-
-      // Always start on Step 1
-      goToUxStep("1", true);
-    } else if (mode === "portal") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    // If Kenya selected, select Kenya on 3D map
+    if (targetScope === "kenya") {
+      selectMapCountry("KEN", false);
+    } else {
+      selectMapCountry("COD", false);
     }
   }
-  window.setViewMode = setViewMode;
+  window.setCountryScope = setCountryScope;
 
-  // Handle Portal Card Click
-  document.querySelectorAll("[data-select-scope]").forEach((card) => {
-    card.addEventListener("click", () => {
-      const scope = card.getAttribute("data-select-scope");
-      setViewMode("detail", scope);
+  // Handle Country Scope Navbar clicks
+  document.querySelectorAll("[data-scope-btn]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const scope = btn.getAttribute("data-scope-btn");
+      setCountryScope(scope);
     });
   });
-
-  // Handle Switcher button in masthead
-  const scopeSwitchPortalBtn = document.getElementById("scopeSwitchPortalBtn");
-  if (scopeSwitchPortalBtn) {
-    scopeSwitchPortalBtn.addEventListener("click", () => {
-      const curMode = document.documentElement.getAttribute("data-view-mode");
-      if (curMode === "portal") {
-        setViewMode("detail", "africa");
-      } else {
-        setViewMode("portal");
-      }
-    });
-  }
 
   function goToUxStep(stepId, shouldScrollTop = true) {
     const stepStr = String(stepId || "1");
     const html = document.documentElement;
     html.setAttribute("data-ux-step", stepStr);
-
-    // If we were in portal mode, switch to detail view
-    if (html.getAttribute("data-view-mode") === "portal") {
-      html.setAttribute("data-view-mode", "detail");
-    }
 
     // Sync active state on header stepper tabs & mobile bottom tabs
     document.querySelectorAll("[data-step-btn]").forEach((btn) => {
