@@ -590,6 +590,11 @@
         </div>
       </div>
 
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.65rem 0.85rem; background: var(--emerald-soft); border-left: 3px solid #D97706; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.73rem;">
+        <span>🏛️ <strong>2076 ${c.name} Stock Exchange (1.8× GDP):</strong> <strong style="color: var(--emerald);">$${(c.gdp2076T * 1.8).toFixed(2)}T Market Cap</strong></span>
+        <span>💱 <strong>Friedman Currency Value:</strong> <strong style="color: #D97706;">+${Math.round(180 + c.bcrWeighted * 1.75)}% Real Appreciation</strong></span>
+      </div>
+
       <div>
         <div style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700;">
           Natural &amp; Strategic Endowments (${c.name} • ~${c.pop2076M}M Pop by 2076)
@@ -1659,6 +1664,217 @@
     });
   }
 
+  // ==========================================================================
+  // 8. MILTON FRIEDMAN MONETARY ENGINE (M·V = P·Y) & $261T STOCK MARKET
+  // ==========================================================================
+  let activeFriedmanRegime = "sankoreFriedman";
+  const sliderMGrowth = document.getElementById("sliderMGrowth");
+  const sliderYGrowth = document.getElementById("sliderYGrowth");
+  const sliderBuffettRatio = document.getElementById("sliderBuffettRatio");
+  const sliderDiscountR = document.getElementById("sliderDiscountR");
+  const valMGrowth = document.getElementById("valMGrowth");
+  const valYGrowth = document.getElementById("valYGrowth");
+  const valBuffettRatio = document.getElementById("valBuffettRatio");
+  const valDiscountR = document.getElementById("valDiscountR");
+  const friedmanRegimeCallout = document.getElementById("friedmanRegimeCallout");
+  const friedmanKpiGrid = document.getElementById("friedmanKpiGrid");
+  const megacapTickerBoard = document.getElementById("megacapTickerBoard");
+  const sankoreExchangeTotalLabel = document.getElementById("sankoreExchangeTotalLabel");
+
+  function renderFriedmanMarkets() {
+    if (
+      typeof FRIEDMAN_CAPITAL_MARKETS_MODEL === "undefined" ||
+      !friedmanKpiGrid ||
+      !sliderMGrowth
+    ) {
+      return;
+    }
+
+    const mPct = parseFloat(sliderMGrowth.value);
+    const yPct = parseFloat(sliderYGrowth.value);
+    const buffett = parseFloat(sliderBuffettRatio.value);
+    const rPct = parseFloat(sliderDiscountR.value);
+
+    if (valMGrowth) valMGrowth.textContent = `${mPct.toFixed(1)}%/yr`;
+    if (valYGrowth) valYGrowth.textContent = `${yPct.toFixed(1)}%/yr`;
+    if (valBuffettRatio) {
+      valBuffettRatio.textContent = `${buffett.toFixed(2)}× (${Math.round(buffett * 100)}%)`;
+    }
+    if (valDiscountR) valDiscountR.textContent = `${rPct.toFixed(1)}%`;
+
+    // 1. Real Output Y in 2076 (calibrated so 7.6%/yr = $145.0T, 2.6%/yr = $8.2T)
+    const simGdp2076T = +(3.71 * Math.pow(1 + yPct / 100, 50)).toFixed(1);
+    const clampedGdp2076T = Math.min(260.0, Math.max(4.5, simGdp2076T));
+
+    // 2. Friedman Equation of Exchange: Inflation P_dot = M_dot + V_dot - Y_dot
+    // With digital velocity V_dot ~ +1.8% in deepening markets
+    const inflationPct = +(mPct + 1.8 - yPct).toFixed(1);
+    const isHyperInflation = inflationPct > 8.0;
+
+    // 3. Real Currency Valuation (REER Index, base 100 in 2026)
+    // Driven by Friedman (Y_dot - M_dot) + Balassa-Samuelson productivity premium
+    const outputSurplus = yPct - mPct;
+    const reerIndex = Math.max(
+      18,
+      Math.min(480, Math.round(100 + outputSurplus * 42 + yPct * 18))
+    );
+    const currencyChangePct = reerIndex - 100;
+
+    // 4. Total Pan-African Stock Market Cap (Buffett Indicator: Market Cap = GDP * buffett)
+    const panAfricanMarketCapT = +(clampedGdp2076T * buffett).toFixed(1);
+    const twinAxisMarketCapT = +(panAfricanMarketCapT * 0.506).toFixed(1);
+
+    // 5. Gordon Growth Model P/E Multiple: P/E = (1 - retention) / (r - g)
+    const gLongRun = Math.min(rPct - 1.4, Math.max(1.2, yPct * 0.45));
+    const spreadRG = Math.max(1.8, rPct - gLongRun);
+    const peMultiple = +(62.0 / spreadRG).toFixed(1);
+
+    // 6. Sovereign 10-Yr Bond Yield & Global Central Bank Reserve Share
+    const bondYield10Yr = Math.max(1.8, +(rPct * 0.5 + Math.max(0, inflationPct * 0.65)).toFixed(1));
+    const reserveSharePct = Math.max(
+      0.2,
+      Math.min(52.0, +((clampedGdp2076T / 340.0) * 100 * (reerIndex / 365)).toFixed(1))
+    );
+
+    const reg =
+      FRIEDMAN_CAPITAL_MARKETS_MODEL.regimes[activeFriedmanRegime] ||
+      FRIEDMAN_CAPITAL_MARKETS_MODEL.regimes.sankoreFriedman;
+
+    if (friedmanRegimeCallout) {
+      friedmanRegimeCallout.style.borderLeftColor = isHyperInflation
+        ? "var(--crimson)"
+        : "var(--emerald)";
+      friedmanRegimeCallout.innerHTML = `
+        <div style="flex: 1; min-width: 260px;">
+          <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: ${
+            isHyperInflation ? "var(--crimson)" : "var(--emerald)"
+          };">${reg.badge}</div>
+          <div style="margin-top: 0.2rem;"><strong>${reg.name}:</strong> ${reg.summary}</div>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; text-align: right;">
+          <div>Friedman Identity: M(${mPct.toFixed(1)}%) · V = P(${inflationPct > 0 ? "+" : ""}${inflationPct}%) · Y(${yPct.toFixed(1)}%)</div>
+          <div style="color: var(--emerald);">2076 Real Output (Y): $${clampedGdp2076T.toFixed(1)} Trillion</div>
+        </div>
+      `;
+    }
+
+    friedmanKpiGrid.innerHTML = `
+      <div class="friedman-kpi-card">
+        <div class="friedman-kpi-label">2076 Pan-African Stock Market</div>
+        <div class="friedman-kpi-val" style="color: var(--emerald);">$${panAfricanMarketCapT.toFixed(1)}T</div>
+        <div class="friedman-kpi-sub">${buffett.toFixed(2)}× Buffett Ratio on $${clampedGdp2076T.toFixed(1)}T GDP (vs. $1.1T in 2026)</div>
+      </div>
+
+      <div class="friedman-kpi-card gold">
+        <div class="friedman-kpi-label">Kenya–DRC Twin-Axis Exchange</div>
+        <div class="friedman-kpi-val" style="color: #D97706;">$${twinAxisMarketCapT.toFixed(1)}T</div>
+        <div class="friedman-kpi-sub">Nairobi–Kinshasa Bourse (#1 Liquidity Hub on Earth)</div>
+      </div>
+
+      <div class="friedman-kpi-card ${currencyChangePct < 0 ? "warn" : ""}">
+        <div class="friedman-kpi-label">Real Currency Value (REER)</div>
+        <div class="friedman-kpi-val" style="color: ${
+          currencyChangePct >= 0 ? "var(--emerald)" : "var(--crimson)"
+        };">
+          ${currencyChangePct >= 0 ? "+" : ""}${currencyChangePct}%
+        </div>
+        <div class="friedman-kpi-sub">Index: ${reerIndex} (2026=100) • Balassa–Samuelson + Friedman</div>
+      </div>
+
+      <div class="friedman-kpi-card ${isHyperInflation ? "warn" : ""}">
+        <div class="friedman-kpi-label">Friedman Annual Inflation (P)</div>
+        <div class="friedman-kpi-val" style="color: ${
+          isHyperInflation ? "var(--crimson)" : "var(--ink-primary)"
+        };">
+          ${inflationPct > 0 ? "+" : ""}${inflationPct}%/yr
+        </div>
+        <div class="friedman-kpi-sub">10-Yr Sovereign Bond Yield: <strong>${bondYield10Yr}%</strong></div>
+      </div>
+
+      <div class="friedman-kpi-card">
+        <div class="friedman-kpi-label">Gordon Growth P/E Multiple</div>
+        <div class="friedman-kpi-val">${peMultiple}× P/E</div>
+        <div class="friedman-kpi-sub">P = D₁/(r - g) • Discount r=${rPct.toFixed(1)}% (vs. 7.5× P/E in 2026)</div>
+      </div>
+
+      <div class="friedman-kpi-card gold">
+        <div class="friedman-kpi-label">Global Reserve Currency Share</div>
+        <div class="friedman-kpi-val" style="color: #D97706;">${reserveSharePct}%</div>
+        <div class="friedman-kpi-sub">${
+          reserveSharePct >= 25
+            ? "🏆 #1 Global Central Bank Reserve Asset"
+            : "Share of Global FX Reserves"
+        }</div>
+      </div>
+    `;
+
+    if (sankoreExchangeTotalLabel) {
+      sankoreExchangeTotalLabel.textContent = `Simulated 2076 Continental Market Cap: $${panAfricanMarketCapT.toFixed(1)} Trillion`;
+    }
+
+    if (megacapTickerBoard) {
+      const capScale = panAfricanMarketCapT / 261.0;
+      megacapTickerBoard.innerHTML = FRIEDMAN_CAPITAL_MARKETS_MODEL.megacaps
+        .map((co) => {
+          const scaledCapT = +(co.baseCap2076T * capScale).toFixed(2);
+          return `
+            <div class="megacap-card">
+              <div>
+                <div class="megacap-top">
+                  <span class="megacap-ticker">$${co.ticker}</span>
+                  <span class="megacap-cap">$${scaledCapT}T</span>
+                </div>
+                <div style="font-weight: 700; font-size: 0.94rem; margin-top: 0.45rem; line-height: 1.25;">
+                  ${co.name}
+                </div>
+                <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-muted); margin-top: 0.15rem;">
+                  ${co.hq} • ${co.sector}
+                </div>
+              </div>
+              <p style="font-size: 0.78rem; color: var(--ink-secondary); line-height: 1.45; margin: 0;">
+                ${co.catalyst}
+              </p>
+              <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-muted); border-top: 1px dashed var(--border-hairline); padding-top: 0.4rem;">
+                <span>2026: $${co.marketCap2026B}B</span>
+                <span>P/E: ${peMultiple}×</span>
+                <span>Div: ${co.divYield}</span>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+  }
+
+  document.querySelectorAll("[data-friedman-regime]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const regKey = btn.getAttribute("data-friedman-regime");
+      const reg =
+        FRIEDMAN_CAPITAL_MARKETS_MODEL &&
+        FRIEDMAN_CAPITAL_MARKETS_MODEL.regimes[regKey];
+      if (!reg) return;
+      activeFriedmanRegime = regKey;
+      document.querySelectorAll("[data-friedman-regime]").forEach((b) => {
+        b.classList.toggle("active", b === btn);
+      });
+      if (sliderMGrowth) sliderMGrowth.value = reg.mGrowthPct;
+      if (sliderYGrowth) sliderYGrowth.value = reg.yGrowthPct;
+      if (sliderBuffettRatio) sliderBuffettRatio.value = reg.buffettRatio;
+      if (sliderDiscountR) sliderDiscountR.value = reg.discountRateR;
+      renderFriedmanMarkets();
+    });
+  });
+
+  [sliderMGrowth, sliderYGrowth, sliderBuffettRatio, sliderDiscountR].forEach(
+    (sl) => {
+      if (sl) {
+        sl.addEventListener("input", () => {
+          renderFriedmanMarkets();
+        });
+      }
+    }
+  );
+
   function renderAllBlueprintSections() {
     renderBlueprintHeader();
     renderDrcEndowments();
@@ -1674,6 +1890,7 @@
   initWebGlMap();
   renderOvertakeRace();
   renderOvertakeProofTable();
+  renderFriedmanMarkets();
   renderBtfMatrix();
   updateSimulatorSummary();
   renderInterventionsGrid();

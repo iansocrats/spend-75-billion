@@ -1467,3 +1467,133 @@ const OVERTAKE_RACE_BLOCS = [
   }
 ];
 
+// ============================================================================
+// MILTON FRIEDMAN MONETARY ENGINE (M*V = P*Y) & $261T STOCK MARKET MODEL
+// ============================================================================
+
+const FRIEDMAN_CAPITAL_MARKETS_MODEL = {
+  regimes: {
+    sankoreFriedman: {
+      id: "sankoreFriedman",
+      name: "2076 Sankore + Lomborg + Friedman Rule (Output Boom ↑↑Y)",
+      badge: "RECOMMENDED • HARDEST CURRENCY & #1 STOCK MARKET ON EARTH",
+      mGrowthPct: 4.5,
+      yGrowthPct: 7.6,
+      buffettRatio: 1.80,
+      discountRateR: 5.2,
+      summary: "Following Milton Friedman's K-Percent Rule alongside Lomborg's 48.7:1 investments: Real Output (Y) surges 39.2x to $145.0T while Money Supply (M) is strictly disciplined. Result: Near-zero inflation, +265% real currency appreciation, AAA 2.6% bond yields, and a 1.80x Buffett Indicator yielding a $261.0 Trillion Pan-African Stock Exchange."
+    },
+    cairo1324: {
+      id: "cairo1324",
+      name: "1324 Cairo Gold Mistake (Unbacked Money Printing ↑↑M, Flat Y)",
+      badge: "HISTORICAL WARNING • MANSA MUSA'S 1324 INFLATION TRAP",
+      mGrowthPct: 21.0,
+      yGrowthPct: 1.6,
+      buffettRatio: 0.25,
+      discountRateR: 15.5,
+      summary: "As Milton Friedman proved in M·V = P·Y, injecting massive money/gold (M) without first building human capital, energy, and productive output (Y) simply explodes the price level (P). Inflation surges >19%/yr, the currency loses 75%+ of its purchasing power, and stock markets remain shallow and speculative."
+    },
+    statusQuo2026: {
+      id: "statusQuo2026",
+      name: "2026 Raw-Ore Status Quo (Fragmented Currencies & Dead Capital)",
+      badge: "BASELINE • HIGH RISK PREMIUM & RAW RESOURCE DRAIN",
+      mGrowthPct: 11.2,
+      yGrowthPct: 2.6,
+      buffettRatio: 0.30,
+      discountRateR: 11.8,
+      summary: "Africa's 2026 baseline: importing $110B/yr in food and $85B/yr in refined fuel drains foreign exchange reserves, forcing 11.8% sovereign borrowing costs and keeping fragmented stock exchanges stuck at ~30% of GDP ($1.1T today, $2.5T in 2076)."
+    }
+  },
+  megacaps: [
+    {
+      ticker: "INGA-RIFT",
+      name: "Inga–Rift Clean Grid & Sovereign AI Compute Corp",
+      hq: "🇨🇩 Kinshasa & 🇰🇪 Naivasha",
+      sector: "Zero-Carbon Baseload Power (55 GW) & Global AI Cloud",
+      marketCap2026B: 12,
+      baseCap2076T: 42.8,
+      peRatio: "26.4x",
+      divYield: "2.8%",
+      catalyst: "40+ GW Grand Inga Hydro + 10+ GW Rift Valley Geothermal at $0.018/kWh powering global AI training clusters."
+    },
+    {
+      ticker: "KATG-BATT",
+      name: "Katanga–Turkana Solid-State Battery & Cathode Foundry",
+      hq: "🇨🇩 Kolwezi & 🇰🇪 Nairobi",
+      sector: "EV Cells, Grid Storage & Refined Critical Minerals",
+      marketCap2026B: 18,
+      baseCap2076T: 36.5,
+      peRatio: "24.8x",
+      divYield: "3.1%",
+      catalyst: "Onshore refining of 70% of global cobalt & high-grade copper into $45,000/ton finished battery packs."
+    },
+    {
+      ticker: "AFCFTA-PAY",
+      name: "AfCFTA Digital Clearinghouse & M-Savannah Financial",
+      hq: "🇰🇪 Nairobi & 🇳🇬 Lagos",
+      sector: "Pan-African Instant Settlement, Sovereign Bonds & AI Banking",
+      marketCap2026B: 24,
+      baseCap2076T: 28.4,
+      peRatio: "25.2x",
+      divYield: "2.4%",
+      catalyst: "Built on Kenya's M-Pesa rails + Lomborg's 95:1 Paperless Customs & 28:1 Digital Land Registry collateral."
+    },
+    {
+      ticker: "SAHEL-H2",
+      name: "Trans-Saharan Terawatt Solar, Green Hydrogen & Steel",
+      hq: "🇲🇱 Bamako, 🇲🇷 Nouakchott & 🇪🇬 Cairo",
+      sector: "Green Metallurgy, Ammonia Fertilizer & Clean Fuels",
+      marketCap2026B: 14,
+      baseCap2076T: 24.6,
+      peRatio: "22.1x",
+      divYield: "3.5%",
+      catalyst: "Turns the Sahel & Sahara solar belt + iron ore deposits into the world's #1 zero-carbon steel exporter."
+    },
+    {
+      ticker: "SANKORE-BIO",
+      name: "Sankore Genomics, mRNA Vaccine & Tropical Biotech Labs",
+      hq: "🇲🇱 Timbuktu, 🇷🇼 Kigali & 🇰🇪 KEMRI",
+      sector: "Biopharmaceuticals, Longevity & Molecular Diagnostics",
+      marketCap2026B: 6,
+      baseCap2076T: 21.2,
+      peRatio: "27.0x",
+      divYield: "1.9%",
+      catalyst: "Born from Best Things First 101:1 Immunization & 48:1 Malaria/TB R&D hubs across Africa."
+    },
+    {
+      ticker: "NILE-AGRO",
+      name: "Nile–Congo–Savannah Precision Agro-Biotech & Cold Chain",
+      hq: "🇪🇹 Addis Ababa, 🇿🇲 Lusaka & 🇹🇿 Dar es Salaam",
+      sector: "Climate-Resilient Seeds, Autonomous Irrigation & Food Exports",
+      marketCap2026B: 9,
+      baseCap2076T: 18.9,
+      peRatio: "21.5x",
+      divYield: "3.8%",
+      catalyst: "Scales Lomborg's 33:1 Agro R&D across 600M hectares to feed 2.5B Africans and export $1.8T/yr in food."
+    },
+    {
+      ticker: "BI-OCEANIC",
+      name: "Lobito–Mombasa–Lamu Autonomous Rail & Deepwater Ports",
+      hq: "🇰🇪 Mombasa, 🇦🇴 Lobito & 🇨🇩 Lubumbashi",
+      sector: "Continental High-Speed Freight, Cold-Chain & Maritime Corridors",
+      marketCap2026B: 11,
+      baseCap2076T: 16.4,
+      peRatio: "19.8x",
+      divYield: "4.1%",
+      catalyst: "Links the Atlantic and Indian Oceans with 100% electrified freight and 95:1 automated customs."
+    },
+    {
+      ticker: "RAND-QUANT",
+      name: "Witwatersrand–Ashanti Platinum, Titanium & Quantum Chips",
+      hq: "🇿🇦 Johannesburg & 🇬🇭 Accra",
+      sector: "Semiconductor Substrates, Aerospace Alloys & Fuel Cells",
+      marketCap2026B: 45,
+      baseCap2076T: 15.8,
+      peRatio: "20.4x",
+      divYield: "3.6%",
+      catalyst: "Transforms 80% of global platinum-group metals & gold into quantum hardware and aerospace components."
+    }
+  ]
+};
+
+
