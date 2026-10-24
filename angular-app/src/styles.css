@@ -2584,6 +2584,13 @@ html[data-visual-mode="compact"] .card-prose-collapse {
   filter: sepia(0.32) saturate(0.75) contrast(1.06) brightness(0.84);
 }
 
+.mansa-canvas-box {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 .mansa-portrait-img {
   width: 100%;
   height: 100%;
@@ -2913,31 +2920,372 @@ html[data-visual-mode="compact"] .card-prose-collapse {
 
 @media (max-width: 1024px) {
   .mansa-guide-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ============================================================================
+   ZERO-OVERFLOW MOBILE & SMALL-VIEWPORT HARDENING (320px – 768px)
+   ============================================================================ */
+html,
+body,
+app-root,
+.ng-viewport-stage {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.hero-grid > *,
+.mansa-guide-grid > *,
+.map-explorer-grid > *,
+.friedman-sliders-grid > *,
+.friedman-kpi-grid > *,
+.megacap-board-grid > *,
+.valve-game-grid > *,
+.btf-grid > *,
+.interventions-grid > *,
+.endowment-grid > *,
+.value-chain-grid > *,
+.phase-interventions-list > *,
+.country-switcher-bar > *,
+.phases-tabs > *,
+.stat-pillars > *,
+.mansa-hud-metrics > *,
+.card-metrics-strip > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+img,
+svg,
+video,
+canvas,
+select,
+input[type="range"] {
+  max-width: 100%;
+}
+
+.sensitivity-toggles {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.sensitivity-select {
+  max-width: 100%;
+  min-width: 0;
+  text-overflow: ellipsis;
+}
+
+/* Safe intrinsic grid minimums on all viewports */
+.interventions-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+}
+.phase-interventions-list {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+.value-chain-grid,
+.megacap-board-grid,
+.btf-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+}
+.endowment-grid,
+.valve-game-grid,
+.friedman-sliders-grid,
+.friedman-kpi-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+}
+
+@media (max-width: 768px) {
+  .masthead-inner {
+    padding: 0.55rem 0.75rem;
+    gap: 0.45rem;
+  }
+  .brand-group {
+    gap: 0.45rem;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .economist-badge {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.4rem;
+    white-space: nowrap;
+  }
+  .brand-title {
+    font-size: 0.92rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .masthead-actions {
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+  .theme-btn,
+  .mobile-hamburger-btn {
+    padding: 0.32rem 0.5rem;
+    font-size: 0.66rem;
+  }
+
+  .hero-grid,
+  .mansa-guide-grid,
+  .map-explorer-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 1.15rem;
   }
 }
 
 @media (max-width: 680px) {
+  .container {
+    padding: 0 0.75rem;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .section-block,
+  .overtake-race-section,
+  .friedman-markets-section,
+  .africa-map-section,
+  .drc-showcase-section {
+    padding: 2.25rem 0;
+  }
+
+  /* Force all multi-card grids into a clean single column on phones */
+  .interventions-grid,
+  .phase-interventions-list,
+  .value-chain-grid,
+  .megacap-board-grid,
+  .btf-grid,
+  .endowment-grid,
+  .valve-game-grid,
+  .friedman-sliders-grid,
+  .friedman-kpi-grid,
+  .country-switcher-bar,
+  .phases-tabs,
+  .dossier-phases-stack {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0.75rem;
+  }
+
+  /* Mansa Musa Visual Guide mobile layout: no overlapping badges or clipped pins */
   .mansa-guide-shell {
-    padding: 0.85rem;
+    padding: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .mansa-guide-title {
+    font-size: 1.28rem;
+  }
+  .mansa-guide-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .mansa-guide-controls .scenario-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    gap: 0.35rem;
+  }
+  .mansa-guide-controls .scenario-btn {
+    font-size: 0.68rem;
+    padding: 0.42rem 0.45rem;
+    text-align: center;
+  }
+  #mansaAutoWalkBtn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .mansa-portrait-stage {
+    aspect-ratio: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .mansa-era-badge {
+    position: static;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid rgba(252, 211, 77, 0.35);
+    width: 100%;
+    text-align: center;
+    font-size: 0.62rem;
+    padding: 0.35rem 0.5rem;
+    white-space: normal;
+  }
+  .mansa-portrait-img {
+    aspect-ratio: 16 / 10;
+    width: 100%;
+    height: auto;
+  }
+  .pin-core {
+    width: 26px;
+    height: 26px;
+    font-size: 0.72rem;
+  }
+  .pin-pulse {
+    left: 13px;
+    width: 28px;
+    height: 28px;
   }
   .pin-tag {
-    display: none;
-  }
-  .mansa-hotspot-pin.active .pin-tag {
-    display: inline-block;
-    font-size: 0.58rem;
-    padding: 0.16rem 0.4rem;
+    display: none !important;
   }
   .mansa-pivot-dock {
+    position: static;
+    border-radius: 0;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.3rem;
+    padding: 0.45rem;
   }
   .mansa-era-btn {
-    font-size: 0.58rem;
-    padding: 0.26rem 0.35rem;
+    font-size: 0.64rem;
+    padding: 0.38rem 0.45rem;
+    white-space: normal;
+    line-height: 1.25;
+  }
+
+  .mansa-hud-panel {
+    padding: 0.85rem;
+  }
+  .mansa-hud-title {
+    font-size: 1.05rem;
+  }
+  .mansa-royal-quote {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.65rem;
+  }
+  .mansa-hud-metrics {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.4rem;
+  }
+  .mansa-hud-metric-box {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0.6rem;
+  }
+  .mansa-relic-pills-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .mansa-hud-actions {
+    flex-direction: column;
+  }
+  .mansa-hud-actions a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Equalizer, Scoreboard & Cards on Mobile */
+  .equalizer-board,
+  .nobel-brief-card,
+  .race-arena-card,
+  .friedman-arena-card,
+  .btf-matrix-panel,
+  .marimekko-panel,
+  .trajectory-box,
+  .phase-detail-panel,
+  .country-dossier-card,
+  .map-canvas-card {
+    padding: 0.85rem;
+  }
+
+  .stat-pillars {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+  .stat-pillar-num {
+    font-size: 1.28rem;
+    word-break: break-word;
+  }
+  .laureate-list li {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    font-size: 0.76rem;
+  }
+
+  .hero-cta-row {
+    flex-direction: column;
+  }
+  .hero-cta-row a,
+  .hero-cta-row button {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Transport & Speed Controls on Mobile */
+  .race-transport-row {
+    gap: 0.6rem;
+  }
+  .transport-btn-group {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .transport-step-btn {
+    padding: 0.38rem 0.48rem;
+    font-size: 0.68rem;
+    flex: 1;
+    text-align: center;
+  }
+  .transport-btn-group .play-timeline-btn {
+    flex: 1.6;
+    font-size: 0.72rem !important;
+    padding: 0.42rem 0.55rem !important;
+  }
+  .speed-pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .speed-pill-btn {
+    flex: 1;
+    padding: 0.32rem 0.35rem;
+    font-size: 0.64rem;
+    text-align: center;
+  }
+  .map-engine-pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .engine-mode-btn {
+    flex: 1;
+    font-size: 0.64rem;
+    padding: 0.35rem 0.4rem;
+    text-align: center;
+  }
+
+  /* 2-Row Race Bars on Mobile: Prevent right-edge overflow */
+  .race-bar-row {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    padding: 0.35rem 0.5rem !important;
+  }
+  .race-bloc-meta {
+    overflow: hidden;
+  }
+  .overtake-flash-badge {
+    display: none;
+  }
+
+  /* Simulator & Card Metrics Strip on Mobile */
+  .card-metrics-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+    padding: 0.5rem;
+  }
+  .strip-val {
+    font-size: 0.8rem;
+  }
+  .sim-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+  .sim-actions button {
+    width: 100%;
   }
 }
+
 
 
 

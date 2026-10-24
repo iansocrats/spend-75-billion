@@ -146,58 +146,61 @@
         <div class="mansa-guide-grid">
           <!-- Left: Interactive Portrait Canvas with 6 Pulsing Relic Hotspots -->
           <div id="mansaPortraitStage" class="mansa-portrait-stage" data-active-relic="orb" data-era-mode="sankore">
-            <img
-              id="mansaPortraitImg"
-              src="mansa-musa-throne.jpg"
-              alt="Emperor Mansa Musa I seated on the Golden Throne of Timbuktu holding the Golden Nugget and Royal Scepter with Sankore University in the background"
-              class="mansa-portrait-img"
-            />
             <!-- Dynamic Aura & Era Badge Overlay -->
             <div id="mansaEraOverlayBadge" class="mansa-era-badge">
               🏛️ 1325 SANKORE ENGINE ACTIVE • $183.5T GDP (2076)
             </div>
 
-            <!-- SVG Connecting Lines Between Relics -->
-            <svg class="mansa-constellation-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              <polyline id="mansaConstellationLine" points="21,36 50,17 44,43 19,69 67,35 75,83" />
-            </svg>
+            <div class="mansa-canvas-box">
+              <img
+                id="mansaPortraitImg"
+                src="mansa-musa-throne.jpg"
+                alt="Emperor Mansa Musa I seated on the Golden Throne of Timbuktu holding the Golden Nugget and Royal Scepter with Sankore University in the background"
+                class="mansa-portrait-img"
+              />
 
-            <!-- 6 Interactive Relic Hotspot Pins (Reposition automatically per portrait) -->
-            <button type="button" class="mansa-hotspot-pin" data-relic-id="sankore" style="left: 21%; top: 36%;" aria-label="1. Sankore University Spires: 101:1 Health & 65:1 EdTech">
-              <span class="pin-pulse"></span>
-              <span class="pin-core">1</span>
-              <span class="pin-tag">🏛️ Sankore Spires (101:1)</span>
-            </button>
+              <!-- SVG Connecting Lines Between Relics -->
+              <svg class="mansa-constellation-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <polyline id="mansaConstellationLine" points="21,36 50,17 44,43 19,69 67,35 75,83" />
+              </svg>
 
-            <button type="button" class="mansa-hotspot-pin" data-relic-id="crown" style="left: 50%; top: 17%;" aria-label="2. Imperial Crown: 38:1 E-Procurement & 4% K-Rule">
-              <span class="pin-pulse"></span>
-              <span class="pin-core">2</span>
-              <span class="pin-tag">👑 Crown (K-Rule &amp; 38:1)</span>
-            </button>
+              <!-- 6 Interactive Relic Hotspot Pins (Reposition automatically per portrait) -->
+              <button type="button" class="mansa-hotspot-pin" data-relic-id="sankore" style="left: 21%; top: 36%;" aria-label="1. Sankore University Spires: 101:1 Health & 65:1 EdTech">
+                <span class="pin-pulse"></span>
+                <span class="pin-core">1</span>
+                <span class="pin-tag">🏛️ Sankore Spires (101:1)</span>
+              </button>
 
-            <button type="button" class="mansa-hotspot-pin active" data-relic-id="orb" style="left: 44%; top: 43%;" aria-label="3. The Golden Nugget Orb: $75B Catalyst vs. 1324 Cairo Trap">
-              <span class="pin-pulse"></span>
-              <span class="pin-core">3</span>
-              <span class="pin-tag">🔮 $75B Gold Orb (MV=PY)</span>
-            </button>
+              <button type="button" class="mansa-hotspot-pin" data-relic-id="crown" style="left: 50%; top: 17%;" aria-label="2. Imperial Crown: 38:1 E-Procurement & 4% K-Rule">
+                <span class="pin-pulse"></span>
+                <span class="pin-core">2</span>
+                <span class="pin-tag">👑 Crown (K-Rule &amp; 38:1)</span>
+              </button>
 
-            <button type="button" class="mansa-hotspot-pin" data-relic-id="scales" style="left: 19%; top: 69%;" aria-label="4. Manuscripts & Balance Scale: $3.33T Audit & 55:1 Titles">
-              <span class="pin-pulse"></span>
-              <span class="pin-core">4</span>
-              <span class="pin-tag">⚖️ Scales ($3.33T Audit)</span>
-            </button>
+              <button type="button" class="mansa-hotspot-pin active" data-relic-id="orb" style="left: 44%; top: 43%;" aria-label="3. The Golden Nugget Orb: $75B Catalyst vs. 1324 Cairo Trap">
+                <span class="pin-pulse"></span>
+                <span class="pin-core">3</span>
+                <span class="pin-tag">🔮 $75B Gold Orb (MV=PY)</span>
+              </button>
 
-            <button type="button" class="mansa-hotspot-pin" data-relic-id="scepter" style="left: 67%; top: 35%;" aria-label="5. Royal Golden Scepter: $0.02 Power & 95:1 AfCFTA Trade">
-              <span class="pin-pulse"></span>
-              <span class="pin-core">5</span>
-              <span class="pin-tag">⚡ Scepter ($0.02 Power)</span>
-            </button>
+              <button type="button" class="mansa-hotspot-pin" data-relic-id="scales" style="left: 19%; top: 69%;" aria-label="4. Manuscripts & Balance Scale: $3.33T Audit & 55:1 Titles">
+                <span class="pin-pulse"></span>
+                <span class="pin-core">4</span>
+                <span class="pin-tag">⚖️ Scales ($3.33T Audit)</span>
+              </button>
 
-            <button type="button" class="mansa-hotspot-pin" data-relic-id="pedestal" style="left: 75%; top: 83%;" aria-label="6. Golden Throne Pedestal: $330.3T Bourse & 8 Super-Sectors">
-              <span class="pin-pulse"></span>
-              <span class="pin-core">6</span>
-              <span class="pin-tag">💎 Pedestal ($330T Bourse)</span>
-            </button>
+              <button type="button" class="mansa-hotspot-pin" data-relic-id="scepter" style="left: 67%; top: 35%;" aria-label="5. Royal Golden Scepter: $0.02 Power & 95:1 AfCFTA Trade">
+                <span class="pin-pulse"></span>
+                <span class="pin-core">5</span>
+                <span class="pin-tag">⚡ Scepter ($0.02 Power)</span>
+              </button>
+
+              <button type="button" class="mansa-hotspot-pin" data-relic-id="pedestal" style="left: 75%; top: 83%;" aria-label="6. Golden Throne Pedestal: $330.3T Bourse & 8 Super-Sectors">
+                <span class="pin-pulse"></span>
+                <span class="pin-core">6</span>
+                <span class="pin-tag">💎 Pedestal ($330T Bourse)</span>
+              </button>
+            </div>
 
             <!-- Bottom Pivot Bar Inside Portrait: 1324 Cairo Giveaway vs. 1325 Timbuktu Sankore Engine -->
             <div class="mansa-pivot-dock">
@@ -538,7 +541,7 @@
               step="1"
               value="2076"
               class="year-slider-input"
-              style="flex: 1; min-width: 220px;"
+              style="flex: 1; min-width: 110px;"
               aria-label="Overtake Race Year (2026 to 2076)"
             />
             <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ink-muted);">2076</span>
@@ -774,7 +777,7 @@
                 step="1"
                 value="2076"
                 class="year-slider-input"
-                style="flex: 1; min-width: 220px;"
+                style="flex: 1; min-width: 110px;"
                 aria-label="Stock Market Race Year (2026 to 2076)"
               />
               <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--ink-muted);">2076</span>
@@ -911,7 +914,7 @@
       <div class="map-controls-bar">
         <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
           <label for="countrySelectDropdown" style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700;">JUMP TO NATION:</label>
-          <select id="countrySelectDropdown" class="sensitivity-select" style="min-width: 220px; font-weight: 600;"></select>
+          <select id="countrySelectDropdown" class="sensitivity-select" style="min-width: 0; max-width: 100%; font-weight: 600;"></select>
 
           <button type="button" class="filter-pill" data-quick-iso="COD">🇨🇩 DRC ($54.8T)</button>
           <button type="button" class="filter-pill" data-quick-iso="KEN">🇰🇪 Kenya ($18.6T)</button>
@@ -982,7 +985,7 @@
                 step="1"
                 value="2076"
                 class="year-slider-input"
-                style="flex: 1; min-width: 180px;"
+                style="flex: 1; min-width: 110px;"
                 aria-label="Simulation Year"
               />
               <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;">

@@ -1701,7 +1701,7 @@
         africaLomborg.currentGdpT - africaStatusQuo.currentGdpT
       ).toFixed(2);
       raceMilestoneCallout.innerHTML = `
-        <div style="flex: 1; min-width: 260px;">${getMilestoneMessage(raceYear)}</div>
+        <div style="flex: 1; min-width: 0;">${getMilestoneMessage(raceYear)}</div>
         <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--emerald); text-align: right;">
           <div>+${gainT}T Lomborg Dividend vs. Status Quo</div>
           <div style="font-size: 0.68rem; color: var(--ink-muted);">Speed: ${raceSpeedMultiplier}x (${Math.round(BASE_YEAR_MS / raceSpeedMultiplier)}ms/yr) • Year ${raceYear - 2026} of 50</div>
@@ -2067,7 +2067,7 @@
         ? "var(--crimson)"
         : "var(--emerald)";
       friedmanRegimeCallout.innerHTML = `
-        <div style="flex: 1; min-width: 260px;">
+        <div style="flex: 1; min-width: 0;">
           <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: ${
             isHyperInflation ? "var(--crimson)" : "var(--emerald)"
           };">${reg.badge}</div>
@@ -2359,7 +2359,7 @@
       const wealthGainT = +(afBourse.currentCapT - sqBourse.currentCapT).toFixed(2);
 
       stockRaceMilestoneCallout.innerHTML = `
-        <div style="flex: 1; min-width: 260px;">${getStockRaceMilestoneMessage(stockRaceYear)}</div>
+        <div style="flex: 1; min-width: 0;">${getStockRaceMilestoneMessage(stockRaceYear)}</div>
         <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: #D97706; text-align: right;">
           <div>+$${wealthGainT}T Equity Wealth Created vs. Status Quo</div>
           <div style="font-size: 0.68rem; color: var(--ink-muted);">Speed: ${stockRaceSpeedMultiplier}x • Africa FX REER: ${afBourse.currentReer} (${afBourse.currentReer >= 100 ? "+" : ""}${afBourse.currentReer - 100}%)</div>
@@ -2641,7 +2641,7 @@
         ? "var(--crimson)"
         : "var(--emerald)";
       priceTheoryCallout.innerHTML = `
-        <div style="flex: 1; min-width: 260px;">
+        <div style="flex: 1; min-width: 0;">
           <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: ${
             isInelasticTrap ? "var(--crimson)" : "var(--emerald)"
           };">${preset.badge}</div>
@@ -2868,7 +2868,7 @@
       auditSummaryBanner.style.borderLeftColor =
         redirectPct < 5 ? "var(--crimson)" : "var(--emerald)";
       auditSummaryBanner.innerHTML = `
-        <div style="flex: 1; min-width: 240px;">
+        <div style="flex: 1; min-width: 0;">
           <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: ${
             redirectPct < 5 ? "var(--crimson)" : "var(--emerald)"
           };">
