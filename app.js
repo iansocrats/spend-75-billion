@@ -55,6 +55,150 @@
   }
 
   // ==========================================================================
+  // 0. ANGULAR 19 SIGNALS MULTI-DEVICE RESPONSIVE SHELL & DRAWER CONTROLLER
+  // ==========================================================================
+  const ngAppRoot = document.getElementById("ngAppRoot");
+  const ngViewportReadout = document.getElementById("ngViewportReadout");
+  const mobileMenuToggleBtn = document.getElementById("mobileMenuToggleBtn");
+  const mobileNavDrawer = document.getElementById("mobileNavDrawer");
+  const mobileNavBackdrop = document.getElementById("mobileNavBackdrop");
+  const mobileDrawerCloseBtn = document.getElementById("mobileDrawerCloseBtn");
+
+  let ngPreviewMode = "auto"; // "auto" | "mobile" | "tablet" | "desktop"
+  let ngActiveBreakpoint = "desktop"; // "mobile" | "tablet" | "desktop" | "ultrawide"
+
+  function getRaceRowPitchPx() {
+    if (ngActiveBreakpoint === "mobile" || window.innerWidth <= 680) {
+      return 74;
+    }
+    return 64;
+  }
+
+  function syncAngularDeviceSignal() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (ngPreviewMode === "mobile") {
+      ngActiveBreakpoint = "mobile";
+    } else if (ngPreviewMode === "tablet") {
+      ngActiveBreakpoint = "tablet";
+    } else if (ngPreviewMode === "desktop") {
+      ngActiveBreakpoint = "desktop";
+    } else {
+      if (w <= 680) ngActiveBreakpoint = "mobile";
+      else if (w <= 1024) ngActiveBreakpoint = "tablet";
+      else if (w < 1536) ngActiveBreakpoint = "desktop";
+      else ngActiveBreakpoint = "ultrawide";
+    }
+
+    if (ngAppRoot) {
+      ngAppRoot.setAttribute("data-breakpoint", ngActiveBreakpoint);
+      ngAppRoot.setAttribute("data-preview-mode", ngPreviewMode);
+    }
+
+    if (ngViewportReadout) {
+      const modeTag =
+        ngPreviewMode === "auto"
+          ? ngActiveBreakpoint.toUpperCase()
+          : `${ngActiveBreakpoint.toUpperCase()} SIM`;
+      ngViewportReadout.textContent = `${modeTag} • ${w}×${h}px`;
+    }
+
+    if (typeof renderOvertakeRace === "function") {
+      renderOvertakeRace(false);
+    }
+    if (typeof renderStockMarketRace === "function") {
+      renderStockMarketRace(false);
+    }
+    if (glMap && typeof glMap.resize === "function") {
+      setTimeout(() => glMap.resize(), 180);
+    }
+  }
+
+  document.querySelectorAll("[data-ng-preview]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      ngPreviewMode = btn.getAttribute("data-ng-preview") || "auto";
+      document.querySelectorAll("[data-ng-preview]").forEach((b) => {
+        b.classList.toggle("active", b === btn);
+      });
+      syncAngularDeviceSignal();
+    });
+  });
+
+  window.addEventListener("resize", () => {
+    syncAngularDeviceSignal();
+    if (window.innerWidth > 1024) {
+      closeMobileDrawer();
+    }
+  });
+
+  function openMobileDrawer() {
+    if (mobileNavDrawer) mobileNavDrawer.hidden = false;
+    if (mobileNavBackdrop) mobileNavBackdrop.hidden = false;
+    if (mobileMenuToggleBtn)
+      mobileMenuToggleBtn.setAttribute("aria-expanded", "true");
+  }
+
+  function closeMobileDrawer() {
+    if (mobileNavDrawer) mobileNavDrawer.hidden = true;
+    if (mobileNavBackdrop) mobileNavBackdrop.hidden = true;
+    if (mobileMenuToggleBtn)
+      mobileMenuToggleBtn.setAttribute("aria-expanded", "false");
+  }
+
+  if (mobileMenuToggleBtn) {
+    mobileMenuToggleBtn.addEventListener("click", () => {
+      const isHidden = mobileNavDrawer ? mobileNavDrawer.hidden : true;
+      if (isHidden) openMobileDrawer();
+      else closeMobileDrawer();
+    });
+  }
+
+  if (mobileDrawerCloseBtn) {
+    mobileDrawerCloseBtn.addEventListener("click", closeMobileDrawer);
+  }
+  if (mobileNavBackdrop) {
+    mobileNavBackdrop.addEventListener("click", closeMobileDrawer);
+  }
+
+  document
+    .querySelectorAll("[data-drawer-link], [data-drawer-close]")
+    .forEach((el) => {
+      el.addEventListener("click", () => {
+        closeMobileDrawer();
+      });
+    });
+
+  // Scroll-Spy for Mobile Bottom Tab Bar & Header Nav
+  const spySectionIds = [
+    "premise",
+    "overtake-race",
+    "friedman-markets",
+    "africa-map",
+    "simulator",
+    "drc-superpower",
+  ];
+  window.addEventListener(
+    "scroll",
+    () => {
+      let currentId = "premise";
+      const scrollY = window.scrollY + 220;
+      spySectionIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollY) {
+          currentId = id;
+        }
+      });
+      document.querySelectorAll("[data-spy-tab]").forEach((tab) => {
+        tab.classList.toggle(
+          "active",
+          tab.getAttribute("data-spy-tab") === currentId
+        );
+      });
+    },
+    { passive: true }
+  );
+
+  // ==========================================================================
   // 1. THEME TOGGLE
   // ==========================================================================
   const themeToggleBtn = document.getElementById("themeToggleBtn");
@@ -1504,7 +1648,7 @@
     OVERTAKE_RACE_BLOCS.forEach((bloc, idx) => {
       const row = document.createElement("div");
       row.className = `race-bar-row ${bloc.isAfricaHero ? "hero-bloc" : ""}`;
-      row.style.transform = `translateY(${idx * 64}px)`;
+      row.style.transform = `translateY(${idx * getRaceRowPitchPx()}px)`;
       row.innerHTML = `
         <div class="race-bloc-meta">
           <span class="race-rank-num">#${idx + 1}</span>
@@ -1572,8 +1716,8 @@
       const row = raceRowElements[bloc.id];
       if (!row) return;
 
-      // Smooth vertical position swap
-      row.style.transform = `translateY(${idx * 64}px)`;
+      // Smooth vertical position swap (adapts to 74px on Mobile, 64px on Desktop)
+      row.style.transform = `translateY(${idx * getRaceRowPitchPx()}px)`;
 
       // Check if this bloc just climbed in rank compared to previous rendered step
       const prevRank = prevBlocRanks[bloc.id];
@@ -2039,7 +2183,7 @@
     STOCK_MARKET_RACE_BLOCS.forEach((bloc, idx) => {
       const row = document.createElement("div");
       row.className = `race-bar-row ${bloc.isAfricaHero ? "hero-bloc" : ""}`;
-      row.style.transform = `translateY(${idx * 64}px)`;
+      row.style.transform = `translateY(${idx * getRaceRowPitchPx()}px)`;
       row.innerHTML = `
         <div class="race-bloc-meta">
           <span class="race-rank-num">#${idx + 1}</span>
@@ -2107,7 +2251,7 @@
       const row = stockRaceRowElements[bloc.id];
       if (!row) return;
 
-      row.style.transform = `translateY(${idx * 64}px)`;
+      row.style.transform = `translateY(${idx * getRaceRowPitchPx()}px)`;
 
       const prevRank = prevStockBlocRanks[bloc.id];
       const didOvertake =
@@ -2504,6 +2648,7 @@
   }
 
   // Initial Boot
+  syncAngularDeviceSignal();
   populateCountryDropdown();
   renderAfricaSvgMap();
   renderCountryDossier();

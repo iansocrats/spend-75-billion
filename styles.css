@@ -1918,29 +1918,446 @@ body {
   color: var(--ink-muted);
 }
 
-@media (max-width: 960px) {
-  .hero-grid {
+/* ==========================================================================
+   ANGULAR 19 SIGNALS MULTI-DEVICE RESPONSIVE SHELL & CONTAINER QUERIES
+   ========================================================================== */
+
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+.ng-device-bar {
+  background-color: #141413;
+  color: #F4F1EA;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.38rem 1rem;
+  position: relative;
+  z-index: 250;
+}
+
+.ng-device-bar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ng-badge-cluster {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.ng-framework-pill {
+  background: linear-gradient(135deg, #DD0031, #C3002F);
+  color: #FFFFFF;
+  font-weight: 700;
+  padding: 0.16rem 0.52rem;
+  border-radius: 3px;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+}
+
+.ng-viewport-readout {
+  color: #A1A1AA;
+  font-size: 0.68rem;
+}
+
+.ng-preview-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.ng-preview-label {
+  color: #A1A1AA;
+  font-size: 0.68rem;
+  margin-right: 0.2rem;
+}
+
+.ng-device-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #E4E4E7;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 3px;
+  padding: 0.22rem 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ng-device-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.ng-device-btn.active {
+  background: #0D9488;
+  color: #FFFFFF;
+  border-color: #14B8A6;
+}
+
+/* Viewport Simulator Frame (Phone 390px / Tablet 768px / Auto 100%) */
+.ng-viewport-stage {
+  container-type: inline-size;
+  container-name: stage;
+  width: 100%;
+  margin: 0 auto;
+  transition: max-width 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+
+app-root[data-preview-mode="mobile"] .ng-viewport-stage {
+  max-width: 390px;
+  border-left: 8px solid #1E1E1C;
+  border-right: 8px solid #1E1E1C;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+app-root[data-preview-mode="tablet"] .ng-viewport-stage {
+  max-width: 768px;
+  border-left: 6px solid #1E1E1C;
+  border-right: 6px solid #1E1E1C;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+
+.masthead-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mobile-hamburger-btn {
+  display: none;
+  background-color: var(--ink-primary);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0.42rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Slide-Out Mobile Drawer */
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 300;
+}
+
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(340px, 88vw);
+  background-color: var(--bg-card);
+  border-left: 2px solid var(--border-strong);
+  padding: 1.25rem;
+  z-index: 310;
+  overflow-y: auto;
+  box-shadow: -12px 0 36px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-hairline);
+  margin-bottom: 1rem;
+}
+
+.mobile-drawer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.mobile-drawer-link {
+  display: flex;
+  flex-direction: column;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-hairline);
+  text-decoration: none;
+  color: var(--ink-primary);
+  transition: border-color 0.15s ease;
+}
+
+.mobile-drawer-link:hover {
+  border-color: var(--emerald);
+}
+
+.mobile-drawer-link strong {
+  font-size: 0.86rem;
+}
+
+.mobile-drawer-link span {
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+  margin-top: 0.15rem;
+}
+
+/* Sticky Bottom Mobile App Bar */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 58px;
+  background-color: var(--bg-card);
+  border-top: 2px solid var(--border-strong);
+  z-index: 220;
+  grid-template-columns: repeat(6, 1fr);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.mobile-bottom-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 700;
+  gap: 0.12rem;
+  border-top: 3px solid transparent;
+}
+
+.mobile-bottom-tab.active {
+  color: var(--emerald);
+  border-top-color: var(--emerald);
+  background-color: var(--emerald-soft);
+}
+
+.mobile-bottom-tab .tab-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+/* ==========================================================================
+   UNIVERSAL RESPONSIVE BREAKPOINTS (MEDIA + CONTAINER QUERIES)
+   ========================================================================== */
+
+/* Tablet & Compact Screens (<= 1024px or Tablet Preview Mode) */
+@media (max-width: 1024px) {
+  .nav-links {
+    display: none;
+  }
+  .mobile-hamburger-btn {
+    display: inline-flex;
+    align-items: center;
+  }
+  .hero-grid,
+  .map-explorer-grid {
     grid-template-columns: 1fr;
   }
   .phases-tabs {
     grid-template-columns: 1fr 1fr;
   }
   .country-switcher-bar {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
-  .map-explorer-grid {
+}
+
+app-root[data-breakpoint="tablet"] .hero-grid,
+app-root[data-breakpoint="tablet"] .map-explorer-grid,
+app-root[data-breakpoint="mobile"] .hero-grid,
+app-root[data-breakpoint="mobile"] .map-explorer-grid {
+  grid-template-columns: 1fr;
+}
+
+app-root[data-breakpoint="tablet"] .nav-links,
+app-root[data-breakpoint="mobile"] .nav-links {
+  display: none;
+}
+
+app-root[data-breakpoint="tablet"] .mobile-hamburger-btn,
+app-root[data-breakpoint="mobile"] .mobile-hamburger-btn {
+  display: inline-flex;
+}
+
+/* Mobile Phones (<= 680px or Phone Preview Mode) */
+@media (max-width: 680px) {
+  body {
+    padding-bottom: 62px;
+  }
+  .mobile-bottom-nav {
+    display: grid;
+  }
+  .ng-preview-controls {
+    display: none;
+  }
+  .container {
+    padding: 0 0.9rem;
+  }
+  .hero {
+    padding: 2rem 0 1.75rem;
+  }
+  .hero-headline {
+    font-size: 1.85rem;
+  }
+  .section-title {
+    font-size: 1.55rem;
+  }
+  .race-arena-card,
+  .friedman-arena-card,
+  .btf-matrix-panel,
+  .marimekko-panel,
+  .trajectory-box {
+    padding: 1.1rem;
+  }
+  .race-year-big {
+    font-size: 1.75rem;
+    min-width: auto;
+  }
+  .country-switcher-bar,
+  .phases-tabs,
+  .dossier-phases-stack,
+  .value-chain-grid,
+  .endowment-grid {
     grid-template-columns: 1fr;
   }
   .dossier-metrics-grid {
     grid-template-columns: 1fr 1fr;
   }
-  .dossier-phases-stack {
-    grid-template-columns: 1fr;
+  .webgl-map-stage {
+    height: 360px;
+  }
+  #maplibreContainer,
+  .africa-svg-map {
+    height: 360px;
+  }
+  .simulator-sticky-bar {
+    position: relative;
+    top: 0;
+    padding: 0.95rem;
+  }
+  .sim-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+    width: 100%;
   }
 }
 
-@media (max-width: 600px) {
-  .phases-tabs {
-    grid-template-columns: 1fr;
+/* 2-Row Full-Width Race Bar Layout for Mobile (< 680px & Phone Preview Mode) */
+@media (max-width: 680px) {
+  .race-bars-list {
+    height: 518px;
+  }
+  .race-bar-row {
+    height: 66px;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 0.25rem 0.5rem;
+    padding: 0.4rem 0.65rem;
+  }
+  .race-bloc-meta {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    min-width: 0;
+  }
+  .race-gdp-val {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    font-size: 0.88rem;
+    text-align: right;
+  }
+  .race-track {
+    grid-column: 1 / -1;
+    grid-row: 2 / 3;
+    height: 12px;
+  }
+  .race-bloc-name {
+    font-size: 0.78rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .race-bloc-sub {
+    font-size: 0.58rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
+
+app-root[data-breakpoint="mobile"] .mobile-bottom-nav {
+  display: grid;
+}
+
+app-root[data-breakpoint="mobile"] .container {
+  padding: 0 0.85rem;
+}
+
+app-root[data-breakpoint="mobile"] .hero-headline {
+  font-size: 1.75rem;
+}
+
+app-root[data-breakpoint="mobile"] .section-title {
+  font-size: 1.45rem;
+}
+
+app-root[data-breakpoint="mobile"] .country-switcher-bar,
+app-root[data-breakpoint="mobile"] .phases-tabs,
+app-root[data-breakpoint="mobile"] .dossier-phases-stack,
+app-root[data-breakpoint="mobile"] .value-chain-grid,
+app-root[data-breakpoint="mobile"] .endowment-grid {
+  grid-template-columns: 1fr;
+}
+
+app-root[data-breakpoint="mobile"] .race-bars-list {
+  height: 518px;
+}
+
+app-root[data-breakpoint="mobile"] .race-bar-row {
+  height: 66px;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 0.25rem 0.5rem;
+  padding: 0.4rem 0.65rem;
+}
+
+app-root[data-breakpoint="mobile"] .race-bloc-meta {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  min-width: 0;
+}
+
+app-root[data-breakpoint="mobile"] .race-gdp-val {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  font-size: 0.88rem;
+  text-align: right;
+}
+
+app-root[data-breakpoint="mobile"] .race-track {
+  grid-column: 1 / -1;
+  grid-row: 2 / 3;
+  height: 12px;
+}
+
+app-root[data-breakpoint="mobile"] .webgl-map-stage,
+app-root[data-breakpoint="mobile"] #maplibreContainer,
+app-root[data-breakpoint="mobile"] .africa-svg-map {
+  height: 350px;
+}
+

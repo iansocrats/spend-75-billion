@@ -14,32 +14,119 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <app-root id="ngAppRoot" data-breakpoint="desktop" data-preview-mode="auto">
+    <!-- Angular 19 Signals Multi-Device Responsive Status & Viewport Switcher Bar -->
+    <div id="ngDeviceBar" class="ng-device-bar">
+      <div class="ng-device-bar-inner">
+        <div class="ng-badge-cluster">
+          <span class="ng-framework-pill">⚡ Angular Signals Responsive UI</span>
+          <span id="ngViewportReadout" class="ng-viewport-readout">DESKTOP • 1280×800px</span>
+        </div>
 
-  <!-- Top Economist-style Tri-Color Rule -->
-  <div class="editorial-top-rule"></div>
+        <div class="ng-preview-controls" role="group" aria-label="Device Viewport Mode">
+          <span class="ng-preview-label">Device View:</span>
+          <button type="button" class="ng-device-btn active" data-ng-preview="auto">
+            🔄 Auto-Fit
+          </button>
+          <button type="button" class="ng-device-btn" data-ng-preview="mobile">
+            📱 Phone (390px)
+          </button>
+          <button type="button" class="ng-device-btn" data-ng-preview="tablet">
+            📟 Tablet (768px)
+          </button>
+          <button type="button" class="ng-device-btn" data-ng-preview="desktop">
+            💻 Desktop
+          </button>
+        </div>
+      </div>
+    </div>
 
-  <!-- Sticky Editorial Masthead -->
-  <header class="masthead">
-    <div class="masthead-inner">
-      <div class="brand-group">
-        <span class="economist-badge" style="background-color: #B45309;">The Sankore Thesis</span>
-        <span class="brand-title">Why Mansa Musa Was Right</span>
+    <!-- Top Economist-style Tri-Color Rule -->
+    <div class="editorial-top-rule"></div>
+
+    <!-- Sticky Editorial Masthead -->
+    <header class="masthead">
+      <div class="masthead-inner">
+        <div class="brand-group">
+          <span class="economist-badge" style="background-color: #B45309;">The Sankore Thesis</span>
+          <span class="brand-title">Why Mansa Musa Was Right</span>
+        </div>
+
+        <nav class="nav-links" aria-label="Section navigation">
+          <a href="#premise" class="nav-link" data-spy-link="premise">I. Mansa Musa Law</a>
+          <a href="#overtake-race" class="nav-link highlight-drc" data-spy-link="overtake-race">II. Overtake Race</a>
+          <a href="#friedman-markets" class="nav-link" data-spy-link="friedman-markets">III. Friedman &amp; $261T Bourse</a>
+          <a href="#africa-map" class="nav-link" data-spy-link="africa-map">IV. 54-Country 3D Atlas</a>
+          <a href="#simulator" class="nav-link" data-spy-link="simulator">V. $75B &amp; Best Things First</a>
+          <a href="#drc-superpower" class="nav-link" data-spy-link="drc-superpower">VI. Continental Blueprints</a>
+        </nav>
+
+        <div class="masthead-actions">
+          <button id="themeToggleBtn" class="theme-btn" type="button" aria-label="Toggle color theme">
+            ◑ Terminal Mode
+          </button>
+          <button id="mobileMenuToggleBtn" class="mobile-hamburger-btn" type="button" aria-label="Open navigation menu" aria-expanded="false">
+            ☰ Sections
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Slide-Out Mobile & Tablet Navigation Drawer -->
+    <div id="mobileNavBackdrop" class="mobile-nav-backdrop" hidden></div>
+    <aside id="mobileNavDrawer" class="mobile-nav-drawer" aria-label="Mobile Navigation Drawer" hidden>
+      <div class="mobile-drawer-header">
+        <div>
+          <span class="economist-badge" style="background-color: #B45309;">The Sankore Thesis</span>
+          <div style="font-family: var(--font-serif); font-weight: 700; font-size: 1.05rem; margin-top: 0.25rem;">
+            Why Mansa Musa Was Right
+          </div>
+        </div>
+        <button id="mobileDrawerCloseBtn" type="button" class="transport-step-btn">✕ Close</button>
       </div>
 
-      <nav class="nav-links" aria-label="Section navigation">
-        <a href="#premise" class="nav-link">I. Mansa Musa Law</a>
-        <a href="#overtake-race" class="nav-link highlight-drc">II. Overtake Race</a>
-        <a href="#friedman-markets" class="nav-link">III. Friedman &amp; $261T Bourse</a>
-        <a href="#africa-map" class="nav-link">IV. 54-Country 3D Atlas</a>
-        <a href="#simulator" class="nav-link">V. $75B &amp; Best Things First</a>
-        <a href="#drc-superpower" class="nav-link">VI. Continental Blueprints</a>
-      </nav>
+      <div class="mobile-drawer-links">
+        <a href="#premise" class="mobile-drawer-link" data-drawer-link>
+          <strong>Act I • The Mansa Musa Law</strong>
+          <span>From 1324 Timbuktu to the $145T Supercontinent</span>
+        </a>
+        <a href="#overtake-race" class="mobile-drawer-link" data-drawer-link>
+          <strong>Act II • Yearly Global Overtake Race</strong>
+          <span>Watch Africa &amp; KE+DRC Pass EU, India, China &amp; USA</span>
+        </a>
+        <a href="#friedman-markets" class="mobile-drawer-link" data-drawer-link>
+          <strong>Act III • Milton Friedman &amp; $261T Stock Exchange</strong>
+          <span>M·V = P·Y, Price Theory &amp; Yearly Bourse Overtake Race</span>
+        </a>
+        <a href="#africa-map" class="mobile-drawer-link" data-drawer-link>
+          <strong>Act IV • 54-Country 3D Superpower Atlas</strong>
+          <span>Click Any Nation for Its 4-Phase Lomborg Blueprint</span>
+        </a>
+        <a href="#simulator" class="mobile-drawer-link" data-drawer-link>
+          <strong>Act V • $75B &amp; Best Things First Simulator</strong>
+          <span>12 Solutions Matrix, Budget Engine &amp; Marimekko Curve</span>
+        </a>
+        <a href="#drc-superpower" class="mobile-drawer-link" data-drawer-link>
+          <strong>Act VI • Continental, DRC &amp; Kenya Blueprints</strong>
+          <span>All-Africa ($145T), DRC ($54.8T), Kenya ($18.6T) &amp; Twin Axis</span>
+        </a>
+      </div>
 
-      <button id="themeToggleBtn" class="theme-btn" type="button" aria-label="Toggle color theme">
-        ◑ Terminal Mode
-      </button>
-    </div>
-  </header>
+      <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-hairline);">
+        <div style="font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700; margin-bottom: 0.5rem;">
+          Quick Jump to Flagship 3D Map Nation:
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+          <button type="button" class="filter-pill" data-quick-iso="COD" data-drawer-close>🇨🇩 DRC ($54.8T)</button>
+          <button type="button" class="filter-pill" data-quick-iso="KEN" data-drawer-close>🇰🇪 Kenya ($18.6T)</button>
+          <button type="button" class="filter-pill" data-quick-iso="NGA" data-drawer-close>🇳🇬 Nigeria ($22.4T)</button>
+          <button type="button" class="filter-pill" data-quick-iso="MLI" data-drawer-close>🇲🇱 Mali (Timbuktu)</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Viewport Frame Container (Adapts to Phone 390px / Tablet 768px / Auto Full Screen) -->
+    <div id="ngViewportStage" class="ng-viewport-stage">
 
   <main class="container">
 
@@ -836,22 +923,52 @@
     </div>
   </section>
 
-  <!-- Editorial Footer -->
-  <footer class="editorial-footer">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-      <div>
-        <strong style="color: var(--ink-primary); font-family: var(--font-serif); font-size: 1.05rem;">
-          Why Mansa Musa Was Right — How $75 Billion Reclaims Africa’s Throne as the Biggest Economy to Ever Exist
-        </strong>
-        <p style="margin-top: 0.25rem;">
-          Synthesizing Mansa Musa’s 14th-Century Sankore Pivot with Bjørn Lomborg’s <em>How to Spend $75 Billion</em> (2012) &amp; <em>Best Things First</em> (2023) across All 54 African Nations.
-        </p>
+    <!-- Editorial Footer -->
+    <footer class="editorial-footer">
+      <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <strong style="color: var(--ink-primary); font-family: var(--font-serif); font-size: 1.05rem;">
+            Why Mansa Musa Was Right — How $75 Billion Reclaims Africa’s Throne as the Biggest Economy to Ever Exist
+          </strong>
+          <p style="margin-top: 0.25rem;">
+            Synthesizing Mansa Musa’s 14th-Century Sankore Pivot with Bjørn Lomborg’s <em>How to Spend $75 Billion</em> (2012), <em>Best Things First</em> (2023) &amp; Milton Friedman’s <em>Price Theory</em> / <em>Monetary History</em> across All 54 African Nations.
+          </p>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.76rem;">
+          Angular Signals Multi-Device Responsive Edition • 54-Nation 3D Atlas &amp; BCR Engine
+        </div>
       </div>
-      <div style="font-family: var(--font-mono); font-size: 0.76rem;">
-        The New Sankore Thesis • Interactive 54-Nation 3D Atlas &amp; BCR Engine
-      </div>
-    </div>
-  </footer>
+    </footer>
+    </div><!-- /#ngViewportStage -->
+
+    <!-- Sticky Bottom App Navigation Bar for Phones & Compact Devices -->
+    <nav id="mobileBottomNav" class="mobile-bottom-nav" aria-label="Quick Mobile Section Navigation">
+      <a href="#premise" class="mobile-bottom-tab active" data-spy-tab="premise">
+        <span class="tab-icon">👑</span>
+        <span class="tab-label">I. Law</span>
+      </a>
+      <a href="#overtake-race" class="mobile-bottom-tab" data-spy-tab="overtake-race">
+        <span class="tab-icon">🏁</span>
+        <span class="tab-label">II. Race</span>
+      </a>
+      <a href="#friedman-markets" class="mobile-bottom-tab" data-spy-tab="friedman-markets">
+        <span class="tab-icon">📈</span>
+        <span class="tab-label">III. $261T</span>
+      </a>
+      <a href="#africa-map" class="mobile-bottom-tab" data-spy-tab="africa-map">
+        <span class="tab-icon">🌍</span>
+        <span class="tab-label">IV. 3D Map</span>
+      </a>
+      <a href="#simulator" class="mobile-bottom-tab" data-spy-tab="simulator">
+        <span class="tab-icon">⚡</span>
+        <span class="tab-label">V. $75B</span>
+      </a>
+      <a href="#drc-superpower" class="mobile-bottom-tab" data-spy-tab="drc-superpower">
+        <span class="tab-icon">🏛️</span>
+        <span class="tab-label">VI. Plans</span>
+      </a>
+    </nav>
+  </app-root>
 
   <script src="africa-map-data.js"></script>
   <script src="data.js"></script>
