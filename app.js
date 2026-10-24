@@ -740,7 +740,7 @@
     const remaining = +(MAX_BUDGET_B - totalCost).toFixed(1);
     const avgBcr = totalCost > 0 ? (totalBenefit / totalCost).toFixed(1) : "0.0";
 
-    const optimalSurplusRef = 2342.4;
+    const optimalSurplusRef = 3649.0;
     const gdpUnlockedT =
       totalCost === 0
         ? 8.2
@@ -1314,6 +1314,29 @@
     });
   }
 
+  function renderBtfMatrix() {
+    const grid = document.getElementById("btfMatrixGrid");
+    if (!grid || typeof BEST_THINGS_FIRST_12 === "undefined") return;
+    grid.innerHTML = BEST_THINGS_FIRST_12.map(
+      (item) => `
+      <div class="btf-card">
+        <div>
+          <div class="btf-card-top">
+            <span class="btf-num-badge">SOLUTION #${item.num}</span>
+            <span class="btf-bcr-pill">${item.bcr} ROI</span>
+          </div>
+          <h4 class="btf-title">${item.title}</h4>
+          <p class="btf-impact">${item.africaImpact}</p>
+        </div>
+        <div class="btf-meta-foot">
+          <span>${item.phase}</span>
+          <span>${item.globalCostYr}</span>
+        </div>
+      </div>
+    `
+    ).join("");
+  }
+
   function renderAllBlueprintSections() {
     renderBlueprintHeader();
     renderDrcEndowments();
@@ -1327,6 +1350,7 @@
   renderAfricaSvgMap();
   renderCountryDossier();
   initWebGlMap();
+  renderBtfMatrix();
   updateSimulatorSummary();
   renderInterventionsGrid();
   renderMarimekkoChart();
