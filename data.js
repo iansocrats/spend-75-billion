@@ -1373,3 +1373,97 @@ const AFRICAN_BLUEPRINTS = {
     ]
   }
 };
+
+// ============================================================================
+// DATA: THE GLOBAL SUPERPOWER OVERTAKE RACE (2026–2076)
+// Africa (54-Nation AfCFTA) & Kenya-DRC Axis vs. US, China, India & EU
+// ============================================================================
+
+const OVERTAKE_RACE_BLOCS = [
+  {
+    id: "africa_lomborg",
+    name: "All-Africa (54-Nation AfCFTA • Lomborg BCR Sequenced)",
+    shortName: "All-Africa (Lomborg Model)",
+    flag: "🌍",
+    color: "#0D9488",
+    isAfricaHero: true,
+    workingAge2076: "1,850M (+118%)",
+    medianAge2076: "29 yrs",
+    powerCostKwh: "$0.02/kWh (Inga Hydro + Rift Geothermal)",
+    // Key decadal GDP anchor points ($ Trillions, real 2026 terms)
+    gdpByDecade: { 2026: 3.1, 2036: 10.6, 2046: 31.2, 2056: 66.5, 2066: 106.8, 2076: 145.0 }
+  },
+  {
+    id: "kenya_drc_axis",
+    name: "Kenya + DRC Twin-Engine Megacorridor (Standalone)",
+    shortName: "Kenya + DRC Twin Axis",
+    flag: "🇰🇪🇨🇩",
+    color: "#1D4ED8",
+    isAfricaHero: true,
+    workingAge2076: "320M (+145%)",
+    medianAge2076: "27 yrs",
+    powerCostKwh: "$0.018/kWh (50GW Hydro-Geothermal Pool)",
+    gdpByDecade: { 2026: 0.56, 2036: 2.8, 2046: 10.7, 2056: 27.7, 2066: 49.6, 2076: 73.4 }
+  },
+  {
+    id: "usa",
+    name: "United States",
+    shortName: "United States",
+    flag: "🇺🇸",
+    color: "#3B82F6",
+    isAfricaHero: false,
+    workingAge2076: "215M (+2%)",
+    medianAge2076: "44 yrs",
+    powerCostKwh: "$0.11/kWh",
+    gdpByDecade: { 2026: 29.2, 2036: 35.0, 2046: 42.0, 2056: 49.5, 2066: 56.8, 2076: 64.5 }
+  },
+  {
+    id: "india",
+    name: "India",
+    shortName: "India",
+    flag: "🇮🇳",
+    color: "#F59E0B",
+    isAfricaHero: false,
+    workingAge2076: "980M (-8% post-2050)",
+    medianAge2076: "45 yrs",
+    powerCostKwh: "$0.08/kWh",
+    gdpByDecade: { 2026: 4.3, 2036: 11.2, 2046: 24.5, 2056: 39.0, 2066: 50.2, 2076: 58.5 }
+  },
+  {
+    id: "china",
+    name: "China",
+    shortName: "China",
+    flag: "🇨🇳",
+    color: "#EF4444",
+    isAfricaHero: false,
+    workingAge2076: "540M (-44% Demographic Shrink)",
+    medianAge2076: "54 yrs",
+    powerCostKwh: "$0.07/kWh",
+    gdpByDecade: { 2026: 19.5, 2036: 28.5, 2046: 37.8, 2056: 44.8, 2066: 49.2, 2076: 52.0 }
+  },
+  {
+    id: "eu",
+    name: "European Union (27 Nations)",
+    shortName: "European Union",
+    flag: "🇪🇺",
+    color: "#6366F1",
+    isAfricaHero: false,
+    workingAge2076: "210M (-26% Shrink)",
+    medianAge2076: "50 yrs",
+    powerCostKwh: "$0.16/kWh",
+    gdpByDecade: { 2026: 19.4, 2036: 22.4, 2046: 25.6, 2056: 28.4, 2066: 30.8, 2076: 32.8 }
+  },
+  {
+    id: "africa_status_quo",
+    name: "Africa Under Raw-Ore Status Quo (Unsequenced / No Catalyst)",
+    shortName: "Africa (Raw-Ore Status Quo Trap)",
+    flag: "⚠️",
+    color: "#6B7280",
+    isAfricaHero: false,
+    workingAge2076: "Stunted / Underemployed",
+    medianAge2076: "29 yrs",
+    powerCostKwh: "$0.20/kWh (Diesel / Grid Deficit)",
+    gdpByDecade: { 2026: 3.1, 2036: 3.85, 2046: 4.75, 2056: 5.8, 2066: 6.95, 2076: 8.2 }
+  }
+];
+

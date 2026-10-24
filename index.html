@@ -28,9 +28,10 @@
 
       <nav class="nav-links" aria-label="Section navigation">
         <a href="#premise" class="nav-link">I. The Inevitability Thesis</a>
-        <a href="#africa-map" class="nav-link highlight-drc">II. Interactive 54-Country Map</a>
-        <a href="#simulator" class="nav-link">III. Spend the $75B</a>
-        <a href="#drc-superpower" class="nav-link">IV. DRC, Kenya &amp; Continental Deep-Dives</a>
+        <a href="#overtake-race" class="nav-link highlight-drc">II. Global Overtake Race</a>
+        <a href="#africa-map" class="nav-link">III. 54-Country 3D Map</a>
+        <a href="#simulator" class="nav-link">IV. Spend $75B &amp; Best Things First</a>
+        <a href="#drc-superpower" class="nav-link">V. DRC &amp; Kenya Blueprints</a>
       </nav>
 
       <button id="themeToggleBtn" class="theme-btn" type="button" aria-label="Toggle color theme">
@@ -107,7 +108,75 @@
     </section>
 
     <!-- ====================================================================
-         ACT II: INTERACTIVE 54-COUNTRY AFRICA MAP EXPLORER
+         ACT II: THE GLOBAL SUPERPOWER OVERTAKE RACE (2026–2076)
+         ==================================================================== -->
+    <section id="overtake-race" class="overtake-race-section">
+      <div class="kicker">ACT II • ANIMATED GLOBAL GDP OVERTAKE RACE (2026–2076)</div>
+      <h2 class="section-title">
+        Watch Africa Overtake the EU, India, China &amp; the United States—Never to Be Caught
+      </h2>
+      <p class="section-subtitle">
+        Press <strong>▶ Play Overtake Race</strong> (or scrub the timeline from 2026 to 2076) to watch how Lomborg’s <strong>$75B + <em>Best Things First</em></strong> sequencing propels both <strong>All-Africa ($145.0T)</strong> and the <strong>Kenya–DRC Twin-Engine Axis ($73.4T)</strong> past every aging superpower on Earth. Notice the gray bar at the bottom: without Lomborg’s high-BCR sequencing, Africa stalls at $8.2T—leaving <strong>$136.8 Trillion</strong> on the table!
+      </p>
+
+      <div class="race-arena-card">
+        <div class="race-controls-header">
+          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; flex: 1;">
+            <button id="playOvertakeRaceBtn" type="button" class="play-timeline-btn" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;">
+              ▶ Play Overtake Race (2026–2076)
+            </button>
+            <input
+              id="overtakeYearSlider"
+              type="range"
+              min="2026"
+              max="2076"
+              step="1"
+              value="2026"
+              class="year-slider-input"
+              aria-label="Overtake Race Year"
+            />
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              <button type="button" class="filter-pill" data-race-year="2026">2026</button>
+              <button type="button" class="filter-pill" data-race-year="2045">2045 (Passes EU)</button>
+              <button type="button" class="filter-pill" data-race-year="2053">2053 (Passes China)</button>
+              <button type="button" class="filter-pill" data-race-year="2055">2055 (Passes USA #1)</button>
+              <button type="button" class="filter-pill active" data-race-year="2076">2076 ($145T Peak)</button>
+            </div>
+          </div>
+
+          <div id="raceYearBigDisplay" class="race-year-big">2076</div>
+        </div>
+
+        <!-- Dynamic Historic Overtake Callout Banner -->
+        <div id="raceMilestoneCallout" class="race-milestone-callout"></div>
+
+        <!-- Animated Rank-Swapping Horizontal Bars -->
+        <div id="raceBarsContainer" class="race-bars-list"></div>
+
+        <!-- Structural Proof Table: Why No Continent Can Ever Re-Overtake Africa -->
+        <div class="race-proof-table-wrap">
+          <div style="font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700; margin-bottom: 0.5rem;">
+            Structural Physics &amp; Demographic Proof: Why No Aging Bloc Can Ever Catch Africa Post-2055
+          </div>
+          <table class="race-proof-table">
+            <thead>
+              <tr>
+                <th>Economic Superbloc</th>
+                <th>2026 GDP</th>
+                <th>2076 GDP</th>
+                <th>Working-Age Workforce (2076)</th>
+                <th>Median Age (2076)</th>
+                <th>24/7 Clean Baseload Power Cost</th>
+              </tr>
+            </thead>
+            <tbody id="raceProofTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         ACT III: INTERACTIVE 54-COUNTRY AFRICA MAP EXPLORER
          ==================================================================== -->
     <section id="africa-map" class="africa-map-section">
       <div class="kicker emerald">ACT II • COUNTRY-BY-COUNTRY INTERACTIVE ATLAS</div>

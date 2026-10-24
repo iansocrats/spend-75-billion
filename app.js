@@ -1337,6 +1337,183 @@
     ).join("");
   }
 
+  // ==========================================================================
+  // 7. GLOBAL SUPERPOWER OVERTAKE RACE (2026–2076)
+  // ==========================================================================
+  let raceYear = 2076;
+  let raceInterval = null;
+
+  const overtakeYearSlider = document.getElementById("overtakeYearSlider");
+  const playOvertakeRaceBtn = document.getElementById("playOvertakeRaceBtn");
+  const raceYearBigDisplay = document.getElementById("raceYearBigDisplay");
+  const raceMilestoneCallout = document.getElementById("raceMilestoneCallout");
+  const raceBarsContainer = document.getElementById("raceBarsContainer");
+  const raceProofTableBody = document.getElementById("raceProofTableBody");
+
+  function interpolateBlocGdp(bloc, yr) {
+    const d = bloc.gdpByDecade;
+    const decades = [2026, 2036, 2046, 2056, 2066, 2076];
+    if (yr <= 2026) return d[2026];
+    if (yr >= 2076) return d[2076];
+    for (let i = 0; i < decades.length - 1; i++) {
+      const y0 = decades[i];
+      const y1 = decades[i + 1];
+      if (yr >= y0 && yr <= y1) {
+        const t = (yr - y0) / (y1 - y0);
+        return +(d[y0] + (d[y1] - d[y0]) * t).toFixed(2);
+      }
+    }
+    return d[2076];
+  }
+
+  function getMilestoneMessage(yr) {
+    if (yr < 2035) {
+      return `<strong>${yr} • Phase I &amp; II Foundation:</strong> $75B + Best Things First (101:1 vaccines, 87:1 maternal care, 65:1 EdTech &amp; 33:1 seeds) eliminates stunting, malaria, and food imports across Africa.`;
+    } else if (yr < 2044) {
+      return `<strong>${yr} • Industrial Takeoff:</strong> Non-stunted, EdTech-trained youth enter the workforce; 38:1 E-Procurement &amp; 95:1 paperless customs unlock self-financing for 40+ GW Grand Inga &amp; 10+ GW Rift Geothermal.`;
+    } else if (yr < 2050) {
+      return `<strong>${yr} • HISTORIC OVERTAKE #1:</strong> 🌍 <strong>All-Africa overtakes the European Union!</strong> Cheap $0.02/kWh clean power draws global battery, green steel, and AI manufacturing onshore.`;
+    } else if (yr < 2053) {
+      return `<strong>${yr} • HISTORIC OVERTAKE #2:</strong> 🌍 <strong>All-Africa overtakes India!</strong> Meanwhile, 🇰🇪🇨🇩 the Kenya–DRC Twin Axis alone surges past $20 Trillion.`;
+    } else if (yr < 2055) {
+      return `<strong>${yr} • HISTORIC OVERTAKE #3:</strong> 🌍 <strong>All-Africa overtakes China!</strong> China's working-age population shrinks by >300M while Africa's 500M STEM workforce hits peak momentum.`;
+    } else if (yr < 2068) {
+      return `<strong>${yr} • HISTORIC OVERTAKE #4 (#1 ON EARTH):</strong> 🌍 <strong>All-Africa overtakes the United States to become the #1 Economy on Earth!</strong>`;
+    } else {
+      return `<strong>${yr} • UNASSAILABLE SUPERPOWER PEAK:</strong> 🌍 <strong>All-Africa hits $${interpolateBlocGdp(
+        OVERTAKE_RACE_BLOCS[0],
+        yr
+      ).toFixed(
+        1
+      )}T</strong> (larger than the US, China &amp; EU combined!)—and 🇰🇪🇨🇩 <strong>the Kenya–DRC Axis alone ($${interpolateBlocGdp(
+        OVERTAKE_RACE_BLOCS[1],
+        yr
+      ).toFixed(1)}T) overtakes the United States!</strong>`;
+    }
+  }
+
+  function renderOvertakeRace() {
+    if (!raceBarsContainer || typeof OVERTAKE_RACE_BLOCS === "undefined") return;
+
+    if (raceYearBigDisplay) raceYearBigDisplay.textContent = raceYear;
+    if (overtakeYearSlider) overtakeYearSlider.value = raceYear;
+
+    document.querySelectorAll("[data-race-year]").forEach((btn) => {
+      btn.classList.toggle(
+        "active",
+        parseInt(btn.getAttribute("data-race-year"), 10) === raceYear
+      );
+    });
+
+    const computed = OVERTAKE_RACE_BLOCS.map((bloc) => ({
+      ...bloc,
+      currentGdpT: interpolateBlocGdp(bloc, raceYear),
+    })).sort((a, b) => b.currentGdpT - a.currentGdpT);
+
+    const maxBarGdp = Math.max(computed[0].currentGdpT, 32.0);
+
+    if (raceMilestoneCallout) {
+      const africaLomborg = computed.find((b) => b.id === "africa_lomborg");
+      const africaStatusQuo = computed.find((b) => b.id === "africa_status_quo");
+      const gainT = +(
+        africaLomborg.currentGdpT - africaStatusQuo.currentGdpT
+      ).toFixed(1);
+      raceMilestoneCallout.innerHTML = `
+        <div>${getMilestoneMessage(raceYear)}</div>
+        <div style="font-family: var(--font-mono); font-weight: 700; color: var(--emerald);">
+          Lomborg Sequencing Gain in ${raceYear}: +$${gainT} Trillion vs. Status Quo
+        </div>
+      `;
+    }
+
+    raceBarsContainer.innerHTML = computed
+      .map((bloc, idx) => {
+        const widthPct = Math.max(2.5, (bloc.currentGdpT / maxBarGdp) * 100);
+        return `
+          <div class="race-bar-row ${bloc.isAfricaHero ? "hero-bloc" : ""}">
+            <div class="race-bloc-meta">
+              <span class="race-rank-num">#${idx + 1}</span>
+              <div>
+                <div class="race-bloc-name">${bloc.flag} ${bloc.shortName}</div>
+                <span class="race-bloc-sub">Workforce 2076: ${
+                  bloc.workingAge2076
+                } • Power: ${bloc.powerCostKwh.split(" ")[0]}</span>
+              </div>
+            </div>
+            <div class="race-track">
+              <div class="race-fill" style="width: ${widthPct}%; background-color: ${
+          bloc.color
+        };"></div>
+            </div>
+            <div class="race-gdp-val" style="color: ${
+              bloc.isAfricaHero ? "var(--emerald)" : "var(--ink-primary)"
+            };">
+              $${bloc.currentGdpT.toFixed(2)}T
+            </div>
+          </div>
+        `;
+      })
+      .join("");
+  }
+
+  function renderOvertakeProofTable() {
+    if (!raceProofTableBody || typeof OVERTAKE_RACE_BLOCS === "undefined") return;
+    raceProofTableBody.innerHTML = OVERTAKE_RACE_BLOCS.map(
+      (b) => `
+      <tr style="${
+        b.isAfricaHero ? "background-color: var(--emerald-soft); font-weight: 600;" : ""
+      }">
+        <td>${b.flag} ${b.name}</td>
+        <td style="font-family: var(--font-mono);">$${b.gdpByDecade[2026].toFixed(2)}T</td>
+        <td style="font-family: var(--font-mono); font-weight: 700; color: ${
+          b.isAfricaHero ? "var(--emerald)" : "var(--ink-primary)"
+        };">$${b.gdpByDecade[2076].toFixed(2)}T</td>
+        <td style="font-family: var(--font-mono);">${b.workingAge2076}</td>
+        <td style="font-family: var(--font-mono);">${b.medianAge2076}</td>
+        <td style="font-family: var(--font-mono);">${b.powerCostKwh}</td>
+      </tr>
+    `
+    ).join("");
+  }
+
+  if (overtakeYearSlider) {
+    overtakeYearSlider.addEventListener("input", (e) => {
+      raceYear = parseInt(e.target.value, 10);
+      renderOvertakeRace();
+    });
+  }
+
+  document.querySelectorAll("[data-race-year]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      raceYear = parseInt(btn.getAttribute("data-race-year"), 10);
+      renderOvertakeRace();
+    });
+  });
+
+  if (playOvertakeRaceBtn) {
+    playOvertakeRaceBtn.addEventListener("click", () => {
+      if (raceInterval) {
+        clearInterval(raceInterval);
+        raceInterval = null;
+        playOvertakeRaceBtn.textContent = "▶ Play Overtake Race (2026–2076)";
+        return;
+      }
+      if (raceYear >= 2076) {
+        raceYear = 2026;
+      }
+      playOvertakeRaceBtn.textContent = "⏸ Pause Overtake Race";
+      raceInterval = setInterval(() => {
+        raceYear += 1;
+        renderOvertakeRace();
+        if (raceYear >= 2076) {
+          clearInterval(raceInterval);
+          raceInterval = null;
+          playOvertakeRaceBtn.textContent = "▶ Replay Overtake Race (2026–2076)";
+        }
+      }, 110);
+    });
+  }
+
   function renderAllBlueprintSections() {
     renderBlueprintHeader();
     renderDrcEndowments();
@@ -1350,6 +1527,8 @@
   renderAfricaSvgMap();
   renderCountryDossier();
   initWebGlMap();
+  renderOvertakeRace();
+  renderOvertakeProofTable();
   renderBtfMatrix();
   updateSimulatorSummary();
   renderInterventionsGrid();
