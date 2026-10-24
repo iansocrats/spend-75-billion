@@ -374,6 +374,84 @@
           <div id="stockRaceBarsContainer" class="race-bars-list"></div>
         </div>
 
+        <!-- ================================================================
+             MILTON FRIEDMAN'S "PRICE THEORY" (1962/1976) MICROECONOMIC ENGINE
+             ================================================================ -->
+        <div style="margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--border-strong);">
+          <div class="kicker cobalt">MICROECONOMIC FOUNDATION • MILTON FRIEDMAN’S "PRICE THEORY" (1962 / 1976)</div>
+          <h3 style="font-family: var(--font-serif); font-size: 1.65rem; margin-bottom: 0.4rem;">
+            Applying Friedman’s <em>Price Theory</em>: Relative Prices, Elasticity (|ε_d|), Factor Complementarity (Ch. 7) &amp; Human Capital IRR (Ch. 11)
+          </h3>
+          <p style="font-size: 0.9rem; color: var(--ink-secondary); margin-bottom: 1.2rem; max-width: 920px;">
+            While Friedman’s <em>Monetary History</em> (<strong>M·V = P·Y</strong>) explains currency and bourse valuations, his classic Chicago School textbook <strong><em>Price Theory</em></strong> explains the microeconomic physics underneath: <strong>(1) Chapters 2–3 (Elasticity):</strong> why shipping raw bullion in 1324 Cairo or raw DRC cobalt today faces inelastic demand (<strong>|ε_d| &lt; 1</strong>) that crashes relative prices; <strong>(2) Chapter 7 (Derived Demand):</strong> why $24T of minerals need complementary $0.018/kWh energy and STEM brains to unlock domestic marginal value; and <strong>(3) Chapter 11 (Human Capital):</strong> why private banks starve early human capital (no repossessable collateral), creating the <strong>101:1 vaccine and 65:1 EdTech returns</strong> that Lomborg’s $75B captures first.
+          </p>
+
+          <!-- Preset Price Theory Scenarios -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.15rem;">
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--ink-muted);">
+              Select Friedman <em>Price Theory</em> Equilibrium:
+            </span>
+            <div class="scenario-buttons" style="margin: 0;">
+              <button type="button" class="scenario-btn active" data-pt-preset="sankoreComplementarity">
+                ★ 1. Ch. 7 &amp; 11 Optimal (Sankore Brains + $0.018/kWh + High-|ε_d| Tech)
+              </button>
+              <button type="button" class="scenario-btn" data-pt-preset="cairoInelasticTrap">
+                ⚠ 2. Ch. 2 Inelastic Raw Trap (1324 Cairo Gold / Raw Ore |ε_d|=0.35)
+              </button>
+              <button type="button" class="scenario-btn" data-pt-preset="megaprojectWithoutBrains">
+                3. Ch. 11 Asymmetric Capital Trap (Concrete Without Brains)
+              </button>
+            </div>
+          </div>
+
+          <div id="priceTheoryCallout" class="race-milestone-callout" style="margin-bottom: 1.35rem;"></div>
+
+          <!-- 4 Interactive Price Theory Sliders -->
+          <div class="friedman-sliders-grid">
+            <div class="friedman-slider-card">
+              <div class="friedman-slider-top">
+                <label for="sliderPtHumanH">Ch. 11 Human Capital (H Index)</label>
+                <span id="valPtHumanH" class="friedman-slider-val emerald">96 / 100</span>
+              </div>
+              <input id="sliderPtHumanH" type="range" min="25" max="100" step="1" value="96" class="year-slider-input" style="width: 100%;" />
+              <span class="friedman-slider-sub">101:1 Vaccines, 87:1 Maternal &amp; 65:1 Sankore EdTech</span>
+            </div>
+
+            <div class="friedman-slider-card">
+              <div class="friedman-slider-top">
+                <label for="sliderPtEnergyCost">Ch. 7 Energy Input Price (E $/kWh)</label>
+                <span id="valPtEnergyCost" class="friedman-slider-val emerald">$0.018/kWh</span>
+              </div>
+              <input id="sliderPtEnergyCost" type="range" min="0.015" max="0.220" step="0.005" value="0.018" class="year-slider-input" style="width: 100%;" />
+              <span class="friedman-slider-sub">Complementary Factor: 40GW Inga + 10GW Rift Geothermal</span>
+            </div>
+
+            <div class="friedman-slider-card">
+              <div class="friedman-slider-top">
+                <label for="sliderPtElasticity">Ch. 2 Export Demand Elasticity (|ε_d|)</label>
+                <span id="valPtElasticity" class="friedman-slider-val emerald">2.80 (Elastic Tech)</span>
+              </div>
+              <input id="sliderPtElasticity" type="range" min="0.25" max="3.00" step="0.05" value="2.80" class="year-slider-input" style="width: 100%;" />
+              <span class="friedman-slider-sub">&lt;1.0 = Raw Ore Crash • &gt;2.0 = Onshore Batteries &amp; AI</span>
+            </div>
+
+            <div class="friedman-slider-card">
+              <div class="friedman-slider-top">
+                <label for="sliderPtPricePurity">Ch. 9 Price Signal Purity (I Index)</label>
+                <span id="valPtPricePurity" class="friedman-slider-val emerald">94 / 100</span>
+              </div>
+              <input id="sliderPtPricePurity" type="range" min="20" max="100" step="1" value="94" class="year-slider-input" style="width: 100%;" />
+              <span class="friedman-slider-sub">95:1 Paperless AfCFTA, 38:1 E-Procurement &amp; 28:1 Titles</span>
+            </div>
+          </div>
+
+          <!-- 6 Live Price Theory Microeconomic Readout KPIs -->
+          <div id="priceTheoryKpiGrid" class="friedman-kpi-grid" style="margin-bottom: 1.5rem;"></div>
+
+          <!-- 4 Core Chapters of Friedman's Price Theory Applied to Africa -->
+          <div id="priceTheoryChaptersGrid" class="megacap-board-grid"></div>
+        </div>
+
         <!-- The SANKORE-500 Top 8 Pan-African Listed Megacaps (2076 Bourse Board) -->
         <div style="margin-top: 2rem;">
           <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.85rem;">

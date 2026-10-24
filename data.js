@@ -1694,5 +1694,75 @@ const STOCK_MARKET_RACE_BLOCS = [
   }
 ];
 
+// ============================================================================
+// MILTON FRIEDMAN "PRICE THEORY" (1962/1976) MICROECONOMIC ENGINE
+// ============================================================================
+
+const FRIEDMAN_PRICE_THEORY_MODEL = {
+  presets: {
+    sankoreComplementarity: {
+      id: "sankoreComplementarity",
+      name: "1. Friedman Ch. 7 & 11 Optimal (Sankore Brains + $0.018/kWh Energy + High-Elasticity Tech)",
+      badge: "OPTIMAL PRICE THEORY EQUILIBRIUM • 94.5% ONSHORE VALUE CAPTURE",
+      humanH: 96,
+      energyCostKwh: 0.018,
+      elasticityEps: 2.80,
+      pricePurityI: 94,
+      summary: "Applies all 4 laws of Milton Friedman's Price Theory: (1) Solves the Ch. 11 Human Capital credit bottleneck first (101:1 vaccines & 65:1 EdTech -> H=96); (2) Drops complementary energy cost to $0.018/kWh via Inga + Rift Geothermal (Ch. 7 Derived Demand); (3) Purifies price signals via 95:1 paperless customs & 28:1 land titles; and (4) Shifts exports from inelastic raw ore (|ε|=0.35) to high-elasticity battery cells, green steel & AI compute (|ε|=2.80)."
+    },
+    cairoInelasticTrap: {
+      id: "cairoInelasticTrap",
+      name: "2. Friedman Ch. 2 Inelastic Commodity Trap (1324 Cairo Raw Gold / 2026 Raw DRC Ore)",
+      badge: "THE INELASTIC TRAP • |ε_d| < 1 MEANS MORE RAW EXPORTS LOWER YOUR RELATIVE PRICE",
+      humanH: 38,
+      energyCostKwh: 0.200,
+      elasticityEps: 0.35,
+      pricePurityI: 28,
+      summary: "Proves via Chapters 2 & 3 of Friedman's Price Theory why Mansa Musa's 1324 raw gold giveaway crashed Cairo prices and why shipping raw African cobalt/cocoa today keeps Africa poor: when demand elasticity |ε_d| < 1 (0.35), expanding raw supply causes relative prices (Terms of Trade) to collapse while foreign refiners capture 97.9% of final product value."
+    },
+    megaprojectWithoutBrains: {
+      id: "megaprojectWithoutBrains",
+      name: "3. Friedman Ch. 11 Asymmetric Capital Trap (Concrete Megaprojects Without Human Capital)",
+      badge: "FACTOR MISMATCH • PHYSICAL CAPITAL WITHOUT COMPLEMENTARY HUMAN CAPITAL (Ch. 7 & 11)",
+      humanH: 42,
+      energyCostKwh: 0.095,
+      elasticityEps: 0.85,
+      pricePurityI: 45,
+      summary: "Illustrates Friedman's Chapter 7 & 11 warning: pouring billions into concrete dams and railways while ignoring childhood stunting (H=42) and border/procurement distortions (I=45) starves physical capital of its complementary human factor—leaving factories at 35% utilization and yields stuck at 1.9:1."
+    }
+  },
+  chapters: [
+    {
+      chapter: "Ch. 2 & 3 • Theory of Demand & Elasticity",
+      lawTitle: "Why Raw Gold & Raw Cobalt Crash Relative Prices (|ε_d| < 1 vs. |ε_d| > 2.5)",
+      formula: "MR = P · (1 - 1/|ε_d|)",
+      lomborgLink: "Onshore Refining + Phase IV Industrialization (46× to 950× Value Capture)",
+      explanation: "In Friedman's Price Theory, when demand is inelastic (|ε_d| < 1, typical of raw bullion, unrefined copper/cobalt, and bulk cocoa), marginal revenue is negative—shipping more raw tonnage literally drives down Africa's Terms of Trade. Moving up the value chain to refined solid-state batteries, green steel, and AI compute shifts Africa onto an elastic demand curve (|ε_d| = 2.8) where global revenue compounds."
+    },
+    {
+      chapter: "Ch. 7 • Derived Demand & Factor Proportions",
+      lawTitle: "Complementarity of Factors: Why $24T of DRC Minerals Need $0.018/kWh Power & Brains",
+      formula: "VMP_K = P · ∂Y(K, H, E) / ∂K",
+      lomborgLink: "40GW Grand Inga + 10GW Rift Geothermal ($0.018/kWh) + 65:1 STEM Workforce",
+      explanation: "Friedman proves that the Marginal Value Product (VMP) of any resource (minerals K or arable land) depends on the supply price of complementary inputs: Human Capital (H) and Energy (E). When electricity costs $0.20/kWh and 42% of youth are stunted, the domestic marginal product of raw ore is near zero. Dropping power to $0.018/kWh with healthy STEM engineers multiplies domestic labor wages 28-fold."
+    },
+    {
+      chapter: "Ch. 11 • Investment in Human Capital",
+      lawTitle: "The Human Collateral Paradox: Why 101:1 Vaccines & 65:1 EdTech Beat 1.9:1 Concrete",
+      formula: "IRR_Human (48.7:1) ≫ IRR_Physical (1.9:1)",
+      lomborgLink: "Best Things First #1 Vaccines (101:1), #3 Maternal (87:1) & #4 EdTech (65:1)",
+      explanation: "In Chapter 11 of Price Theory, Friedman & Becker showed why private capital markets over-finance physical machines (which banks can seize as collateral) and starve Human Capital (because you cannot repossess a child's brain). This market imperfection creates a massive 50:1 to 101:1 return gap that Lomborg's $75B captures first."
+    },
+    {
+      chapter: "Ch. 9 • The Price System as Information",
+      lawTitle: "Purifying Distorted Price Signals: Ending Deadweight Loss, Quotas & Dead Capital",
+      formula: "ΔWelfare = ½ · ΔP · ΔQ (Harberger Triangle + Rent Elimination)",
+      lomborgLink: "95:1 AfCFTA Paperless Trade, 38:1 E-Procurement & 28:1 Digital Land Titling",
+      explanation: "Friedman demonstrated that border quotas, 14-day customs delays, rigged state procurement, and untitled land destroy the information content of prices. Lomborg's institutional catalysts purify Africa's price system—turning $2.5T of untitled 'dead capital' into priced collateral and saving $1.42T/yr in trade and procurement friction."
+    }
+  ]
+};
+
+
 
 

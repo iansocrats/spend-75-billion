@@ -2264,6 +2264,237 @@
     });
   }
 
+  // ==========================================================================
+  // 10. MILTON FRIEDMAN "PRICE THEORY" (1962/1976) MICROECONOMIC ENGINE
+  // ==========================================================================
+  let activePtPreset = "sankoreComplementarity";
+  const sliderPtHumanH = document.getElementById("sliderPtHumanH");
+  const sliderPtEnergyCost = document.getElementById("sliderPtEnergyCost");
+  const sliderPtElasticity = document.getElementById("sliderPtElasticity");
+  const sliderPtPricePurity = document.getElementById("sliderPtPricePurity");
+  const valPtHumanH = document.getElementById("valPtHumanH");
+  const valPtEnergyCost = document.getElementById("valPtEnergyCost");
+  const valPtElasticity = document.getElementById("valPtElasticity");
+  const valPtPricePurity = document.getElementById("valPtPricePurity");
+  const priceTheoryCallout = document.getElementById("priceTheoryCallout");
+  const priceTheoryKpiGrid = document.getElementById("priceTheoryKpiGrid");
+  const priceTheoryChaptersGrid = document.getElementById("priceTheoryChaptersGrid");
+
+  function renderPriceTheoryEngine() {
+    if (
+      typeof FRIEDMAN_PRICE_THEORY_MODEL === "undefined" ||
+      !priceTheoryKpiGrid ||
+      !sliderPtHumanH
+    ) {
+      return;
+    }
+
+    const hIdx = parseFloat(sliderPtHumanH.value);
+    const eCost = parseFloat(sliderPtEnergyCost.value);
+    const eps = parseFloat(sliderPtElasticity.value);
+    const iPurity = parseFloat(sliderPtPricePurity.value);
+
+    if (valPtHumanH) valPtHumanH.textContent = `${Math.round(hIdx)} / 100`;
+    if (valPtEnergyCost) valPtEnergyCost.textContent = `$${eCost.toFixed(3)}/kWh`;
+    if (valPtElasticity) {
+      const elLabel =
+        eps < 1.0
+          ? "(Inelastic Trap)"
+          : eps < 1.8
+          ? "(Semi-Processed)"
+          : "(Elastic High-Tech)";
+      valPtElasticity.textContent = `${eps.toFixed(2)} ${elLabel}`;
+    }
+    if (valPtPricePurity) valPtPricePurity.textContent = `${Math.round(iPurity)} / 100`;
+
+    // 1. Ch. 7 Factor Complementarity Multiplier: VMP rises as H -> 100 and E -> $0.018/kWh
+    const energyFactor = Math.pow(0.20 / Math.max(0.015, eCost), 0.85);
+    const humanFactor = Math.pow(hIdx / 38.0, 1.45);
+    const instFactor = Math.pow(iPurity / 28.0, 0.75);
+    const elasticityFactor = Math.pow(eps / 0.35, 0.65);
+
+    const complementarityMultiplier = +(
+      energyFactor *
+      humanFactor *
+      instFactor
+    ).toFixed(1);
+
+    // 2. Marginal Value Product of African Labor (2076 Annual Wage in $)
+    const annualWage2076 = Math.min(
+      68000,
+      Math.max(
+        1450,
+        Math.round(1850 * (complementarityMultiplier / 1.0) * (0.45 + 0.22 * eps))
+      )
+    );
+
+    // 3. Onshore Value Capture (%) of Minerals & Agro (2.1% raw dirt -> 94.5% refined tech)
+    const rawCaptureScore =
+      (hIdx / 100) * 0.35 +
+      ((0.225 - eCost) / 0.21) * 0.30 +
+      (Math.min(3.0, eps) / 3.0) * 0.25 +
+      (iPurity / 100) * 0.10;
+    const onshoreValueCapturePct = Math.min(
+      96.5,
+      Math.max(1.9, +(rawCaptureScore * 99.0).toFixed(1))
+    );
+
+    // 4. Ch. 2 & 3 Terms-of-Trade Relative Price Index (P_Africa / P_World, 2026 = 100)
+    // When |ε_d| < 1, expanding output crashes relative price (1324 Cairo trap)
+    const totIndex =
+      eps < 1.0
+        ? Math.round(35 + eps * 65)
+        : Math.round(100 + (eps - 1.0) * 115 * (hIdx / 90));
+
+    // 5. Ch. 9 Deadweight Loss Eliminated ($ Trillions/yr via 95:1 AfCFTA & 38:1 E-Procurement)
+    const dwlSavedT = +((iPurity / 94.0) * 1.42 * (hIdx / 96.0)).toFixed(2);
+
+    // 6. Implied Real Output Y Growth Rate fed into Friedman's M*V = P*Y
+    const impliedYGrowthPct = Math.min(
+      8.9,
+      Math.max(
+        1.4,
+        +(
+          1.4 +
+          (hIdx / 100) * 2.6 +
+          ((0.22 - eCost) / 0.205) * 1.9 +
+          (eps / 3.0) * 1.6 +
+          (iPurity / 100) * 0.9
+        ).toFixed(1)
+      )
+    );
+
+    const preset =
+      FRIEDMAN_PRICE_THEORY_MODEL.presets[activePtPreset] ||
+      FRIEDMAN_PRICE_THEORY_MODEL.presets.sankoreComplementarity;
+
+    const isInelasticTrap = eps < 1.0;
+
+    if (priceTheoryCallout) {
+      priceTheoryCallout.style.borderLeftColor = isInelasticTrap
+        ? "var(--crimson)"
+        : "var(--emerald)";
+      priceTheoryCallout.innerHTML = `
+        <div style="flex: 1; min-width: 260px;">
+          <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: ${
+            isInelasticTrap ? "var(--crimson)" : "var(--emerald)"
+          };">${preset.badge}</div>
+          <div style="margin-top: 0.2rem;"><strong>${preset.name}:</strong> ${preset.summary}</div>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; text-align: right;">
+          <div>Marginal Revenue Law: MR = P · (1 − 1/${eps.toFixed(2)}) = ${
+        eps < 1
+          ? `<span style="color: var(--crimson);">NEGATIVE (Price Crash!)</span>`
+          : `<span style="color: var(--emerald);">+${(1 - 1 / eps).toFixed(2)}P (Compounding!)</span>`
+      }</div>
+          <div style="color: var(--emerald);">Feeds Real Output Growth (Y): +${impliedYGrowthPct}%/yr</div>
+        </div>
+      `;
+    }
+
+    priceTheoryKpiGrid.innerHTML = `
+      <div class="friedman-kpi-card">
+        <div class="friedman-kpi-label">Ch. 7 Marginal Product of Labor</div>
+        <div class="friedman-kpi-val" style="color: var(--emerald);">$${annualWage2076.toLocaleString()}/yr</div>
+        <div class="friedman-kpi-sub">2076 Avg African Skilled Wage (vs. $1,850/yr under Raw-Ore Trap)</div>
+      </div>
+
+      <div class="friedman-kpi-card gold">
+        <div class="friedman-kpi-label">Onshore Value-Chain Capture</div>
+        <div class="friedman-kpi-val" style="color: #D97706;">${onshoreValueCapturePct}%</div>
+        <div class="friedman-kpi-sub">Share of Final Battery, Steel &amp; AI Value Kept in Africa (vs. 2.1% raw)</div>
+      </div>
+
+      <div class="friedman-kpi-card ${isInelasticTrap ? "warn" : ""}">
+        <div class="friedman-kpi-label">Ch. 2 Relative Price / Terms of Trade</div>
+        <div class="friedman-kpi-val" style="color: ${
+          isInelasticTrap ? "var(--crimson)" : "var(--emerald)"
+        };">${totIndex}</div>
+        <div class="friedman-kpi-sub">${
+          isInelasticTrap
+            ? "⚠ |ε_d| < 1: More Raw Supply Crashes Price!"
+            : "✓ |ε_d| > 1: High-Tech Pricing Power (2026=100)"
+        }</div>
+      </div>
+
+      <div class="friedman-kpi-card">
+        <div class="friedman-kpi-label">Ch. 7 Factor Complementarity</div>
+        <div class="friedman-kpi-val">${complementarityMultiplier}×</div>
+        <div class="friedman-kpi-sub">VMP Multiplier from Pairing H(${Math.round(hIdx)}) × E($${eCost.toFixed(3)}/kWh)</div>
+      </div>
+
+      <div class="friedman-kpi-card gold">
+        <div class="friedman-kpi-label">Ch. 11 Human vs. Concrete IRR</div>
+        <div class="friedman-kpi-val" style="color: #D97706;">48.7 : 1</div>
+        <div class="friedman-kpi-sub">25.6× Higher Return than Unsequenced Concrete (1.9:1)</div>
+      </div>
+
+      <div class="friedman-kpi-card">
+        <div class="friedman-kpi-label">Ch. 9 Price Signal Welfare Gain</div>
+        <div class="friedman-kpi-val" style="color: var(--emerald);">+$${dwlSavedT}T/yr</div>
+        <div class="friedman-kpi-sub">Deadweight Loss &amp; Quota Rents Eliminated (AfCFTA + Titles)</div>
+      </div>
+    `;
+
+    if (priceTheoryChaptersGrid && priceTheoryChaptersGrid.children.length === 0) {
+      priceTheoryChaptersGrid.innerHTML = FRIEDMAN_PRICE_THEORY_MODEL.chapters
+        .map(
+          (ch) => `
+          <div class="megacap-card">
+            <div>
+              <div class="megacap-top">
+                <span class="megacap-ticker" style="background-color: var(--cobalt);">${ch.chapter}</span>
+                <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: #D97706;">${ch.formula}</span>
+              </div>
+              <div style="font-weight: 700; font-size: 0.94rem; margin-top: 0.45rem; line-height: 1.25;">
+                ${ch.lawTitle}
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--emerald); font-weight: 700; margin-top: 0.2rem;">
+                Lomborg Catalyst: ${ch.lomborgLink}
+              </div>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--ink-secondary); line-height: 1.48; margin: 0;">
+              ${ch.explanation}
+            </p>
+          </div>
+        `
+        )
+        .join("");
+    }
+  }
+
+  document.querySelectorAll("[data-pt-preset]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const key = btn.getAttribute("data-pt-preset");
+      const preset =
+        FRIEDMAN_PRICE_THEORY_MODEL &&
+        FRIEDMAN_PRICE_THEORY_MODEL.presets[key];
+      if (!preset) return;
+      activePtPreset = key;
+      document.querySelectorAll("[data-pt-preset]").forEach((b) => {
+        b.classList.toggle("active", b === btn);
+      });
+      if (sliderPtHumanH) sliderPtHumanH.value = preset.humanH;
+      if (sliderPtEnergyCost) sliderPtEnergyCost.value = preset.energyCostKwh;
+      if (sliderPtElasticity) sliderPtElasticity.value = preset.elasticityEps;
+      if (sliderPtPricePurity) sliderPtPricePurity.value = preset.pricePurityI;
+      renderPriceTheoryEngine();
+    });
+  });
+
+  [
+    sliderPtHumanH,
+    sliderPtEnergyCost,
+    sliderPtElasticity,
+    sliderPtPricePurity,
+  ].forEach((sl) => {
+    if (sl) {
+      sl.addEventListener("input", () => {
+        renderPriceTheoryEngine();
+      });
+    }
+  });
+
   function renderAllBlueprintSections() {
     renderBlueprintHeader();
     renderDrcEndowments();
@@ -2281,6 +2512,7 @@
   renderOvertakeProofTable();
   renderFriedmanMarkets();
   renderStockMarketRace();
+  renderPriceTheoryEngine();
   renderBtfMatrix();
   updateSimulatorSummary();
   renderInterventionsGrid();
