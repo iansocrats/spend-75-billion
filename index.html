@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" data-visual-mode="compact">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -37,11 +37,17 @@
         </nav>
 
         <div class="masthead-actions">
+          <button id="autoTourBtn" class="theme-btn" type="button" style="background-color: var(--emerald); color: #FFFFFF; border-color: var(--emerald);">
+            🎬 45s Auto-Tour
+          </button>
+          <button id="toggleTextModeBtn" class="theme-btn" type="button" title="Toggle between Visual Command-Center Mode and Full Essay Mode">
+            📖 Show Text
+          </button>
           <button id="themeToggleBtn" class="theme-btn" type="button" aria-label="Toggle color theme">
-            ◑ Terminal Mode
+            ◑ Dark
           </button>
           <button id="mobileMenuToggleBtn" class="mobile-hamburger-btn" type="button" aria-label="Open navigation menu" aria-expanded="false">
-            ☰ Sections
+            ☰
           </button>
         </div>
       </div>
@@ -110,144 +116,207 @@
   <main class="container">
 
     <!-- ====================================================================
-         ACT I: HERO — WHY MANSA MUSA WAS RIGHT
+         ACT I: INTERACTIVE 4-DIAL SANKORE SUPERPOWER EQUALIZER & SCOREBOARD
          ==================================================================== -->
     <section id="premise" class="hero">
       <div class="hero-grid">
         <div>
-          <div class="kicker">ACT I • FROM 1324 TIMBUKTU TO THE $145 TRILLION SUPERCONTINENT</div>
-          <h1 class="hero-headline">
-            <span class="highlight">Why Mansa Musa Was Right:</span> How $75 Billion Reclaims Africa’s Throne as the <span class="highlight-drc">Biggest Economy to Ever Exist—And That Will Ever Exist</span>
+          <div class="kicker">ACT I • INTERACTIVE COMMAND CENTER • TURN THE 4 SANKORE DIALS</div>
+          <h1 class="hero-headline" style="margin-bottom: 0.75rem;">
+            <span class="highlight">Why Mansa Musa Was Right:</span> Drag the 4 Dials Below to Turn <span class="highlight-drc">$75B Into a $183.5T Superpower</span>
           </h1>
           <p class="hero-lead">
-            Everyone remembers <strong>Mansa Musa’s</strong> 1324 pilgrimage for the raw gold he handed out in Cairo—an outflow of unrefined bullion so massive it crashed Mediterranean gold prices for a decade. Almost no one talks about <strong>what Mansa Musa realized on his way home</strong>: <em>exporting raw commodities without domestic brains and institutions is a trap.</em>
+            In 1324, Mansa Musa’s raw gold giveaway crashed Cairo’s currency for 12 years—so in 1325 he pivoted to building <strong>Sankore University in Timbuktu</strong> and anchoring trade onshore. Drag the 4 dials below to test <strong>Mansa Musa’s Sankore Law × Bjørn Lomborg’s <em>Best Things First</em> × Milton Friedman’s <em>Price Theory</em></strong>:
           </p>
-          <p class="hero-lead" style="font-size: 1.05rem; margin-top: -0.75rem;">
-            Upon returning to Mali, Mansa Musa pivoted from raw gold giveaways to building <strong>Sankore University in Timbuktu</strong> (25,000 scholars, mathematicians, astronomers, and jurists), securing trans-continental trade corridors, and anchoring wealth onshore—making 14th-century Africa the richest civilization on Earth. Today, <strong>Bjørn Lomborg’s <em>How to Spend $75 Billion</em></strong> and <strong><em>Best Things First: The 12 Most Efficient Solutions</em></strong> prove Mansa Musa right with Nobel Laureate econometrics: when Africa invests its first <strong>$75B</strong> into <strong>Brains &amp; Biology (101:1)</strong>, <strong>The New Sankore EdTech (65:1)</strong>, <strong>Caloric Surplus (33:1)</strong>, and <strong>Paperless Trade + $0.02/kWh Hydro/Geothermal Power (95:1)</strong> instead of exporting raw dirt, Africa compounds into an unassailable <strong>$145+ Trillion Superpower</strong>.
-          </p>
-          <div class="hero-cta-row">
-            <a href="#overtake-race" class="btn-drc">Watch the Global Overtake Race (2026–2076) ↓</a>
-            <a href="#africa-map" class="btn-primary">Explore the 54-Country 3D Map →</a>
+
+          <!-- Interactive 4-Dial Master Equalizer -->
+          <div class="equalizer-board">
+            <div class="equalizer-top-bar">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--emerald);">
+                🎛️ Live 4-Pillar Sankore Equalizer ($75B Catalyst)
+              </span>
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <button id="eqPresetMaxBtn" type="button" class="filter-pill active" style="font-size: 0.7rem; padding: 0.25rem 0.6rem;">
+                  🔥 Max Sankore ($183.5T)
+                </button>
+                <button id="eqPresetTrapBtn" type="button" class="filter-pill" style="font-size: 0.7rem; padding: 0.25rem 0.6rem;">
+                  ⚠️ 1324 Raw Gold Trap ($8.2T)
+                </button>
+              </div>
+            </div>
+
+            <div class="friedman-sliders-grid" style="margin-bottom: 0.85rem;">
+              <div class="friedman-slider-card">
+                <div class="friedman-slider-top">
+                  <label for="eqDialBiology">🧬 1. Biology &amp; Vaccines (101:1)</label>
+                  <span id="valEqBiology" class="friedman-slider-val emerald">100%</span>
+                </div>
+                <input id="eqDialBiology" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
+              </div>
+
+              <div class="friedman-slider-card">
+                <div class="friedman-slider-top">
+                  <label for="eqDialEdtech">📱 2. Sankore EdTech &amp; Seeds (65:1)</label>
+                  <span id="valEqEdtech" class="friedman-slider-val emerald">100%</span>
+                </div>
+                <input id="eqDialEdtech" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
+              </div>
+
+              <div class="friedman-slider-card">
+                <div class="friedman-slider-top">
+                  <label for="eqDialPowerTrade">⚡ 3. $0.02 Power &amp; AfCFTA (95:1)</label>
+                  <span id="valEqPowerTrade" class="friedman-slider-val emerald">100%</span>
+                </div>
+                <input id="eqDialPowerTrade" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
+              </div>
+
+              <div class="friedman-slider-card">
+                <div class="friedman-slider-top">
+                  <label for="eqDialSuperSectors">⚽🦁 4. Sports, Tourism &amp; Space (+$38.5T)</label>
+                  <span id="valEqSuperSectors" class="friedman-slider-val emerald">100%</span>
+                </div>
+                <input id="eqDialSuperSectors" type="range" min="0" max="100" step="5" value="100" class="year-slider-input" style="width: 100%;" />
+              </div>
+            </div>
+
+            <div class="hero-cta-row" style="margin-bottom: 0;">
+              <a href="#historical-audit" class="btn-drc">Shut the Leaky Pipes ($3.33T Audit) ↓</a>
+              <a href="#overtake-race" class="btn-primary">Play the Overtake Race →</a>
+            </div>
           </div>
-          <p style="font-size: 0.82rem; color: var(--ink-muted); font-family: var(--font-mono);">
-            "Raw gold crashes markets; Sankore brains + trade corridors build empires." — The Mansa Musa &amp; Lomborg BCR Synthesis
-          </p>
         </div>
 
-        <!-- Right Column: The Mansa Musa x Lomborg BCR Proof Card -->
+        <!-- Right Column: Live Reactive Visual Scoreboard -->
         <aside class="nobel-brief-card" style="border-top-color: #D97706;">
-          <div class="kicker" style="color: #D97706;">THE MANSA MUSA × LOMBORG EQUATION</div>
-          <h2 class="nobel-brief-title">From Raw Dirt to the New Sankore Superpower</h2>
-          <p style="font-size: 0.88rem; color: var(--ink-secondary);">
-            For 400 years, modern Africa repeated the 1324 Cairo mistake—shipping raw DRC cobalt, unrefined Zambian copper, and bulk Kenyan coffee abroad (<span style="font-family: var(--font-mono);">1.9:1 ROI</span>). Switching to <strong>Mansa Musa’s Sankore Pivot</strong> via Lomborg’s <strong>12 <em>Best Things First</em> solutions</strong> unlocks <strong>48.7 : 1 returns</strong>:
-          </p>
+          <div class="kicker" style="color: #D97706;">LIVE SUPERPOWER SCOREBOARD (2076)</div>
+          <h2 id="eqVerdictTitle" class="nobel-brief-title">🏆 #1 Economy &amp; #1 Currency in History</h2>
 
           <div class="stat-pillars">
             <div>
-              <div class="stat-pillar-num">$75B</div>
-              <div class="stat-pillar-label">Catalytic Seed Capital (Less than 1 yr of raw ore leakage)</div>
+              <div id="eqScoreGdp" class="stat-pillar-num emerald">$183.5T</div>
+              <div class="stat-pillar-label">2076 All-Africa GDP (vs. $3.7T Today)</div>
             </div>
             <div>
-              <div class="stat-pillar-num emerald">$3.65T</div>
-              <div class="stat-pillar-label">Immediate Net Human &amp; Productivity Surplus</div>
+              <div id="eqScoreBourse" class="stat-pillar-num emerald">$330.3T</div>
+              <div class="stat-pillar-label">2076 Pan-African Stock Exchange (1.8×)</div>
             </div>
             <div>
-              <div class="stat-pillar-num crimson">48.7 : 1</div>
-              <div class="stat-pillar-label">Unified Portfolio Benefit-Cost Ratio</div>
+              <div id="eqScoreOvertakeYr" class="stat-pillar-num crimson">Year 2051</div>
+              <div class="stat-pillar-label">Year Africa Surpasses USA as #1 on Earth</div>
             </div>
             <div>
-              <div class="stat-pillar-num emerald">$145T+</div>
-              <div class="stat-pillar-label">2076 Continental GDP (Reclaiming the Global Throne)</div>
+              <div id="eqScoreCurrency" class="stat-pillar-num emerald">+265%</div>
+              <div class="stat-pillar-label">Friedman Real Currency Appreciation</div>
             </div>
           </div>
 
-          <div style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.4rem;">
-            The 4 Pillars of the New Sankore Pivot
-          </div>
           <ul class="laureate-list">
-            <li><span>I. Biological Liberation (101:1 Vaccines)</span> <span>59:1 ROI ($30.0B)</span></li>
-            <li><span>II. Caloric Sovereignty (33:1 Seed R&amp;D)</span> <span>27:1 ROI ($13.5B)</span></li>
-            <li><span>III. The New Sankore (65:1 Adaptive EdTech)</span> <span>51:1 ROI ($15.5B)</span></li>
-            <li><span>IV. Timbuktu Trade Rails (95:1 AfCFTA)</span> <span>45:1 ROI ($16.0B)</span></li>
+            <li><span>🧬 Child Stunting Eradicated</span> <span id="eqBarStunting">&lt; 1.2% (Zero Brain Loss)</span></li>
+            <li><span>⚡ Baseload Hydro/Geothermal</span> <span id="eqBarPower">$0.018 / kWh</span></li>
+            <li><span>🇰🇪🇨🇩 Kenya + DRC Twin Axis</span> <span id="eqBarTwinAxis">$88.8T GDP (#2 on Earth)</span></li>
+            <li><span>🤝 Rest-of-World Co-Prosperity</span> <span id="eqBarCoProsperity">+$42.0T Global Boost</span></li>
           </ul>
         </aside>
       </div>
     </section>
 
     <!-- ====================================================================
-         ACT I-B: THE HISTORICAL $3.33T AUDIT & KENYA $161B COUNTERFACTUAL
+         ACT I-B: INTERACTIVE LEAKY-PIPE VALVE GAME ($3.33T AFRICA & $161B KENYA)
          ==================================================================== -->
     <section id="historical-audit" class="friedman-markets-section">
-      <div class="kicker crimson">THE HISTORICAL CAPITAL AUDIT (1960–2026) • ALL-AFRICA ($3.33T) &amp; KENYA DEEP-DIVE ($161B)</div>
+      <div class="kicker crimson">INTERACTIVE PIPE AUDIT • ALL-AFRICA ($3.33T RECEIVED) &amp; KENYA ($161B RECEIVED)</div>
       <h2 class="section-title">
-        Where Did the Money Go? Africa Already Received 44× Our $75B Catalyst ($3.33T)—And Kenya Alone Received 2.15× ($161B). Here Is Where Both Should Already Be Today in 2026
+        Shut the 3 Leaky Pipes: Watch Where Africa ($28.4T) &amp; Kenya ($1.18T) Should Already Be Today in 2026
       </h2>
       <p class="section-subtitle">
-        Critics often ask: <em>"Can $75 Billion really transform a continent?"</em> The historical audit proves the problem was never a shortage of billions—it was <strong>1.3 : 1 sequencing, tied aid, unsequenced concrete debt, and procurement leakage</strong>. Between 1960 and 2026, Africa received <strong>$3.33 Trillion</strong> in Official Aid and Sovereign Debt (<strong>$4.91T</strong> with FDI), while <strong>Kenya alone deployed $161.0 Billion</strong>. Switch between <strong>🌍 All-Africa</strong> and <strong>🇰🇪 Kenya</strong> below to inspect where the money went—and use the <strong>1985–2026 Counterfactual Time Machine</strong> to see where Africa (<strong>$28.4T GDP today</strong>) and Kenya (<strong>$1.18T GDP &amp; KSh 24/$1 today</strong>) would already stand right now in 2026 had just a fraction followed Lomborg’s &amp; Friedman’s laws.
+        Africa already received <strong>$3.33 Trillion</strong> (44× our $75B catalyst) and <strong>Kenya alone deployed $161 Billion</strong>—but 3 leaky valves drained the return down to <strong>1.3 : 1</strong>. Click the 3 valves below to lock them shut!
       </p>
 
       <div class="friedman-arena-card" style="border-top-color: var(--crimson);">
         <!-- Switcher: All-Africa ($3.33T) vs. Kenya Special Audit ($161B) -->
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.85rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.85rem; margin-bottom: 1.15rem;">
           <div class="scenario-buttons" style="margin: 0;">
             <button type="button" class="scenario-btn active" data-audit-scope="africa">
-              🌍 1. All-Africa Historical Audit ($3.33T Aid + Debt • 1960–2026)
+              🌍 All-Africa ($3.33T Received)
             </button>
             <button type="button" class="scenario-btn" data-audit-scope="kenya">
-              🇰🇪 2. Kenya Special Audit ($161.0B Aid + Debt • 1963–2026)
+              🇰🇪 Kenya ($161.0B Received)
             </button>
           </div>
 
-          <button id="applyCounterfactualBaseBtn" type="button" class="btn-outline" style="border-color: var(--emerald); color: var(--emerald); font-weight: 700;">
-            🚀 Launch Overtake Race From Counterfactual 2026 Base ($28.4T Africa)
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button id="snapAllValvesShutBtn" type="button" class="play-timeline-btn" style="padding: 0.45rem 0.95rem; font-size: 0.78rem; background-color: var(--emerald);">
+              🔒 Lock All 3 Valves (See 2026 Counterfactual)
+            </button>
+            <button id="openAllValvesLeakBtn" type="button" class="transport-step-btn" style="color: var(--crimson); border-color: var(--crimson);">
+              💔 Open Leaks (See 2026 Reality)
+            </button>
+            <button id="applyCounterfactualBaseBtn" type="button" class="btn-outline" style="border-color: #D97706; color: #D97706; font-weight: 700; padding: 0.42rem 0.8rem; font-size: 0.76rem;">
+              🚀 Race From $28.4T 2026 Base
+            </button>
+          </div>
+        </div>
+
+        <!-- 3 Interactive Clickable Leakage Valves -->
+        <div class="valve-game-grid" style="margin-bottom: 1.35rem;">
+          <button type="button" class="valve-card locked" data-valve-id="graft">
+            <div class="valve-status-row">
+              <span class="valve-badge">VALVE 1 • PROCUREMENT</span>
+              <span class="valve-state-pill">🔒 LOCKED (38:1 E-PROCUREMENT)</span>
+            </div>
+            <div class="valve-title">Stop 30% Tender &amp; Ghost-Project Graft</div>
+            <div class="valve-meter-track"><div class="valve-meter-fill" style="width: 100%;"></div></div>
+          </button>
+
+          <button type="button" class="valve-card locked" data-valve-id="tiedAid">
+            <div class="valve-status-row">
+              <span class="valve-badge">VALVE 2 • HUMAN &amp; SEEDS</span>
+              <span class="valve-state-pill">🔒 LOCKED (101:1 VACCINES &amp; 65:1 EDTECH)</span>
+            </div>
+            <div class="valve-title">Redirect Tied Aid to Brains, Health &amp; 33:1 Seeds</div>
+            <div class="valve-meter-track"><div class="valve-meter-fill" style="width: 100%;"></div></div>
+          </button>
+
+          <button type="button" class="valve-card locked" data-valve-id="deadCapital">
+            <div class="valve-status-row">
+              <span class="valve-badge">VALVE 3 • TITLES &amp; POWER</span>
+              <span class="valve-state-pill">🔒 LOCKED (55:1 TITLES &amp; $0.03/kWh POWER)</span>
+            </div>
+            <div class="valve-title">Unlock Dead Land Capital &amp; Cheap Clean Power</div>
+            <div class="valve-meter-track"><div class="valve-meter-fill" style="width: 100%;"></div></div>
           </button>
         </div>
 
         <!-- Audit Headline & Summary Callout -->
-        <div id="auditSummaryBanner" class="race-milestone-callout" style="border-left-color: var(--crimson); margin-bottom: 1.35rem;"></div>
+        <div id="auditSummaryBanner" class="race-milestone-callout" style="border-left-color: var(--emerald); margin-bottom: 1.15rem;"></div>
 
         <!-- Historical Re-Allocation Time Machine Slider (1985–2026) -->
-        <div style="background: var(--bg-primary); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm); padding: 1.1rem 1.25rem; margin-bottom: 1.5rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.45rem;">
-            <label for="sliderHistoricalRedirect" style="font-weight: 700; font-size: 0.9rem;">
-              🕰️ 1985–2026 Counterfactual Time Machine: Share of Historical Aid &amp; Debt Sequenced via Lomborg’s 48.7:1 / <em>Kenya Priorities</em> Blueprint
+        <div style="background: var(--bg-primary); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm); padding: 0.85rem 1.1rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <label for="sliderHistoricalRedirect" style="font-weight: 700; font-size: 0.84rem;">
+              🕰️ 1985–2026 Time Machine (% of Historical Capital Sequenced):
             </label>
-            <span id="valHistoricalRedirect" style="font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: var(--emerald);">
+            <span id="valHistoricalRedirect" style="font-family: var(--font-mono); font-size: 0.92rem; font-weight: 700; color: var(--emerald);">
               25% Redirected ($832.5B @ 48.7:1)
             </span>
           </div>
           <input
             id="sliderHistoricalRedirect"
             type="range"
-            min="5"
+            min="0"
             max="60"
             step="1"
             value="25"
             class="year-slider-input"
-            style="width: 100%;"
+            style="width: 100%; margin-top: 0.4rem;"
           />
-          <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-muted); margin-top: 0.35rem;">
-            <span>5% Redirected (Minimal Reform)</span>
-            <span>25%–28% Baseline (Eliminating Procurement Graft &amp; Tied Overhead Alone!)</span>
-            <span>60% Redirected (Full Sankore Discipline)</span>
-          </div>
         </div>
 
-        <!-- Side-by-Side 2026 Reality vs. 2026 Counterfactual Comparator -->
-        <div style="margin-bottom: 1.75rem;">
-          <div style="font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700; margin-bottom: 0.65rem;">
-            Side-by-Side 2026 Audit: What We Have Today (1.3:1 Status Quo) vs. What We Should Already Have Today in 2026 (Lomborg + Friedman Counterfactual)
-          </div>
-          <div id="auditComparisonGrid" class="friedman-kpi-grid"></div>
-        </div>
+        <!-- Visual Side-by-Side 2026 Reality vs. 2026 Counterfactual Bar Meters -->
+        <div id="auditComparisonGrid" class="friedman-kpi-grid" style="margin-bottom: 1.25rem;"></div>
 
         <!-- 4 Historical Inflow & Leakage Channels -->
-        <div>
-          <div style="font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase; color: var(--crimson); font-weight: 700; margin-bottom: 0.65rem;">
-            Forensic Breakdown: The 4 Channels Where Historical Capital Entered—And Why It Failed to Compound
-          </div>
-          <div id="auditChannelsGrid" class="megacap-board-grid"></div>
-        </div>
+        <div id="auditChannelsGrid" class="megacap-board-grid"></div>
       </div>
     </section>
 

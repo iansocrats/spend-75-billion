@@ -1524,7 +1524,8 @@
             <span class="btf-bcr-pill">${item.bcr} ROI</span>
           </div>
           <h4 class="btf-title">${item.title}</h4>
-          <p class="btf-impact">${item.africaImpact}</p>
+          <button type="button" class="why-pill-btn">ℹ️ Why?</button>
+          <p class="btf-impact card-prose-collapse">${item.africaImpact}</p>
         </div>
         <div class="btf-meta-foot">
           <span>${item.phase}</span>
@@ -1836,7 +1837,8 @@
               ${s.hubs}
             </div>
           </div>
-          <p style="font-size: 0.77rem; color: var(--ink-secondary); line-height: 1.45; margin: 0;">
+          <button type="button" class="why-pill-btn">ℹ️ Why?</button>
+          <p class="card-prose-collapse" style="font-size: 0.77rem; color: var(--ink-secondary); line-height: 1.45; margin: 0;">
             ${s.explanation}
           </p>
           <div style="font-family: var(--font-mono); font-size: 0.67rem; color: var(--emerald); font-weight: 700; border-top: 1px dashed var(--border-hairline); padding-top: 0.4rem;">
@@ -2151,7 +2153,8 @@
                   ${co.hq} • ${co.sector}
                 </div>
               </div>
-              <p style="font-size: 0.78rem; color: var(--ink-secondary); line-height: 1.45; margin: 0;">
+              <button type="button" class="why-pill-btn">ℹ️ Why?</button>
+              <p class="card-prose-collapse" style="font-size: 0.78rem; color: var(--ink-secondary); line-height: 1.45; margin: 0;">
                 ${co.catalyst}
               </p>
               <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-muted); border-top: 1px dashed var(--border-hairline); padding-top: 0.4rem;">
@@ -2716,7 +2719,8 @@
                 Lomborg Catalyst: ${ch.lomborgLink}
               </div>
             </div>
-            <p style="font-size: 0.78rem; color: var(--ink-secondary); line-height: 1.48; margin: 0;">
+            <button type="button" class="why-pill-btn">ℹ️ Why?</button>
+            <p class="card-prose-collapse" style="font-size: 0.78rem; color: var(--ink-secondary); line-height: 1.48; margin: 0;">
               ${ch.explanation}
             </p>
           </div>
@@ -2759,15 +2763,47 @@
   });
 
   // ==========================================================================
-  // 11. HISTORICAL $3.33T AUDIT (ALL-AFRICA) & KENYA $161B AUDIT + TIME MACHINE
+  // 11. HISTORICAL $3.33T AUDIT (ALL-AFRICA) & KENYA $161B LEAKY-PIPE VALVE GAME
   // ==========================================================================
   let activeAuditScope = "africa"; // "africa" | "kenya"
+  const valveStates = { graft: true, tiedAid: true, deadCapital: true };
   const sliderHistoricalRedirect = document.getElementById("sliderHistoricalRedirect");
   const valHistoricalRedirect = document.getElementById("valHistoricalRedirect");
   const auditSummaryBanner = document.getElementById("auditSummaryBanner");
   const auditComparisonGrid = document.getElementById("auditComparisonGrid");
   const auditChannelsGrid = document.getElementById("auditChannelsGrid");
   const applyCounterfactualBaseBtn = document.getElementById("applyCounterfactualBaseBtn");
+  const snapAllValvesShutBtn = document.getElementById("snapAllValvesShutBtn");
+  const openAllValvesLeakBtn = document.getElementById("openAllValvesLeakBtn");
+
+  function syncValveCardsUI() {
+    document.querySelectorAll(".valve-card").forEach((card) => {
+      const vid = card.getAttribute("data-valve-id");
+      const isLocked = !!valveStates[vid];
+      card.classList.toggle("locked", isLocked);
+      card.classList.toggle("leaking", !isLocked);
+      const pill = card.querySelector(".valve-state-pill");
+      const fill = card.querySelector(".valve-meter-fill");
+      if (pill) {
+        if (vid === "graft") {
+          pill.textContent = isLocked
+            ? "🔒 LOCKED (38:1 E-PROCUREMENT)"
+            : "💔 LEAKING (-30% TENDER GRAFT)";
+        } else if (vid === "tiedAid") {
+          pill.textContent = isLocked
+            ? "🔒 LOCKED (101:1 HEALTH & 65:1 EDTECH)"
+            : "💔 LEAKING (TIED AID & STUNTING)";
+        } else {
+          pill.textContent = isLocked
+            ? "🔒 LOCKED (55:1 TITLES & $0.03 POWER)"
+            : "💔 LEAKING (58% DEBT SERVICE & DEAD LAND)";
+        }
+      }
+      if (fill) {
+        fill.style.width = isLocked ? "100%" : "22%";
+      }
+    });
+  }
 
   function renderHistoricalAudit() {
     if (
@@ -2777,6 +2813,8 @@
     ) {
       return;
     }
+
+    syncValveCardsUI();
 
     const audit =
       HISTORICAL_AUDIT_MODEL[activeAuditScope] || HISTORICAL_AUDIT_MODEL.africa;
@@ -2790,10 +2828,9 @@
     const bcrNum = activeAuditScope === "kenya" ? 54.2 : 48.7;
 
     if (valHistoricalRedirect) {
-      valHistoricalRedirect.textContent = `${redirectPct}% Redirected ($${redirectedCapitalB.toLocaleString()}B @ ${bcrNum}:1)`;
+      valHistoricalRedirect.textContent = `${redirectPct}% Sequenced ($${redirectedCapitalB.toLocaleString()}B @ ${bcrNum}:1)`;
     }
 
-    // Dynamic 2026 Counterfactual Values scaled by slider
     const cfGdpT = +(
       audit.actual2026.gdpT +
       (audit.counterfactualBase2026.gdpT - audit.actual2026.gdpT) *
@@ -2816,24 +2853,43 @@
     const gdpLostGapT = +(cfGdpT - audit.actual2026.gdpT).toFixed(2);
     const gdpMultiple = (cfGdpT / audit.actual2026.gdpT).toFixed(1);
 
+    const kesRate = Math.max(
+      14,
+      Math.round(129 / Math.max(1, Math.pow(scaleVsDefault * 3.1, 0.72)))
+    );
     const cfCurrencyText =
       activeAuditScope === "kenya"
-        ? `KSh ${Math.max(12, Math.round(68 / Math.pow(scaleVsDefault, 0.72)))} per $1 USD`
-        : `REER Index ${Math.round(100 + 240 * Math.pow(scaleVsDefault, 0.8))} (+${Math.round(240 * Math.pow(scaleVsDefault, 0.8))}% Stronger)`;
+        ? redirectPct === 0
+          ? "KSh 129 / $1 USD"
+          : `KSh ${kesRate} / $1 USD`
+        : `REER ${Math.round(100 + 240 * Math.pow(scaleVsDefault, 0.8))}`;
 
     if (auditSummaryBanner) {
+      auditSummaryBanner.style.borderLeftColor =
+        redirectPct < 5 ? "var(--crimson)" : "var(--emerald)";
       auditSummaryBanner.innerHTML = `
-        <div style="flex: 1; min-width: 260px;">
-          <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--crimson);">
-            ${audit.flag} ${audit.name} • ${audit.period} • ${audit.multipleOf75B}
+        <div style="flex: 1; min-width: 240px;">
+          <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: ${
+            redirectPct < 5 ? "var(--crimson)" : "var(--emerald)"
+          };">
+            ${audit.flag} ${audit.name} • ${audit.multipleOf75B}
           </div>
-          <div style="font-weight: 700; font-size: 1.02rem; margin: 0.25rem 0;">${audit.headline}</div>
-          <div style="font-size: 0.85rem; color: var(--ink-secondary); line-height: 1.5;">${audit.summary}</div>
+          <div style="font-weight: 700; font-size: 0.98rem; margin-top: 0.15rem;">
+            ${
+              redirectPct === 0
+                ? `💔 All 3 Pipes Leaking (1.3:1 Status Quo): 2026 GDP Stuck at ${
+                    audit.actual2026.gdpT < 1
+                      ? `$${Math.round(audit.actual2026.gdpT * 1000)}B`
+                      : `$${audit.actual2026.gdpT}T`
+                  }`
+                : `🔒 Pipes Locked (${bcrNum}:1 Lomborg Sequence): 2026 GDP Reaches ${
+                    cfGdpT < 1 ? `$${Math.round(cfGdpT * 1000)}B` : `$${cfGdpT}T`
+                  } Today (${gdpMultiple}× Larger!)`
+            }
+          </div>
         </div>
-        <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; text-align: right; min-width: 230px;">
-          <div style="color: var(--crimson);">Historical Realized ROI: ${audit.realizedBcr}</div>
-          <div style="color: var(--emerald);">Lomborg Counterfactual ROI: ${audit.lomborgPotentialBcr}</div>
-          <div style="color: #D97706; margin-top: 0.2rem;">2026 Lost Output Gap: -$${gdpLostGapT}T/yr</div>
+        <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; text-align: right;">
+          <div style="color: var(--emerald);">2026 Counterfactual Gain: +$${gdpLostGapT}T/yr</div>
         </div>
       `;
     }
@@ -2854,52 +2910,66 @@
         ? `$${(cfBourseT * 1000).toFixed(1)}B`
         : `$${cfBourseT.toFixed(2)}T`;
 
+    const realityBarPct = Math.max(8, Math.round((audit.actual2026.gdpT / Math.max(0.2, cfGdpT)) * 100));
+    const cfBarPct = Math.min(100, Math.max(12, Math.round((cfGdpT / audit.counterfactualBase2026.gdpT) * 92)));
+
     auditComparisonGrid.innerHTML = `
       <div class="friedman-kpi-card">
-        <div class="friedman-kpi-label">2026 GDP (Reality vs. Counterfactual)</div>
+        <div class="friedman-kpi-label">2026 GDP (${gdpMultiple}× Surge)</div>
         <div class="friedman-kpi-val" style="color: var(--emerald);">${cfGdpDisplay}</div>
-        <div class="friedman-kpi-sub">
-          <span style="color: var(--crimson);">2026 Reality: ${actGdpDisplay}</span> • <strong>${gdpMultiple}× Larger Today!</strong>
+        <div class="split-meter-wrap">
+          <div class="split-meter-row">
+            <span style="width: 58px; color: var(--crimson);">Reality:</span>
+            <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: ${realityBarPct}%; background: var(--crimson);"></div></div>
+            <span>${actGdpDisplay}</span>
+          </div>
+          <div class="split-meter-row">
+            <span style="width: 58px; color: var(--emerald);">Sankore:</span>
+            <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: ${cfBarPct}%; background: var(--emerald);"></div></div>
+            <strong>${cfGdpDisplay}</strong>
+          </div>
         </div>
       </div>
 
       <div class="friedman-kpi-card gold">
-        <div class="friedman-kpi-label">2026 Income Per Capita (Annual)</div>
+        <div class="friedman-kpi-label">2026 Income Per Person</div>
         <div class="friedman-kpi-val" style="color: #D97706;">$${cfPerCapita.toLocaleString()}/yr</div>
-        <div class="friedman-kpi-sub">
-          <span style="color: var(--crimson);">2026 Reality: $${audit.actual2026.perCapitaUsd.toLocaleString()}/yr</span> • High-Income Tiger Today
+        <div class="split-meter-wrap">
+          <div class="split-meter-row">
+            <span style="width: 58px; color: var(--crimson);">Reality:</span>
+            <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: 13%; background: var(--crimson);"></div></div>
+            <span>$${audit.actual2026.perCapitaUsd.toLocaleString()}</span>
+          </div>
+          <div class="split-meter-row">
+            <span style="width: 58px; color: var(--emerald);">Sankore:</span>
+            <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: ${cfBarPct}%; background: #D97706;"></div></div>
+            <strong>$${cfPerCapita.toLocaleString()}</strong>
+          </div>
         </div>
       </div>
 
       <div class="friedman-kpi-card">
-        <div class="friedman-kpi-label">2026 Stock Exchange Market Cap</div>
+        <div class="friedman-kpi-label">2026 Stock Exchange Cap</div>
         <div class="friedman-kpi-val" style="color: var(--emerald);">${cfBourseDisplay}</div>
-        <div class="friedman-kpi-sub">
-          <span style="color: var(--crimson);">2026 Reality: ${actBourseDisplay}</span> • Deep Pension &amp; Land Collateral
+        <div class="split-meter-wrap">
+          <div class="split-meter-row">
+            <span style="width: 58px; color: var(--crimson);">Reality:</span>
+            <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: 6%; background: var(--crimson);"></div></div>
+            <span>${actBourseDisplay}</span>
+          </div>
+          <div class="split-meter-row">
+            <span style="width: 58px; color: var(--emerald);">Sankore:</span>
+            <div class="split-meter-bar-bg"><div class="split-meter-bar-fill" style="width: ${cfBarPct}%; background: var(--emerald);"></div></div>
+            <strong>${cfBourseDisplay}</strong>
+          </div>
         </div>
       </div>
 
       <div class="friedman-kpi-card gold">
-        <div class="friedman-kpi-label">2026 Friedman Currency Valuation</div>
+        <div class="friedman-kpi-label">2026 Friedman Currency Value</div>
         <div class="friedman-kpi-val" style="color: #D97706; font-size: 1.35rem;">${cfCurrencyText}</div>
         <div class="friedman-kpi-sub">
-          <span style="color: var(--crimson);">2026 Reality: ${audit.actual2026.currencyLabel}</span>
-        </div>
-      </div>
-
-      <div class="friedman-kpi-card">
-        <div class="friedman-kpi-label">2026 Tax Eaten by Debt Interest</div>
-        <div class="friedman-kpi-val" style="color: var(--emerald);">${audit.counterfactualBase2026.debtServiceTaxPct.split(" ")[0]}</div>
-        <div class="friedman-kpi-sub">
-          <span style="color: var(--crimson);">2026 Reality: ${audit.actual2026.debtServiceTaxPct}</span> • Zero Debt Distress
-        </div>
-      </div>
-
-      <div class="friedman-kpi-card">
-        <div class="friedman-kpi-label">2026 Power Tariff &amp; Child Stunting</div>
-        <div class="friedman-kpi-val" style="color: var(--emerald); font-size: 1.3rem;">${audit.counterfactualBase2026.powerTariff.split(" ")[0]} • ${audit.counterfactualBase2026.stuntingPct.split(" ")[0]}${audit.counterfactualBase2026.stuntingPct.split(" ")[1] || ""}</div>
-        <div class="friedman-kpi-sub">
-          <span style="color: var(--crimson);">2026 Reality: ${audit.actual2026.powerTariff.split(" ")[0]} &amp; ${audit.actual2026.stuntingPct}</span>
+          <span style="color: var(--crimson);">Reality: ${audit.actual2026.currencyLabel}</span>
         </div>
       </div>
     `;
@@ -2914,14 +2984,15 @@
                 <span class="megacap-ticker" style="background-color: var(--crimson);">${ch.realizedBcr}</span>
                 <span class="megacap-cap" style="color: var(--ink-primary);">${ch.amountLabel}</span>
               </div>
-              <div style="font-weight: 700; font-size: 0.94rem; margin-top: 0.45rem; line-height: 1.25;">
+              <div style="font-weight: 700; font-size: 0.92rem; margin-top: 0.4rem; line-height: 1.25;">
                 ${ch.title}
               </div>
-              <div style="font-family: var(--font-mono); font-size: 0.68rem; color: #D97706; font-weight: 700; margin-top: 0.2rem;">
-                Scale: ${ch.multipleLabel}
+              <div style="font-family: var(--font-mono); font-size: 0.68rem; color: #D97706; font-weight: 700; margin-top: 0.15rem;">
+                ${ch.multipleLabel}
               </div>
             </div>
-            <p style="font-size: 0.78rem; color: var(--ink-secondary); line-height: 1.48; margin: 0;">
+            <button type="button" class="why-pill-btn">ℹ️ Why?</button>
+            <p class="card-prose-collapse" style="font-size: 0.78rem; color: var(--ink-secondary); line-height: 1.48; margin: 0;">
               ${ch.leakageDiagnosis}
             </p>
           </div>
@@ -2929,6 +3000,44 @@
         )
         .join("");
     }
+  }
+
+  function updateRedirectFromValves() {
+    const audit =
+      HISTORICAL_AUDIT_MODEL[activeAuditScope] || HISTORICAL_AUDIT_MODEL.africa;
+    const lockedCount =
+      (valveStates.graft ? 1 : 0) +
+      (valveStates.tiedAid ? 1 : 0) +
+      (valveStates.deadCapital ? 1 : 0);
+    const pct = Math.round((audit.defaultRedirectPct / 3) * lockedCount);
+    if (sliderHistoricalRedirect) sliderHistoricalRedirect.value = pct;
+    renderHistoricalAudit();
+  }
+
+  document.querySelectorAll(".valve-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      const vid = card.getAttribute("data-valve-id");
+      valveStates[vid] = !valveStates[vid];
+      updateRedirectFromValves();
+    });
+  });
+
+  if (snapAllValvesShutBtn) {
+    snapAllValvesShutBtn.addEventListener("click", () => {
+      valveStates.graft = true;
+      valveStates.tiedAid = true;
+      valveStates.deadCapital = true;
+      updateRedirectFromValves();
+    });
+  }
+
+  if (openAllValvesLeakBtn) {
+    openAllValvesLeakBtn.addEventListener("click", () => {
+      valveStates.graft = false;
+      valveStates.tiedAid = false;
+      valveStates.deadCapital = false;
+      updateRedirectFromValves();
+    });
   }
 
   document.querySelectorAll("[data-audit-scope]").forEach((btn) => {
@@ -2949,6 +3058,10 @@
 
   if (sliderHistoricalRedirect) {
     sliderHistoricalRedirect.addEventListener("input", () => {
+      const v = parseFloat(sliderHistoricalRedirect.value);
+      valveStates.graft = v >= 8;
+      valveStates.tiedAid = v >= 16;
+      valveStates.deadCapital = v >= 24;
       renderHistoricalAudit();
     });
   }
@@ -2957,8 +3070,8 @@
     applyCounterfactualBaseBtn.addEventListener("click", () => {
       counterfactual2026BaseActive = !counterfactual2026BaseActive;
       applyCounterfactualBaseBtn.textContent = counterfactual2026BaseActive
-        ? "✓ Counterfactual 2026 Base Active ($28.4T Start — Click to Reset to $3.7T)"
-        : "🚀 Launch Overtake Race From Counterfactual 2026 Base ($28.4T Africa)";
+        ? "✓ $28.4T 2026 Base Active (Click to Reset)"
+        : "🚀 Race From $28.4T 2026 Base";
       raceYear = 2026;
       prevBlocRanks = {};
       renderOvertakeRace(false);
@@ -2967,6 +3080,214 @@
       if (raceSec) {
         raceSec.scrollIntoView({ behavior: "smooth" });
       }
+    });
+  }
+
+  // ==========================================================================
+  // 12. HERO 4-DIAL EQUALIZER, VISUAL MODE TOGGLE & 45s AUTO-TOUR
+  // ==========================================================================
+  const eqDialBiology = document.getElementById("eqDialBiology");
+  const eqDialEdtech = document.getElementById("eqDialEdtech");
+  const eqDialPowerTrade = document.getElementById("eqDialPowerTrade");
+  const eqDialSuperSectors = document.getElementById("eqDialSuperSectors");
+  const valEqBiology = document.getElementById("valEqBiology");
+  const valEqEdtech = document.getElementById("valEqEdtech");
+  const valEqPowerTrade = document.getElementById("valEqPowerTrade");
+  const valEqSuperSectors = document.getElementById("valEqSuperSectors");
+  const eqScoreGdp = document.getElementById("eqScoreGdp");
+  const eqScoreBourse = document.getElementById("eqScoreBourse");
+  const eqScoreOvertakeYr = document.getElementById("eqScoreOvertakeYr");
+  const eqScoreCurrency = document.getElementById("eqScoreCurrency");
+  const eqVerdictTitle = document.getElementById("eqVerdictTitle");
+  const eqBarStunting = document.getElementById("eqBarStunting");
+  const eqBarPower = document.getElementById("eqBarPower");
+  const eqBarTwinAxis = document.getElementById("eqBarTwinAxis");
+  const eqBarCoProsperity = document.getElementById("eqBarCoProsperity");
+  const eqPresetMaxBtn = document.getElementById("eqPresetMaxBtn");
+  const eqPresetTrapBtn = document.getElementById("eqPresetTrapBtn");
+
+  function renderMasterEqualizer() {
+    if (!eqDialBiology) return;
+    const b = parseFloat(eqDialBiology.value) / 100;
+    const e = parseFloat(eqDialEdtech.value) / 100;
+    const p = parseFloat(eqDialPowerTrade.value) / 100;
+    const s = parseFloat(eqDialSuperSectors.value) / 100;
+
+    if (valEqBiology) valEqBiology.textContent = `${Math.round(b * 100)}%`;
+    if (valEqEdtech) valEqEdtech.textContent = `${Math.round(e * 100)}%`;
+    if (valEqPowerTrade) valEqPowerTrade.textContent = `${Math.round(p * 100)}%`;
+    if (valEqSuperSectors) valEqSuperSectors.textContent = `${Math.round(s * 100)}%`;
+
+    const coreComposite = b * 0.35 + e * 0.32 + p * 0.33;
+    const gdp2076 = +(
+      8.2 +
+      136.8 * Math.pow(coreComposite, 1.35) +
+      38.5 * s * coreComposite
+    ).toFixed(1);
+    const buffettMult = 0.3 + 1.5 * Math.pow(p * 0.6 + e * 0.4, 1.1);
+    const bourse2076 = +(gdp2076 * buffettMult).toFixed(1);
+    const fxGainPct = Math.round(-55 + 320 * coreComposite);
+    const twinGdp = +(gdp2076 * 0.484).toFixed(1);
+    const worldBoost = +(42.0 * coreComposite).toFixed(1);
+
+    let overtakeText = "Never (Trap)";
+    if (gdp2076 >= 65) {
+      const yr = Math.round(2074 - 23 * coreComposite - 3 * s);
+      overtakeText = `Year ${Math.max(2049, Math.min(2075, yr))}`;
+    }
+
+    if (eqScoreGdp) eqScoreGdp.textContent = `$${gdp2076}T`;
+    if (eqScoreBourse) eqScoreBourse.textContent = `$${bourse2076}T`;
+    if (eqScoreOvertakeYr) eqScoreOvertakeYr.textContent = overtakeText;
+    if (eqScoreCurrency) {
+      eqScoreCurrency.textContent = `${fxGainPct >= 0 ? "+" : ""}${fxGainPct}%`;
+    }
+    if (eqVerdictTitle) {
+      eqVerdictTitle.textContent =
+        coreComposite >= 0.75
+          ? "🏆 #1 Economy & #1 Currency in History"
+          : coreComposite >= 0.35
+          ? "⚡ Emerging Industrial Continent"
+          : "⚠️ Stuck in 1324 Raw-Ore Export Trap";
+    }
+    if (eqBarStunting) {
+      eqBarStunting.textContent = `${(30.5 - 29.3 * b).toFixed(1)}% Stunting`;
+    }
+    if (eqBarPower) {
+      eqBarPower.textContent = `$${(0.2 - 0.182 * p).toFixed(3)} / kWh`;
+    }
+    if (eqBarTwinAxis) {
+      eqBarTwinAxis.textContent = `$${twinGdp}T GDP`;
+    }
+    if (eqBarCoProsperity) {
+      eqBarCoProsperity.textContent = `+$${worldBoost}T Global Boost`;
+    }
+  }
+
+  [eqDialBiology, eqDialEdtech, eqDialPowerTrade, eqDialSuperSectors].forEach(
+    (dl) => {
+      if (dl) dl.addEventListener("input", renderMasterEqualizer);
+    }
+  );
+
+  if (eqPresetMaxBtn) {
+    eqPresetMaxBtn.addEventListener("click", () => {
+      if (eqDialBiology) eqDialBiology.value = 100;
+      if (eqDialEdtech) eqDialEdtech.value = 100;
+      if (eqDialPowerTrade) eqDialPowerTrade.value = 100;
+      if (eqDialSuperSectors) eqDialSuperSectors.value = 100;
+      eqPresetMaxBtn.classList.add("active");
+      if (eqPresetTrapBtn) eqPresetTrapBtn.classList.remove("active");
+      renderMasterEqualizer();
+    });
+  }
+
+  if (eqPresetTrapBtn) {
+    eqPresetTrapBtn.addEventListener("click", () => {
+      if (eqDialBiology) eqDialBiology.value = 0;
+      if (eqDialEdtech) eqDialEdtech.value = 0;
+      if (eqDialPowerTrade) eqDialPowerTrade.value = 0;
+      if (eqDialSuperSectors) eqDialSuperSectors.value = 0;
+      eqPresetTrapBtn.classList.add("active");
+      if (eqPresetMaxBtn) eqPresetMaxBtn.classList.remove("active");
+      renderMasterEqualizer();
+    });
+  }
+
+  // Global "[ℹ️ Why?]" pill click handler & Visual Mode toggle
+  document.addEventListener("click", (e) => {
+    const whyBtn = e.target.closest(".why-pill-btn");
+    if (whyBtn) {
+      const parent = whyBtn.parentElement;
+      const prose = parent && parent.querySelector(".card-prose-collapse");
+      if (prose) {
+        const isExp = prose.classList.toggle("expanded");
+        whyBtn.textContent = isExp ? "✕ Hide" : "ℹ️ Why?";
+      }
+    }
+  });
+
+  const toggleTextModeBtn = document.getElementById("toggleTextModeBtn");
+  if (toggleTextModeBtn) {
+    toggleTextModeBtn.addEventListener("click", () => {
+      const html = document.documentElement;
+      const cur = html.getAttribute("data-visual-mode");
+      const next = cur === "compact" ? "full" : "compact";
+      html.setAttribute("data-visual-mode", next);
+      toggleTextModeBtn.textContent =
+        next === "compact" ? "📖 Show Text" : "⚡ Visual Mode";
+    });
+  }
+
+  // 45-Second Interactive Auto-Tour
+  const autoTourBtn = document.getElementById("autoTourBtn");
+  let autoTourTimers = [];
+
+  function stopAutoTour() {
+    autoTourTimers.forEach((t) => clearTimeout(t));
+    autoTourTimers = [];
+    if (autoTourBtn) autoTourBtn.textContent = "🎬 45s Auto-Tour";
+  }
+
+  if (autoTourBtn) {
+    autoTourBtn.addEventListener("click", () => {
+      if (autoTourTimers.length > 0) {
+        stopAutoTour();
+        return;
+      }
+      autoTourBtn.textContent = "⏹ Stop Tour";
+
+      // Step 1: Scroll to Leaky Pipe Audit & Switch to Kenya -> Lock Valves
+      const auditEl = document.getElementById("historical-audit");
+      if (auditEl) auditEl.scrollIntoView({ behavior: "smooth" });
+      if (openAllValvesLeakBtn) openAllValvesLeakBtn.click();
+
+      autoTourTimers.push(
+        setTimeout(() => {
+          const keBtn = document.querySelector('[data-audit-scope="kenya"]');
+          if (keBtn) keBtn.click();
+          if (snapAllValvesShutBtn) snapAllValvesShutBtn.click();
+        }, 2500)
+      );
+
+      // Step 2: Scroll to Global GDP Overtake Race & Play at 2x Speed
+      autoTourTimers.push(
+        setTimeout(() => {
+          const raceEl = document.getElementById("overtake-race");
+          if (raceEl) raceEl.scrollIntoView({ behavior: "smooth" });
+          raceSpeedMultiplier = 2;
+          raceYear = 2026;
+          startRacePlayback();
+        }, 6000)
+      );
+
+      // Step 3: Scroll to $330T Stock Market Race & Play at 2x Speed
+      autoTourTimers.push(
+        setTimeout(() => {
+          const stockEl = document.getElementById("friedman-markets");
+          if (stockEl) stockEl.scrollIntoView({ behavior: "smooth" });
+          stockRaceSpeedMultiplier = 2;
+          stockRaceYear = 2026;
+          startStockRacePlayback();
+        }, 14500)
+      );
+
+      // Step 4: Scroll to 54-Country 3D Map & Play 3D Extrusion Growth
+      autoTourTimers.push(
+        setTimeout(() => {
+          const mapEl = document.getElementById("africa-map");
+          if (mapEl) mapEl.scrollIntoView({ behavior: "smooth" });
+          mapSpeedMultiplier = 2;
+          mapSimYear = 2026;
+          startMapPlayback();
+        }, 23000)
+      );
+
+      autoTourTimers.push(
+        setTimeout(() => {
+          stopAutoTour();
+        }, 31000)
+      );
     });
   }
 
@@ -2980,6 +3301,7 @@
 
   // Initial Boot
   syncAngularDeviceSignal();
+  renderMasterEqualizer();
   populateCountryDropdown();
   renderAfricaSvgMap();
   renderCountryDossier();
