@@ -1763,6 +1763,168 @@ const FRIEDMAN_PRICE_THEORY_MODEL = {
   ]
 };
 
+// ============================================================================
+// THE 8 UNTAPPED EXPERIENCE, SPORTS, TOURISM & FRONTIER SUPER-SECTORS (+$38.5T)
+// & GLOBAL CO-PROSPERITY DIVIDEND (+$42.0T TO REST OF WORLD)
+// ============================================================================
+
+const UNTAPPED_SUPER_SECTORS = [
+  {
+    id: "tourism_conservation",
+    icon: "🦁",
+    name: "Luxury Eco-Tourism, Safari, Medical & Heritage Tourism",
+    ticker: "MARA-VIRUNGA",
+    baseline2026B: 95,
+    gdp2076T: 9.4,
+    bourse2076T: 16.9,
+    hubs: "🇰🇪 Maasai Mara/Diani • 🇨🇩 Virunga • 🇹🇿 Serengeti/Zanzibar • 🇪🇬 Giza • 🇲🇱 Timbuktu • 🇿🇦 Cape Town",
+    lomborgUnlock: "48:1 Malaria Eradication + 101:1 Vaccines + 95:1 Visa-Free Single African Air Market",
+    explanation: "Why did France attract 100M tourists while all 54 African nations drew only 75M? Because of malaria risk, visa friction, and expensive flights. Once Lomborg's 48:1 Malaria Eradication and 95:1 AfCFTA Open Skies eliminate those barriers, Africa scales to 450M+ annual luxury eco-tourists, medical-longevity travelers, and cultural pilgrims."
+  },
+  {
+    id: "creative_ip_media",
+    icon: "🎵",
+    name: "Afrobeats, Amapiano, Cinema, Gaming & Sovereign Digital IP",
+    ticker: "AFRO-MEDIA",
+    baseline2026B: 22,
+    gdp2076T: 6.2,
+    bourse2076T: 11.2,
+    hubs: "🇳🇬 Lagos • 🇿🇦 Johannesburg • 🇰🇪 Nairobi • 🇨🇩 Kinshasa • 🇬🇭 Accra",
+    lomborgUnlock: "28:1 Digital IP & Property Rights + 65:1 EdTech Creative & Coding Studios",
+    explanation: "By 2050, 40% of humanity's youth live in Africa. Instead of foreign record labels and streaming platforms capturing 85% of Afrobeats, Amapiano, Congolese Rumba, Nollywood, and gaming royalties, onshore IP registries and sovereign streaming platforms retain 100% of global cultural equity."
+  },
+  {
+    id: "congo_carbon_sink",
+    icon: "🌳",
+    name: "Congo Basin & Rift Valley Sovereign Carbon, Water & Bio-Credits",
+    ticker: "CONGO-CARBON",
+    baseline2026B: 2,
+    gdp2076T: 5.6,
+    bourse2076T: 10.1,
+    hubs: "🇨🇩 Cuvette Centrale Peatlands • 🇬🇦 Gabon • 🇨🇬 Congo • 🇰🇪 Mau/Aberdare Towers",
+    lomborgUnlock: "Friedman Price Theory (Coase Theorem Property Rights) + 28:1 Satellite Land Registry",
+    explanation: "The DRC's Cuvette Centrale peatlands and rainforest sequester 30+ billion tons of carbon and generate the rainfall that feeds the Nile and Zambezi. Pricing this natural capital on the Nairobi–Kinshasa Exchange turns conservation into a $5.6T/yr sovereign revenue engine."
+  },
+  {
+    id: "sports_football_league",
+    icon: "⚽",
+    name: "African Football Super-League, BAL Basketball, F1 & Rift Athletics",
+    ticker: "CAF-SUPER",
+    baseline2026B: 18,
+    gdp2076T: 4.8,
+    bourse2076T: 8.6,
+    hubs: "🇨🇩 Kinshasa • 🇰🇪 Nairobi/Iten • 🇪🇬 Cairo • 🇲🇦 Casablanca • 🇳🇬 Lagos • 🇿🇦 Kyalami/Joburg",
+    lomborgUnlock: "Phase I Childhood Nutrition (Zero Stunting) + 95:1 High-Speed Rail & Stadium Corridors",
+    explanation: "For decades, Africa exported raw football prodigies and Olympic runners to Europe for pennies—just like raw cobalt. With 2.5B affluent domestic fans, 80,000-seat smart stadiums, and global broadcast rights, the African Football Super-League, BAL, F1 Grands Prix (Kyalami/Kigali/Nairobi), and Iten High-Altitude Sports Science Labs become a $4.8T global colossus."
+  },
+  {
+    id: "genomics_longevity",
+    icon: "🧬",
+    name: "Pan-African Human Genomics, mRNA Biotech & Longevity Hubs",
+    ticker: "KEMRI-GENOME",
+    baseline2026B: 4,
+    gdp2076T: 4.2,
+    bourse2076T: 7.6,
+    hubs: "🇰🇪 KEMRI Nairobi • 🇷🇼 Kigali BioHub • 🇲🇱 Timbuktu Sankore • 🇿🇦 Cape Town",
+    lomborgUnlock: "101:1 Immunization Infrastructure + 65:1 STEM University Labs",
+    explanation: "Africa contains more human genetic diversity than the rest of the world combined. Ending 'genomic extraction' and sequencing drug discovery onshore makes Africa the global capital of precision oncology, immunology, and anti-aging medicine."
+  },
+  {
+    id: "equatorial_spaceports",
+    icon: "🚀",
+    name: "Equatorial Spaceports, Satellite Constellations & Green-H2 Launch",
+    ticker: "EQUATOR-ORBIT",
+    baseline2026B: 1,
+    gdp2076T: 3.8,
+    bourse2076T: 6.8,
+    hubs: "🇰🇪 Malindi/Lamu (0° Equator) • 🇨🇩 Kongo/Muanda • 🇬🇦 Libreville",
+    lomborgUnlock: "Orbital Physics (+1,670 km/h Equatorial Rotation Boost) + $0.018/kWh Green Hydrogen Fuel",
+    explanation: "Rockets launched from the Equator (0° latitude in Kenya and Central Africa) get maximum Earth-rotation velocity, carrying 20%+ heavier payloads per ton of fuel. Paired with $0.018/kWh hydro/geothermal power to manufacture liquid green hydrogen/oxygen propellant onshore, Africa dominates commercial space launch."
+  },
+  {
+    id: "blue_ocean_economy",
+    icon: "🌊",
+    name: "30,500 km Blue Economy, Solar Desalination & Green Shipping",
+    ticker: "AFRO-MARITIME",
+    baseline2026B: 38,
+    gdp2076T: 2.8,
+    bourse2076T: 5.0,
+    hubs: "🇰🇪 Mombasa/Lamu • 🇦🇴 Lobito • 🇲🇦 Tanger-Med • 🇪🇬 Suez • 🇲🇺 Mauritius • 🇸🇨 Seychelles",
+    lomborgUnlock: "95:1 Automated Port Customs + $0.02/kWh Green Ammonia Bunker Fuel",
+    explanation: "Spanning 38 coastal nations across the Indian and Atlantic Oceans, Africa's maritime belt powers autonomous green-ammonia cargo fleets, offshore aquaculture, and terawatt-scale solar desalination."
+  },
+  {
+    id: "reverse_brain_drain",
+    icon: "🎓",
+    name: "The New Sankore Global University Magnet & Reverse Brain Drain",
+    ticker: "SANKORE-EDU",
+    baseline2026B: 5,
+    gdp2076T: 1.7,
+    bourse2076T: 3.1,
+    hubs: "🇲🇱 Timbuktu • 🇰🇪 Konza Technopolis • 🇨🇩 Kinshasa • 🇷🇼 Kigali Innovation City",
+    lomborgUnlock: "65:1 Adaptive EdTech + Tax-Free Global STEM & AI Compute Charter Cities",
+    explanation: "Reversing 60 years of brain drain: just as scholars from across the world traveled to Mansa Musa's Sankore University in 1325, millions of global AI researchers, engineers, and founders relocate to Africa's clean-energy charter cities."
+  }
+];
+
+const GLOBAL_COPROSPERITY_MODEL = {
+  totalAfricaExtraGdpT: 38.5,
+  totalAfricaExtraBourseT: 69.3,
+  totalWorldCoProsperityGdpT: 42.0,
+  totalWorldCoProsperityBourseT: 75.6,
+  partnerDividends: [
+    {
+      blocId: "usa",
+      stockBlocId: "us_bourse",
+      flag: "🇺🇸",
+      name: "United States",
+      baseGdp2076T: 64.5,
+      coProsperityGdpBoostT: 14.5,
+      baseBourse2076T: 116.1,
+      coProsperityBourseBoostT: 26.1,
+      pensionReturnBoost: "+4.2%/yr higher US 401(k) & Pension yields via 20% SANKORE-500 allocation",
+      tradeChannel: "US tech, aerospace & capital equipment exports to 2.5B affluent African consumers + 50% cheaper DRC/Kenya AI compute & battery inputs."
+    },
+    {
+      blocId: "china",
+      stockBlocId: "china_bourse",
+      flag: "🇨🇳",
+      name: "China",
+      baseGdp2076T: 52.0,
+      coProsperityGdpBoostT: 10.4,
+      baseBourse2076T: 67.6,
+      coProsperityBourseBoostT: 18.7,
+      pensionReturnBoost: "Offsets China's -44% demographic shrink via sovereign equity stakes in African industrial corridors",
+      tradeChannel: "Two-way high-speed rail, robotics, solar equipment & consumer goods trade across the Indian Ocean."
+    },
+    {
+      blocId: "eu",
+      stockBlocId: "eu_bourse",
+      flag: "🇪🇺",
+      name: "European Union",
+      baseGdp2076T: 32.8,
+      coProsperityGdpBoostT: 9.2,
+      baseBourse2076T: 42.6,
+      coProsperityBourseBoostT: 16.6,
+      pensionReturnBoost: "Rescues aging European state pensions (median age 50) + cuts EU industrial energy costs via Trans-Saharan Green Hydrogen pipelines",
+      tradeChannel: "Direct North-South green hydrogen, zero-carbon steel, luxury goods & Mediterranean high-speed trade."
+    },
+    {
+      blocId: "india",
+      stockBlocId: "india_bourse",
+      flag: "🇮🇳",
+      name: "India",
+      baseGdp2076T: 58.5,
+      coProsperityGdpBoostT: 7.9,
+      baseBourse2076T: 87.8,
+      coProsperityBourseBoostT: 14.2,
+      pensionReturnBoost: "Indo-African Indian Ocean corridor (Mombasa–Lamu–Mumbai) creates the world's busiest maritime & fintech super-lane",
+      tradeChannel: "Joint KEMRI–Indian biotech, digital public infrastructure, green ammonia fertilizer & spaceport partnerships."
+    }
+  ]
+};
+
+
 
 
 

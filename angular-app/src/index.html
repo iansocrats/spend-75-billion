@@ -14,33 +14,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <app-root id="ngAppRoot" data-breakpoint="desktop" data-preview-mode="auto">
-    <!-- Angular 19 Signals Multi-Device Responsive Status & Viewport Switcher Bar -->
-    <div id="ngDeviceBar" class="ng-device-bar">
-      <div class="ng-device-bar-inner">
-        <div class="ng-badge-cluster">
-          <span class="ng-framework-pill">⚡ Angular Signals Responsive UI</span>
-          <span id="ngViewportReadout" class="ng-viewport-readout">DESKTOP • 1280×800px</span>
-        </div>
-
-        <div class="ng-preview-controls" role="group" aria-label="Device Viewport Mode">
-          <span class="ng-preview-label">Device View:</span>
-          <button type="button" class="ng-device-btn active" data-ng-preview="auto">
-            🔄 Auto-Fit
-          </button>
-          <button type="button" class="ng-device-btn" data-ng-preview="mobile">
-            📱 Phone (390px)
-          </button>
-          <button type="button" class="ng-device-btn" data-ng-preview="tablet">
-            📟 Tablet (768px)
-          </button>
-          <button type="button" class="ng-device-btn" data-ng-preview="desktop">
-            💻 Desktop
-          </button>
-        </div>
-      </div>
-    </div>
-
+  <app-root id="ngAppRoot" data-breakpoint="desktop">
     <!-- Top Economist-style Tri-Color Rule -->
     <div class="editorial-top-rule"></div>
 
@@ -271,7 +245,19 @@
             <button type="button" class="filter-pill" data-race-year="2053">2053 (Passes China)</button>
             <button type="button" class="filter-pill" data-race-year="2055">2055 (Passes USA #1)</button>
             <button type="button" class="filter-pill" data-race-year="2068">2068 (KE+DRC Passes USA)</button>
-            <button type="button" class="filter-pill active" data-race-year="2076">2076 ($145T Throne)</button>
+            <button type="button" class="filter-pill active" data-race-year="2076">2076 ($183.5T Full Throne)</button>
+          </div>
+
+          <!-- Full-Spectrum Super-Sectors (+$38.5T) & Global Co-Prosperity (+$42.0T) Live Toggles -->
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; padding: 0.7rem 0.95rem; background: var(--bg-primary); border: 1px solid var(--border-hairline); border-left: 4px solid #D97706; border-radius: var(--radius-sm);">
+            <label style="display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
+              <input type="checkbox" id="toggleUntappedSectors" checked />
+              <span>⚽🦁🚀 Include 8 Untapped Super-Sectors (<strong style="color: var(--emerald);">+$38.5T Africa GDP → $183.5T</strong>: Football/Sports, Eco-Tourism, Creative IP, Carbon Sink &amp; Spaceports)</span>
+            </label>
+            <label style="display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
+              <input type="checkbox" id="toggleGlobalCoProsperity" checked />
+              <span>🤝 Show Global Co-Prosperity Dividend (<strong style="color: #D97706;">+$42.0T Boost to US, China, EU &amp; India</strong> from Investing in Africa)</span>
+            </label>
           </div>
         </div>
 
@@ -299,6 +285,47 @@
             </thead>
             <tbody id="raceProofTableBody"></tbody>
           </table>
+        </div>
+
+        <!-- ================================================================
+             THE 8 UNTAPPED SUPER-SECTORS (+$38.5T) & GLOBAL CO-PROSPERITY (+$42.0T)
+             ================================================================ -->
+        <div id="untapped-sectors" style="margin-top: 2.25rem; padding-top: 1.85rem; border-top: 2px solid var(--border-strong);">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.85rem;">
+            <div>
+              <div class="kicker emerald">BEYOND RAW MINERALS &amp; HEAVY INDUSTRY • THE 8 EXPERIENCE, SPORTS, TOURISM &amp; FRONTIER SUPER-SECTORS (+$38.5T GDP / +$69.3T BOURSE)</div>
+              <h3 style="font-family: var(--font-serif); font-size: 1.6rem;">
+                What Traditional Models Miss: Football Super-Leagues, 450M-Visitor Eco-Tourism, Afrobeats IP, Congo Carbon Credits &amp; Equatorial Spaceports
+              </h3>
+            </div>
+            <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--emerald);">
+              +$38.5T GDP • +$69.3T Stock Market Cap
+            </span>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--ink-secondary); margin-bottom: 1.15rem; max-width: 920px;">
+            For decades, Africa didn’t just export raw cobalt and cocoa—it also exported <strong>raw football prodigies, raw Olympic runners, unmonetized music IP, unpriced rainforest carbon, and raw genomic data</strong> while malaria and visa walls kept tourism at a fraction of Europe’s. Once Lomborg’s <strong>48:1 Malaria Eradication, 101:1 Vaccines, 95:1 Visa-Free Single Air Market, and 28:1 IP/Property Rights</strong> take effect, these 8 high-elasticity sectors add <strong>+$38.5 Trillion to African GDP</strong> (lifting All-Africa to <strong>$183.5T</strong> and the Pan-African Bourse to <strong>$330.3T</strong>):
+          </p>
+
+          <div id="untappedSectorsGrid" class="megacap-board-grid" style="margin-bottom: 1.85rem;"></div>
+
+          <!-- Global Co-Prosperity Dividend: Why the Rest of the World Grows Richer by Investing in Africa -->
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-hairline); border-left: 4px solid #D97706; border-radius: var(--radius-sm); padding: 1.35rem;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.65rem;">
+              <div>
+                <div class="kicker" style="color: #D97706;">NON-ZERO-SUM ECONOMICS • THE +$42.0 TRILLION GLOBAL CO-PROSPERITY DIVIDEND</div>
+                <h4 style="font-family: var(--font-serif); font-size: 1.35rem;">
+                  Why the US, China, EU &amp; India Grow +$42.0T Richer in GDP (+$75.6T in Pension/Bourse Wealth) By Investing in Africa
+                </h4>
+              </div>
+              <span style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: #D97706;">
+                Ricardo &amp; Friedman Non-Zero-Sum Trade Law
+              </span>
+            </div>
+            <p style="font-size: 0.84rem; color: var(--ink-secondary); margin-bottom: 1rem;">
+              Aging economies (Europe median age 50, China 54, US 44) face shrinking workforces and 2% domestic pension yields. By allocating 15%–20% of their pension and sovereign wealth funds into Africa’s <strong>48.7:1 Lomborg catalyst and $330.3T SANKORE-500 Stock Exchange</strong>, while buying $0.018/kWh African green hydrogen, refined batteries, and AI compute, the rest of the world unlocks a massive <strong>+$42.0T GDP Co-Prosperity Dividend</strong>:
+            </p>
+            <div id="coProsperityPartnersGrid" class="friedman-kpi-grid"></div>
+          </div>
         </div>
       </div>
     </section>

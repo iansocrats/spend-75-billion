@@ -55,17 +55,17 @@
   }
 
   // ==========================================================================
-  // 0. ANGULAR 19 SIGNALS MULTI-DEVICE RESPONSIVE SHELL & DRAWER CONTROLLER
+  // 0. AUTOMATIC ANGULAR SIGNALS RESPONSIVE BREAKPOINT & DRAWER CONTROLLER
   // ==========================================================================
   const ngAppRoot = document.getElementById("ngAppRoot");
-  const ngViewportReadout = document.getElementById("ngViewportReadout");
   const mobileMenuToggleBtn = document.getElementById("mobileMenuToggleBtn");
   const mobileNavDrawer = document.getElementById("mobileNavDrawer");
   const mobileNavBackdrop = document.getElementById("mobileNavBackdrop");
   const mobileDrawerCloseBtn = document.getElementById("mobileDrawerCloseBtn");
 
-  let ngPreviewMode = "auto"; // "auto" | "mobile" | "tablet" | "desktop"
-  let ngActiveBreakpoint = "desktop"; // "mobile" | "tablet" | "desktop" | "ultrawide"
+  let ngActiveBreakpoint = "desktop"; // Automatically computed from window.innerWidth
+  let includeUntappedSectors = true; // +$38.5T (Football/Sports, Eco-Tourism, Creative IP, Carbon Sink, Spaceports)
+  let includeGlobalCoProsperity = true; // +$42.0T Foreign Investor Dividend to US, China, EU & India
 
   function getRaceRowPitchPx() {
     if (ngActiveBreakpoint === "mobile" || window.innerWidth <= 680) {
@@ -76,31 +76,13 @@
 
   function syncAngularDeviceSignal() {
     const w = window.innerWidth;
-    const h = window.innerHeight;
-    if (ngPreviewMode === "mobile") {
-      ngActiveBreakpoint = "mobile";
-    } else if (ngPreviewMode === "tablet") {
-      ngActiveBreakpoint = "tablet";
-    } else if (ngPreviewMode === "desktop") {
-      ngActiveBreakpoint = "desktop";
-    } else {
-      if (w <= 680) ngActiveBreakpoint = "mobile";
-      else if (w <= 1024) ngActiveBreakpoint = "tablet";
-      else if (w < 1536) ngActiveBreakpoint = "desktop";
-      else ngActiveBreakpoint = "ultrawide";
-    }
+    if (w <= 680) ngActiveBreakpoint = "mobile";
+    else if (w <= 1024) ngActiveBreakpoint = "tablet";
+    else if (w < 1536) ngActiveBreakpoint = "desktop";
+    else ngActiveBreakpoint = "ultrawide";
 
     if (ngAppRoot) {
       ngAppRoot.setAttribute("data-breakpoint", ngActiveBreakpoint);
-      ngAppRoot.setAttribute("data-preview-mode", ngPreviewMode);
-    }
-
-    if (ngViewportReadout) {
-      const modeTag =
-        ngPreviewMode === "auto"
-          ? ngActiveBreakpoint.toUpperCase()
-          : `${ngActiveBreakpoint.toUpperCase()} SIM`;
-      ngViewportReadout.textContent = `${modeTag} • ${w}×${h}px`;
     }
 
     if (typeof renderOvertakeRace === "function") {
@@ -113,16 +95,6 @@
       setTimeout(() => glMap.resize(), 180);
     }
   }
-
-  document.querySelectorAll("[data-ng-preview]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      ngPreviewMode = btn.getAttribute("data-ng-preview") || "auto";
-      document.querySelectorAll("[data-ng-preview]").forEach((b) => {
-        b.classList.toggle("active", b === btn);
-      });
-      syncAngularDeviceSignal();
-    });
-  });
 
   window.addEventListener("resize", () => {
     syncAngularDeviceSignal();
@@ -1585,25 +1557,44 @@
   const raceProofTableBody = document.getElementById("raceProofTableBody");
 
   // Smooth exponential/compound interpolation between decadal checkpoints
+  function getExtraGdpBoostAtYear(blocId, yr) {
+    const t = Math.max(0, Math.min(1, (yr - 2026) / 50.0));
+    const curve = Math.pow(t, 2.05);
+    if (includeUntappedSectors) {
+      if (blocId === "africa_lomborg") return 38.5 * curve;
+      if (blocId === "kenya_drc_axis") return 15.4 * curve;
+    }
+    if (includeGlobalCoProsperity) {
+      if (blocId === "usa") return 14.5 * curve;
+      if (blocId === "china") return 10.4 * curve;
+      if (blocId === "eu") return 9.2 * curve;
+      if (blocId === "india") return 7.9 * curve;
+    }
+    return 0;
+  }
+
   function interpolateBlocGdp(bloc, yr) {
     const d = bloc.gdpByDecade;
     const decades = [2026, 2036, 2046, 2056, 2066, 2076];
-    if (yr <= 2026) return d[2026];
-    if (yr >= 2076) return d[2076];
-    for (let i = 0; i < decades.length - 1; i++) {
-      const y0 = decades[i];
-      const y1 = decades[i + 1];
-      if (yr >= y0 && yr <= y1) {
-        const t = (yr - y0) / (y1 - y0);
-        const v0 = Math.max(0.01, d[y0]);
-        const v1 = Math.max(0.01, d[y1]);
-        // Blend geometric compound growth (70%) + linear (30%) for realistic yearly curve
-        const geo = v0 * Math.pow(v1 / v0, t);
-        const lin = v0 + (v1 - v0) * t;
-        return +(geo * 0.7 + lin * 0.3).toFixed(2);
+    let baseVal = d[2076];
+    if (yr <= 2026) {
+      baseVal = d[2026];
+    } else if (yr < 2076) {
+      for (let i = 0; i < decades.length - 1; i++) {
+        const y0 = decades[i];
+        const y1 = decades[i + 1];
+        if (yr >= y0 && yr <= y1) {
+          const t = (yr - y0) / (y1 - y0);
+          const v0 = Math.max(0.01, d[y0]);
+          const v1 = Math.max(0.01, d[y1]);
+          const geo = v0 * Math.pow(v1 / v0, t);
+          const lin = v0 + (v1 - v0) * t;
+          baseVal = geo * 0.7 + lin * 0.3;
+          break;
+        }
       }
     }
-    return d[2076];
+    return +(baseVal + getExtraGdpBoostAtYear(bloc.id, yr)).toFixed(2);
   }
 
   function getBlocYoYGrowthPct(bloc, yr) {
@@ -1788,8 +1779,16 @@
 
   function renderOvertakeProofTable() {
     if (!raceProofTableBody || typeof OVERTAKE_RACE_BLOCS === "undefined") return;
-    raceProofTableBody.innerHTML = OVERTAKE_RACE_BLOCS.map(
-      (b) => `
+    raceProofTableBody.innerHTML = OVERTAKE_RACE_BLOCS.map((b) => {
+      const gdp2076Full = interpolateBlocGdp(b, 2076);
+      const extraBoost = +(gdp2076Full - b.gdpByDecade[2076]).toFixed(1);
+      const boostBadge =
+        extraBoost > 0
+          ? ` <span style="font-size: 0.68rem; color: #D97706;">(+$${extraBoost}T ${
+              b.isAfricaHero ? "8 Super-Sectors" : "Co-Prosperity"
+            })</span>`
+          : "";
+      return `
       <tr style="${
         b.isAfricaHero ? "background-color: var(--emerald-soft); font-weight: 600;" : ""
       }">
@@ -1797,13 +1796,106 @@
         <td style="font-family: var(--font-mono);">$${b.gdpByDecade[2026].toFixed(2)}T</td>
         <td style="font-family: var(--font-mono); font-weight: 700; color: ${
           b.isAfricaHero ? "var(--emerald)" : "var(--ink-primary)"
-        };">$${b.gdpByDecade[2076].toFixed(2)}T</td>
+        };">$${gdp2076Full.toFixed(2)}T${boostBadge}</td>
         <td style="font-family: var(--font-mono);">${b.workingAge2076}</td>
         <td style="font-family: var(--font-mono);">${b.medianAge2076}</td>
         <td style="font-family: var(--font-mono);">${b.powerCostKwh}</td>
       </tr>
-    `
-    ).join("");
+    `;
+    }).join("");
+  }
+
+  function renderUntappedSectorsAndCoProsperity() {
+    const sectorsGrid = document.getElementById("untappedSectorsGrid");
+    const partnersGrid = document.getElementById("coProsperityPartnersGrid");
+
+    if (sectorsGrid && typeof UNTAPPED_SUPER_SECTORS !== "undefined") {
+      sectorsGrid.innerHTML = UNTAPPED_SUPER_SECTORS.map(
+        (s) => `
+        <div class="megacap-card" style="opacity: ${
+          includeUntappedSectors ? "1" : "0.55"
+        };">
+          <div>
+            <div class="megacap-top">
+              <span class="megacap-ticker" style="background-color: #0D9488;">${
+                s.icon
+              } $${s.ticker}</span>
+              <span class="megacap-cap">+$${s.gdp2076T.toFixed(1)}T GDP</span>
+            </div>
+            <div style="font-weight: 700; font-size: 0.94rem; margin-top: 0.45rem; line-height: 1.25;">
+              ${s.name}
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.66rem; color: var(--ink-muted); margin-top: 0.2rem;">
+              ${s.hubs}
+            </div>
+          </div>
+          <p style="font-size: 0.77rem; color: var(--ink-secondary); line-height: 1.45; margin: 0;">
+            ${s.explanation}
+          </p>
+          <div style="font-family: var(--font-mono); font-size: 0.67rem; color: var(--emerald); font-weight: 700; border-top: 1px dashed var(--border-hairline); padding-top: 0.4rem;">
+            2026: $${s.baseline2026B}B → 2076 Bourse Cap: $${s.bourse2076T.toFixed(
+          1
+        )}T (1.8×)
+          </div>
+        </div>
+      `
+      ).join("");
+    }
+
+    if (partnersGrid && typeof GLOBAL_COPROSPERITY_MODEL !== "undefined") {
+      partnersGrid.innerHTML = GLOBAL_COPROSPERITY_MODEL.partnerDividends
+        .map(
+          (p) => `
+          <div class="friedman-kpi-card gold" style="opacity: ${
+            includeGlobalCoProsperity ? "1" : "0.55"
+          };">
+            <div class="friedman-kpi-label">${p.flag} ${
+            p.name
+          } Co-Prosperity Boost</div>
+            <div class="friedman-kpi-val" style="color: #D97706;">+$${p.coProsperityGdpBoostT.toFixed(
+              1
+            )}T GDP</div>
+            <div class="friedman-kpi-sub" style="margin-bottom: 0.3rem;">
+              <strong>2076 GDP:</strong> $${p.baseGdp2076T}T → <strong>$${(
+            p.baseGdp2076T + p.coProsperityGdpBoostT
+          ).toFixed(1)}T</strong> (+$${p.coProsperityBourseBoostT}T Bourse)
+            </div>
+            <div style="font-size: 0.72rem; color: var(--ink-secondary); line-height: 1.35;">
+              ${p.pensionReturnBoost}
+            </div>
+          </div>
+        `
+        )
+        .join("");
+    }
+  }
+
+  const toggleUntappedSectorsEl = document.getElementById(
+    "toggleUntappedSectors"
+  );
+  const toggleGlobalCoProsperityEl = document.getElementById(
+    "toggleGlobalCoProsperity"
+  );
+
+  if (toggleUntappedSectorsEl) {
+    toggleUntappedSectorsEl.addEventListener("change", (e) => {
+      includeUntappedSectors = e.target.checked;
+      renderOvertakeRace(false);
+      renderOvertakeProofTable();
+      renderStockMarketRace(false);
+      renderUntappedSectorsAndCoProsperity();
+      updateTimelineDisplay();
+    });
+  }
+
+  if (toggleGlobalCoProsperityEl) {
+    toggleGlobalCoProsperityEl.addEventListener("change", (e) => {
+      includeGlobalCoProsperity = e.target.checked;
+      renderOvertakeRace(false);
+      renderOvertakeProofTable();
+      renderStockMarketRace(false);
+      renderUntappedSectorsAndCoProsperity();
+    });
   }
 
   if (overtakeYearSlider) {
@@ -2116,24 +2208,44 @@
   const stockRaceMilestoneCallout = document.getElementById("stockRaceMilestoneCallout");
   const stockRaceBarsContainer = document.getElementById("stockRaceBarsContainer");
 
+  function getExtraStockCapBoostAtYear(blocId, yr) {
+    const t = Math.max(0, Math.min(1, (yr - 2026) / 50.0));
+    const curve = Math.pow(t, 2.05);
+    if (includeUntappedSectors) {
+      if (blocId === "africa_bourse") return 69.3 * curve;
+      if (blocId === "twin_axis_bourse") return 27.7 * curve;
+    }
+    if (includeGlobalCoProsperity) {
+      if (blocId === "us_bourse") return 26.1 * curve;
+      if (blocId === "china_bourse") return 18.7 * curve;
+      if (blocId === "eu_bourse") return 16.6 * curve;
+      if (blocId === "india_bourse") return 14.2 * curve;
+    }
+    return 0;
+  }
+
   function interpolateStockCap(bloc, yr) {
     const d = bloc.capByDecade;
     const decades = [2026, 2036, 2046, 2056, 2066, 2076];
-    if (yr <= 2026) return d[2026];
-    if (yr >= 2076) return d[2076];
-    for (let i = 0; i < decades.length - 1; i++) {
-      const y0 = decades[i];
-      const y1 = decades[i + 1];
-      if (yr >= y0 && yr <= y1) {
-        const t = (yr - y0) / (y1 - y0);
-        const v0 = Math.max(0.01, d[y0]);
-        const v1 = Math.max(0.01, d[y1]);
-        const geo = v0 * Math.pow(v1 / v0, t);
-        const lin = v0 + (v1 - v0) * t;
-        return +(geo * 0.68 + lin * 0.32).toFixed(2);
+    let baseVal = d[2076];
+    if (yr <= 2026) {
+      baseVal = d[2026];
+    } else if (yr < 2076) {
+      for (let i = 0; i < decades.length - 1; i++) {
+        const y0 = decades[i];
+        const y1 = decades[i + 1];
+        if (yr >= y0 && yr <= y1) {
+          const t = (yr - y0) / (y1 - y0);
+          const v0 = Math.max(0.01, d[y0]);
+          const v1 = Math.max(0.01, d[y1]);
+          const geo = v0 * Math.pow(v1 / v0, t);
+          const lin = v0 + (v1 - v0) * t;
+          baseVal = geo * 0.68 + lin * 0.32;
+          break;
+        }
       }
     }
-    return d[2076];
+    return +(baseVal + getExtraStockCapBoostAtYear(bloc.id, yr)).toFixed(2);
   }
 
   function interpolateCurrencyReer(bloc, yr) {
@@ -2655,6 +2767,7 @@
   initWebGlMap();
   renderOvertakeRace();
   renderOvertakeProofTable();
+  renderUntappedSectorsAndCoProsperity();
   renderFriedmanMarkets();
   renderStockMarketRace();
   renderPriceTheoryEngine();
