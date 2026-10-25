@@ -4086,6 +4086,313 @@
     }
   }
 
+  
+  // ==========================================================================
+  // KENYA $160B FORENSIC LOAN LEDGER & CAPITAL FLOW CONTROLLER
+  // ==========================================================================
+  let activeLoanFilter = 'all';
+  let activeLoanSearch = '';
+
+  function openLoanAuditModal(loanId) {
+    if (typeof KENYA_160B_LOAN_LEDGER === 'undefined') return;
+    const loan = KENYA_160B_LOAN_LEDGER.find((l) => l.id === loanId);
+    if (!loan) return;
+
+    const modal = document.getElementById('forensicLoanModal');
+    const modalBadge = document.getElementById('modalCategoryBadge');
+    const modalTitle = document.getElementById('modalLoanTitle');
+    const modalBody = document.getElementById('modalBody');
+
+    if (!modal || !modalBody) return;
+
+    if (modalBadge) {
+      modalBadge.className = 'status-badge ' + loan.statusBadgeClass;
+      modalBadge.textContent = loan.statusBadge;
+    }
+    if (modalTitle) {
+      modalTitle.textContent = loan.name;
+    }
+
+    modalBody.innerHTML = `
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-bottom: 1.15rem; background: var(--bg-primary); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
+        <div>
+          <span style="font-size: 0.65rem; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;">Amount Borrowed</span>
+          <div style="font-family: var(--font-mono); font-size: 1.25rem; font-weight: 800; color: #D97706;">$${loan.amountUsdB.toFixed(2)} Billion</div>
+          <span style="font-size: 0.72rem; color: var(--ink-secondary);">Approx. KSh ${loan.amountKshB.toLocaleString()} Billion</span>
+        </div>
+        <div>
+          <span style="font-size: 0.65rem; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;">Year & Execution Date</span>
+          <div style="font-size: 0.95rem; font-weight: 700; color: var(--ink-pure);">${loan.yearBorrowed}</div>
+          <span style="font-size: 0.72rem; color: var(--ink-secondary);">${loan.categoryLabel}</span>
+        </div>
+        <div>
+          <span style="font-size: 0.65rem; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;">Lender & Lead Arrangers</span>
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--ink-pure);">${loan.lender}</div>
+          <span style="font-size: 0.72rem; color: var(--ink-muted);">Terms: ${loan.interestRate}</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.15rem;">
+        <h4 style="margin: 0 0 0.35rem; font-size: 0.92rem; font-weight: 800; color: #475569; text-transform: uppercase;">
+          1. Official Stated Objective &amp; Promised Development Return
+        </h4>
+        <div style="background: rgba(100, 116, 139, 0.08); border-left: 4px solid #64748B; padding: 0.85rem; border-radius: 4px; font-size: 0.85rem; line-height: 1.55;">
+          ${loan.statedPurpose}
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.15rem;">
+        <h4 style="margin: 0 0 0.35rem; font-size: 0.92rem; font-weight: 800; color: var(--crimson); text-transform: uppercase;">
+          2. Forensic Audit Findings by ${loan.auditorGeneral}
+        </h4>
+        <div style="background: rgba(220, 38, 38, 0.08); border-left: 4px solid var(--crimson); padding: 0.85rem; border-radius: 4px; font-size: 0.85rem; line-height: 1.55;">
+          <p style="margin: 0 0 0.5rem; font-weight: 600; color: var(--ink-pure);">${loan.actualOutcome}</p>
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted); border-top: 1px solid var(--border-hairline); padding-top: 0.4rem; margin-top: 0.4rem;">
+            🏛️ <strong>Official Parliamentary & OAG Citation:</strong> ${loan.oagCitation}
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <h4 style="margin: 0 0 0.35rem; font-size: 0.92rem; font-weight: 800; color: var(--emerald); text-transform: uppercase;">
+          3. Beyond Lomborg Copenhagen Consensus Counterfactual Alternative
+        </h4>
+        <div style="background: rgba(16, 185, 129, 0.08); border-left: 4px solid var(--emerald); padding: 0.85rem; border-radius: 4px; font-size: 0.85rem; line-height: 1.55;">
+          ${loan.beyondLomborgAlternative}
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-hairline); padding-top: 0.85rem;">
+        <button type="button" class="btn-outline" id="modalDismissBtn" style="padding: 0.45rem 1rem;">Close Dossier</button>
+        <button type="button" class="btn-primary" id="modalCureLinkBtn" style="padding: 0.45rem 1rem;">
+          ⚡ Go to Step 3 (Test Forensic Cures) →
+        </button>
+      </div>
+    `;
+
+    modal.style.display = 'flex';
+
+    const dismissBtn = document.getElementById('modalDismissBtn');
+    if (dismissBtn) {
+      dismissBtn.onclick = () => { modal.style.display = 'none'; };
+    }
+
+    const cureLinkBtn = document.getElementById('modalCureLinkBtn');
+    if (cureLinkBtn) {
+      cureLinkBtn.onclick = () => {
+        modal.style.display = 'none';
+        const step3Tab = document.querySelector('[data-step-btn="3"]');
+        if (step3Tab) step3Tab.click();
+      };
+    }
+  }
+
+  function renderForensicLoanLedger() {
+    if (typeof KENYA_160B_LOAN_LEDGER === 'undefined') return;
+
+    const grid = document.getElementById('forensicLoansGrid');
+    if (!grid) return;
+
+    const query = (activeLoanSearch || '').toLowerCase().trim();
+
+    const filtered = KENYA_160B_LOAN_LEDGER.filter((loan) => {
+      // Category filter check
+      let categoryMatch = false;
+      if (activeLoanFilter === 'all') {
+        categoryMatch = true;
+      } else if (loan.category === activeLoanFilter) {
+        categoryMatch = true;
+      } else if (loan.capitalFlowCategory === activeLoanFilter) {
+        categoryMatch = true;
+      }
+
+      if (!categoryMatch) return false;
+
+      // Text query check
+      if (!query) return true;
+      return (
+        loan.name.toLowerCase().includes(query) ||
+        loan.lender.toLowerCase().includes(query) ||
+        loan.statedPurpose.toLowerCase().includes(query) ||
+        loan.actualOutcome.toLowerCase().includes(query) ||
+        loan.auditorGeneral.toLowerCase().includes(query) ||
+        loan.oagCitation.toLowerCase().includes(query) ||
+        loan.beyondLomborgAlternative.toLowerCase().includes(query) ||
+        loan.statusBadge.toLowerCase().includes(query) ||
+        loan.categoryLabel.toLowerCase().includes(query)
+      );
+    });
+
+    // Update count & totals
+    const countEl = document.getElementById('visibleLoanCount');
+    const usdEl = document.getElementById('visibleLoanUsdTotal');
+    const kshEl = document.getElementById('visibleLoanKshTotal');
+
+    const totalUsd = filtered.reduce((acc, l) => acc + l.amountUsdB, 0);
+    const totalKsh = filtered.reduce((acc, l) => acc + l.amountKshB, 0);
+
+    if (countEl) countEl.textContent = filtered.length;
+    if (usdEl) usdEl.textContent = `$${totalUsd.toFixed(1)} Billion`;
+    if (kshEl) kshEl.textContent = `KSh ${Math.round(totalKsh).toLocaleString()}B`;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; color: var(--ink-secondary);">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+          <div style="font-size: 1rem; font-weight: 700;">No matching forensic loan dossiers found</div>
+          <div style="font-size: 0.8rem; margin-top: 0.35rem;">Try clearing the search box or selecting "All 10 Packages" above.</div>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = filtered
+      .map((loan) => {
+        return `
+          <div class="forensic-loan-card" data-loan-id="${loan.id}">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <div>
+                  <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--ink-muted); text-transform: uppercase;">
+                    ${loan.categoryLabel} • ${loan.yearBorrowed}
+                  </span>
+                </div>
+                <span class="status-badge ${loan.statusBadgeClass}">${loan.statusBadge}</span>
+              </div>
+
+              <h4 style="margin: 0 0 0.5rem; font-size: 0.98rem; font-weight: 800; color: var(--ink-pure); line-height: 1.35;">
+                ${loan.name}
+              </h4>
+
+              <div class="loan-financial-box">
+                <div class="loan-fin-item">
+                  <span class="loan-fin-label">Loan Amount</span>
+                  <span class="loan-fin-val">$${loan.amountUsdB.toFixed(2)}B <span style="font-size: 0.72rem; color: var(--ink-secondary); font-weight: normal;">(KSh ${loan.amountKshB.toLocaleString()}B)</span></span>
+                </div>
+                <div class="loan-fin-item">
+                  <span class="loan-fin-label">Interest / Terms</span>
+                  <span class="loan-fin-val" style="font-size: 0.78rem; color: var(--ink-pure); line-height: 1.25;">${loan.interestRate}</span>
+                </div>
+              </div>
+
+              <div style="font-size: 0.72rem; color: var(--ink-muted); margin-bottom: 0.6rem;">
+                <strong>Lender:</strong> ${loan.lender}
+              </div>
+
+              <div class="loan-comparison-split">
+                <div class="loan-split-box loan-promise-box">
+                  <div style="font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 0.2rem;">
+                    📋 Stated Development Promise
+                  </div>
+                  <div>${loan.statedPurpose}</div>
+                </div>
+
+                <div class="loan-split-box loan-reality-box">
+                  <div style="font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; color: var(--crimson); text-transform: uppercase; margin-bottom: 0.2rem;">
+                    🔍 Official Auditor-General Finding
+                  </div>
+                  <div>${loan.actualOutcome}</div>
+                  <div style="margin-top: 0.35rem; font-size: 0.68rem; color: var(--ink-muted); font-style: italic;">
+                    Source: ${loan.oagCitation}
+                  </div>
+                </div>
+
+                <div class="loan-split-box loan-lomborg-box">
+                  <div style="font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; color: var(--emerald); text-transform: uppercase; margin-bottom: 0.2rem;">
+                    💡 Beyond Lomborg Opportunity Cost
+                  </div>
+                  <div>${loan.beyondLomborgAlternative}</div>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn-inspect-audit" data-loan-inspect="${loan.id}">
+              📑 Inspect Official Audit Dossier
+            </button>
+          </div>
+        `;
+      })
+      .join('');
+
+    // Attach inspect click handlers
+    grid.querySelectorAll('[data-loan-inspect]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-loan-inspect');
+        if (id) openLoanAuditModal(id);
+      });
+    });
+  }
+
+  function initForensicLoanLedger() {
+    // 1. Category Filter Buttons
+    document.querySelectorAll('[data-loan-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-loan-filter]').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeLoanFilter = btn.getAttribute('data-loan-filter') || 'all';
+
+        // Clear active flow kpi cards if any
+        document.querySelectorAll('[data-flow-card]').forEach((c) => c.classList.remove('active'));
+
+        renderForensicLoanLedger();
+      });
+    });
+
+    // 2. Macro Flow Segments & KPI Cards Click-to-Filter
+    document.querySelectorAll('[data-flow-filter]').forEach((seg) => {
+      seg.addEventListener('click', () => {
+        const filterVal = seg.getAttribute('data-flow-filter');
+        activeLoanFilter = filterVal;
+        document.querySelectorAll('[data-loan-filter]').forEach((b) => b.classList.remove('active'));
+        document.querySelectorAll('[data-flow-card]').forEach((c) => {
+          c.classList.toggle('active', c.getAttribute('data-flow-card') === filterVal);
+        });
+        renderForensicLoanLedger();
+      });
+    });
+
+    document.querySelectorAll('[data-flow-card]').forEach((card) => {
+      card.addEventListener('click', () => {
+        const filterVal = card.getAttribute('data-flow-card');
+        activeLoanFilter = filterVal;
+        document.querySelectorAll('[data-loan-filter]').forEach((b) => b.classList.remove('active'));
+        document.querySelectorAll('[data-flow-card]').forEach((c) => {
+          c.classList.toggle('active', c === card);
+        });
+        renderForensicLoanLedger();
+      });
+    });
+
+    // 3. Search Input
+    const searchInput = document.getElementById('loanSearchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        activeLoanSearch = e.target.value;
+        renderForensicLoanLedger();
+      });
+    }
+
+    // 4. Modal Close Handlers
+    const modal = document.getElementById('forensicLoanModal');
+    const closeBtn = document.getElementById('modalCloseBtn');
+    if (closeBtn && modal) {
+      closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+    }
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+      });
+    }
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Initial render
+    renderForensicLoanLedger();
+  }
+
   function initOagInvestigation() {
     document.querySelectorAll("[data-oag-toggle]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -4644,6 +4951,7 @@
   renderMasterEqualizer();
   initWebGlMap();
   renderHistoricalAudit();
+  initForensicLoanLedger();
   initOagInvestigation();
   renderFriedmanMarkets();
   renderStockMarketRace();

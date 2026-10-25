@@ -13,8 +13,8 @@
   let activeCategory = "ALL";
   let discountRate = "3"; // "3" or "5"
   let dalyValuation = "base"; // "base" ($1k) or "high" ($5k)
-  let activeCountryKey = "africa"; // Macro blueprint tab ("africa", "drc", "kenya", "twinAxis")
-  let activeCountryScope = "africa"; // Country Scope Switcher ("africa" or "kenya")
+  let activeCountryKey = "kenya"; // Exclusively Kenya // Macro blueprint tab ("africa", "drc", "kenya", "twinAxis")
+  let activeCountryScope = "kenya"; // Exclusively Kenya // Country Scope Switcher ("africa" or "kenya")
   let activeDrcPhase = 1;
   let activeScenarioKey = "lomborg";
 
@@ -259,50 +259,26 @@
 
   // Update dynamic properties on AFRICA_GEOJSON features for current year & metric
   function syncGeoJsonMetrics() {
-    if (typeof AFRICA_GEOJSON === "undefined") return;
-    AFRICA_GEOJSON.features.forEach((f) => {
-      const iso = f.properties.iso;
-      const c = AFRICA_MAP_COUNTRIES[iso];
-      if (!c) return;
-      const curGdp = getCountryGdpAtYear(c, mapSimYear);
-      f.properties.currentGdpT = curGdp;
-      f.properties.fillColor = getCountryFillColor(c);
+    if (typeof KENYA_COUNTIES_GEOJSON === "undefined" || typeof KENYA_47_COUNTIES_DATA === "undefined") return;
 
-      // Compute 3D extrusion height in meters for WebGL view
-      let h = 25000;
-      if (mapColorMetric === "gdp2076T") {
-        h = Math.max(25000, curGdp * 42000);
-      } else if (mapColorMetric === "bcrWeighted") {
-        h = Math.max(25000, (c.bcrWeighted - 22) * 65000);
-      } else {
-        h = Math.max(25000, c.catalystShareB * 140000);
+    KENYA_COUNTIES_GEOJSON.features.forEach((f) => {
+      const c = KENYA_47_COUNTIES_DATA[f.properties.code];
+      if (c) {
+        const isSectorMatch = activeCountySector === "ALL" || c.sector === activeCountySector;
+        const isBlocMatch = activeCountyBloc === "ALL" || c.bloc === activeCountyBloc;
+        const isMatch = isSectorMatch && isBlocMatch;
+        f.properties.extrusionHeight = mapEngineMode === "2d-gl" ? 0 : (isMatch ? Math.round(c.gcp2076T * 45000) : 4000);
+        f.properties.fillColor = isMatch ? (SECTOR_COLORS[c.sector] || "#D97706") : "#334155";
       }
-      f.properties.extrusionHeight = mapEngineMode === "2d-gl" ? 0 : Math.round(h);
-      f.properties.label = `${c.iso}\n$${curGdp}T`;
     });
 
-    if (glMap && glMap.getSource("africa-countries")) {
-      glMap.getSource("africa-countries").setData(AFRICA_GEOJSON);
-    }
-
-    if (glMap && glMap.getSource("kenya-counties") && typeof KENYA_COUNTIES_GEOJSON !== "undefined" && typeof KENYA_47_COUNTIES_DATA !== "undefined") {
-      KENYA_COUNTIES_GEOJSON.features.forEach((f) => {
-        const c = KENYA_47_COUNTIES_DATA[f.properties.code];
-        if (c) {
-          const isSectorMatch = activeCountySector === "ALL" || c.sector === activeCountySector;
-          const isBlocMatch = activeCountyBloc === "ALL" || c.bloc === activeCountyBloc;
-          const isMatch = isSectorMatch && isBlocMatch;
-          f.properties.extrusionHeight = mapEngineMode === "2d-gl" ? 0 : (isMatch ? Math.round(c.gcp2076T * 45000) : 4000);
-          f.properties.fillColor = isMatch ? (SECTOR_COLORS[c.sector] || "#D97706") : "#334155";
-        }
-      });
+    if (glMap && glMap.getSource("kenya-counties")) {
       glMap.getSource("kenya-counties").setData(KENYA_COUNTIES_GEOJSON);
     }
   }
 
   function initWebGlMap() {
-    if (typeof maplibregl === "undefined" || typeof AFRICA_GEOJSON === "undefined") {
-      // Fallback to SVG if MapLibre script didn't load
+    if (typeof maplibregl === "undefined" || typeof KENYA_COUNTIES_GEOJSON === "undefined") {
       setMapEngineMode("svg");
       return;
     }
@@ -315,13 +291,9 @@
         style: {
           version: 8,
           sources: {
-            "africa-countries": {
+            "kenya-counties": {
               type: "geojson",
-              data: AFRICA_GEOJSON,
-            },
-            "africa-corridors": {
-              type: "geojson",
-              data: buildCorridorsGeoJson(),
+              data: KENYA_COUNTIES_GEOJSON,
             },
           },
           layers: [
@@ -333,127 +305,66 @@
               },
             },
             {
-              id: "africa-extrusion",
+              id: "kenya-counties-extrusion",
               type: "fill-extrusion",
-              source: "africa-countries",
+              source: "kenya-counties",
+              layout: {
+                visibility: "visible",
+              },
               paint: {
                 "fill-extrusion-color": ["get", "fillColor"],
                 "fill-extrusion-height": ["get", "extrusionHeight"],
                 "fill-extrusion-base": 0,
-                "fill-extrusion-opacity": 0.9,
+                "fill-extrusion-opacity": 0.92,
               },
             },
             {
-              id: "africa-borders",
+              id: "kenya-counties-borders",
               type: "line",
-              source: "africa-countries",
-              paint: {
-                "line-color": "#0F172A",
-                "line-width": 1.2,
+              source: "kenya-counties",
+              layout: {
+                visibility: "visible",
               },
-            },
-            {
-              id: "africa-selected-outline",
-              type: "line",
-              source: "africa-countries",
-              filter: ["==", ["get", "iso"], selectedMapIso],
-              paint: {
-                "line-color": "#FF3B30",
-                "line-width": 3.5,
-              },
-            },
-            {
-              id: "corridors-glow",
-              type: "line",
-              source: "africa-corridors",
-              paint: {
-                "line-color": "#FF3B30",
-                "line-width": 6,
-                "line-blur": 4,
-                "line-opacity": 0.55,
-              },
-            },
-            {
-              id: "corridors-core",
-              type: "line",
-              source: "africa-corridors",
               paint: {
                 "line-color": "#FFFFFF",
-                "line-width": 2,
-                "line-dasharray": [2, 2],
-                "line-opacity": 0.9,
+                "line-width": 1.2,
+                "line-opacity": 0.45,
+              },
+            },
+            {
+              id: "kenya-counties-selected-outline",
+              type: "line",
+              source: "kenya-counties",
+              filter: ["==", ["get", "code"], selectedCountyCode],
+              layout: {
+                visibility: "visible",
+              },
+              paint: {
+                "line-color": "#F59E0B",
+                "line-width": 4.0,
               },
             },
           ],
         },
-        center: [21.5, 1.5],
-        zoom: 2.55,
-        pitch: 50,
-        bearing: -8,
+        center: [37.8, 0.4],
+        zoom: 6.2,
+        pitch: mapEngineMode === "3d" ? 52 : 0,
+        bearing: mapEngineMode === "3d" ? -10 : 0,
         antialias: true,
       });
 
       glMap.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "bottom-right");
 
-      // Add Kenya 47 Counties 3D Extrusion Source & Layers
-      if (typeof KENYA_COUNTIES_GEOJSON !== "undefined") {
-        glMap.addSource("kenya-counties", {
-          type: "geojson",
-          data: KENYA_COUNTIES_GEOJSON,
-        });
-
-        glMap.addLayer({
-          id: "kenya-counties-extrusion",
-          type: "fill-extrusion",
-          source: "kenya-counties",
-          layout: {
-            visibility: activeCountryScope === "kenya" ? "visible" : "none",
-          },
-          paint: {
-            "fill-extrusion-color": ["get", "fillColor"],
-            "fill-extrusion-height": ["get", "extrusionHeight"],
-            "fill-extrusion-base": 0,
-            "fill-extrusion-opacity": 0.92,
-          },
-        });
-
-        glMap.addLayer({
-          id: "kenya-counties-borders",
-          type: "line",
-          source: "kenya-counties",
-          layout: {
-            visibility: activeCountryScope === "kenya" ? "visible" : "none",
-          },
-          paint: {
-            "line-color": "#FFFFFF",
-            "line-width": 1.2,
-            "line-opacity": 0.45,
-          },
-        });
-
-        glMap.addLayer({
-          id: "kenya-counties-selected-outline",
-          type: "line",
-          source: "kenya-counties",
-          filter: ["==", ["get", "code"], selectedCountyCode],
-          layout: {
-            visibility: activeCountryScope === "kenya" ? "visible" : "none",
-          },
-          paint: {
-            "line-color": "#F59E0B",
-            "line-width": 4.0,
-          },
-        });
-
+      glMap.on("load", () => {
         glMap.on("mousemove", "kenya-counties-extrusion", (e) => {
           if (!e.features || !e.features.length) return;
           glMap.getCanvas().style.cursor = "pointer";
           const p = e.features[0].properties;
           if (mapFloatingTooltip) {
             mapFloatingTooltip.innerHTML = `
-              <strong style="font-size: 0.92rem;">${p.icon} ${p.code} • ${p.name}</strong> (${p.sectorName})<br/>
-              Current GCP: <strong style="color: var(--crimson);">${p.gcp2026B}B</strong> ➔ $100B Fund: <strong style="color: #F59E0B;">+${(p.alloc100BM / 1000).toFixed(1)}B</strong><br/>
-              2076 Superpower Horizon: <strong style="color: var(--emerald);">${p.gcp2076T} Trillion</strong> • <em>${p.multiplier}</em>
+              <strong style="font-size: 0.92rem;">${p.icon || "📍"} ${p.code} • ${p.name}</strong> (${p.sectorName || ""})<br/>
+              Current GCP: <strong style="color: var(--crimson);">$${p.gcp2026B || 1.0}B</strong> ➔ $100B Fund: <strong style="color: #F59E0B;">+$${((p.alloc100BM || 2000) / 1000).toFixed(1)}B</strong><br/>
+              2076 Superpower Horizon: <strong style="color: var(--emerald);">$${p.gcp2076T || 0.5} Trillion</strong> • <em>${p.multiplier || "Economic Multiplier"}</em>
             `;
           }
         });
@@ -465,34 +376,8 @@
         glMap.on("click", "kenya-counties-extrusion", (e) => {
           if (!e.features || !e.features.length) return;
           const code = e.features[0].properties.code;
-          selectKenyaCounty(code, false);
+          selectKenyaCounty(code, true);
         });
-      }
-
-      glMap.on("mousemove", "africa-extrusion", (e) => {
-        glMap.getCanvas().style.cursor = "pointer";
-        if (e.features && e.features.length > 0) {
-          const props = e.features[0].properties;
-          const c = AFRICA_MAP_COUNTRIES[props.iso];
-          if (c) {
-            const curGdp = getCountryGdpAtYear(c, mapSimYear);
-            mapFloatingTooltip.innerHTML = `
-              <strong>${c.flag} ${c.name}</strong> (${c.region})<br/>
-              Year ${mapSimYear} GDP: <strong style="color: var(--emerald);">$${curGdp}T</strong> (2076 Peak: <strong>$${c.gdp2076T}T</strong>) • BCR: <strong>${c.bcrWeighted}:1</strong>
-            `;
-          }
-        }
-      });
-
-      glMap.on("mouseleave", "africa-extrusion", () => {
-        glMap.getCanvas().style.cursor = "";
-      });
-
-      glMap.on("click", "africa-extrusion", (e) => {
-        if (e.features && e.features.length > 0) {
-          const iso = e.features[0].properties.iso;
-          selectMapCountry(iso, true);
-        }
       });
     } catch (err) {
       console.warn("WebGL fallback to SVG:", err);
@@ -506,72 +391,33 @@
       btn.classList.toggle("active", btn.getAttribute("data-engine-mode") === mode);
     });
 
-    const isKenya = activeCountryScope === "kenya";
-    if (isKenya) {
-      if (africaSvgMap) africaSvgMap.style.display = "none";
-      if (mode === "svg") {
-        if (maplibreContainer) maplibreContainer.style.display = "none";
-        if (kenyaCountySvgMap) {
-          kenyaCountySvgMap.style.display = "block";
-          renderKenyaCountyMap();
-        }
-      } else {
-        // 3D or 2D-GL WebGL Mode
-        if (kenyaCountySvgMap) kenyaCountySvgMap.style.display = "none";
-        if (maplibreContainer) {
-          maplibreContainer.style.display = "block";
-          if (glMap) {
-            glMap.resize();
-            // Ensure Kenya layers are visible and Africa layers hidden
-            ["africa-extrusion", "africa-borders", "africa-selected-outline"].forEach((id) => {
-              if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "none");
-            });
-            ["kenya-counties-extrusion", "kenya-counties-borders", "kenya-counties-selected-outline"].forEach((id) => {
-              if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "visible");
-            });
-            syncGeoJsonMetrics();
-            glMap.easeTo({
-              center: [37.8, 0.4],
-              zoom: 6.2,
-              pitch: mode === "3d" ? 52 : 0,
-              bearing: mode === "3d" ? -12 : 0,
-              duration: 800,
-            });
-          }
-        }
+    if (mode === "svg") {
+      if (maplibreContainer) maplibreContainer.style.display = "none";
+      if (kenyaCountySvgMap) {
+        kenyaCountySvgMap.style.display = "block";
+        renderKenyaCountyMap();
       }
     } else {
       if (kenyaCountySvgMap) kenyaCountySvgMap.style.display = "none";
-      if (glMap) {
-        ["kenya-counties-extrusion", "kenya-counties-borders", "kenya-counties-selected-outline"].forEach((id) => {
-          if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "none");
-        });
-        ["africa-extrusion", "africa-borders", "africa-selected-outline"].forEach((id) => {
-          if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "visible");
-        });
-      }
-
-      if (mode === "svg") {
-        if (maplibreContainer) maplibreContainer.style.display = "none";
-        if (africaSvgMap) {
-          africaSvgMap.style.display = "block";
-          renderAfricaSvgMap();
-        }
-      } else {
-        if (maplibreContainer) maplibreContainer.style.display = "block";
-        if (africaSvgMap) africaSvgMap.style.display = "none";
-        syncGeoJsonMetrics();
+      if (maplibreContainer) {
+        maplibreContainer.style.display = "block";
         if (glMap) {
           glMap.resize();
+          syncGeoJsonMetrics();
           glMap.easeTo({
-            pitch: mode === "3d" ? 50 : 0,
-            bearing: mode === "3d" ? -8 : 0,
-            duration: 700,
+            center: [37.8, 0.4],
+            zoom: 6.2,
+            pitch: mode === "3d" ? 52 : 0,
+            bearing: mode === "3d" ? -10 : 0,
+            duration: 800,
           });
         }
       }
     }
   }
+
+
+
 
   document.querySelectorAll("[data-engine-mode]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -583,11 +429,12 @@
   if (resetCameraBtn) {
     resetCameraBtn.addEventListener("click", () => {
       if (glMap) {
+        const isK = activeCountryScope === "kenya";
         glMap.flyTo({
-          center: [21.5, 1.5],
-          zoom: 2.55,
-          pitch: mapEngineMode === "3d" ? 50 : 0,
-          bearing: mapEngineMode === "3d" ? -8 : 0,
+          center: isK ? [37.8, 0.4] : [21.5, 1.5],
+          zoom: isK ? 6.2 : 2.55,
+          pitch: mapEngineMode === "3d" ? (isK ? 52 : 50) : 0,
+          bearing: mapEngineMode === "3d" ? (isK ? -10 : -8) : 0,
           duration: 1100,
         });
       }
@@ -3620,7 +3467,7 @@
   // ==========================================================================
   // 11. HISTORICAL $3.33T AUDIT (ALL-AFRICA) & KENYA $161B LEAKY-PIPE VALVE GAME
   // ==========================================================================
-  let activeAuditScope = "africa"; // "africa" | "kenya"
+  let activeAuditScope = "kenya"; // Exclusively Kenya // "africa" | "kenya"
   const valveStates = { graft: true, tiedAid: true, deadCapital: true };
   const sliderHistoricalRedirect = document.getElementById("sliderHistoricalRedirect");
   const valHistoricalRedirect = document.getElementById("valHistoricalRedirect");
@@ -4110,6 +3957,480 @@
   // ==========================================================================
   // 13. COUNTRY SCOPE NAVBAR & 4-STEP GUIDED INTERACTIVE WIZARD
   // ==========================================================================
+
+  // ==========================================================================
+  // OAG (AUDITOR-GENERAL) FORENSIC INVESTIGATION CONTROLLER (KENYA STEP 3)
+  // ==========================================================================
+  const oagAuditState = {
+    pendingBills: false,
+    debtChoke: false,
+    deadLand: false,
+    thermalIpp: false,
+    portDelays: false,
+  };
+
+  const OAG_CURE_SPECS = {
+    pendingBills: {
+      capitalB: 4.2,
+      annualTaxB: 45,
+      gdpBoostB: 95,
+      curePill: "🔒 TSA + MILESTONE ESCROW",
+      leakPill: "💔 UNVERIFIED PENDING BILLS",
+      cureBtn: "✓ Cure Enforced (TSA Escrow Active)",
+      leakBtn: "🔒 Enforce Cure (Plug $4.2B Leak)",
+    },
+    debtChoke: {
+      capitalB: 12.5,
+      annualTaxB: 210,
+      gdpBoostB: 340,
+      curePill: "🔒 DEBT-FOR-PRODUCTIVITY SWAP",
+      leakPill: "💔 65% REVENUE CHOKE",
+      cureBtn: "✓ Cure Enforced (Commercial Rollover Halted)",
+      leakBtn: "🔒 Enforce Cure (Halt Commercial Rollover)",
+    },
+    deadLand: {
+      capitalB: 65.0,
+      annualTaxB: 65,
+      gdpBoostB: 380,
+      curePill: "🔒 ARDHISASA DIGITAL TITLES",
+      leakPill: "💔 DEAD PAPER CAPITAL",
+      cureBtn: "✓ Cure Enforced (ArdhiSasa Active)",
+      leakBtn: "🔒 Enforce Cure (Unlock $65B Land Collateral)",
+    },
+    thermalIpp: {
+      capitalB: 1.8,
+      annualTaxB: 32,
+      gdpBoostB: 140,
+      curePill: "🔒 4¢ OLKARIA BASELOAD POWER",
+      leakPill: "💔 KSh 32B/YR IDLE CAPACITY",
+      cureBtn: "✓ Cure Enforced (Thermal IPPs Decommissioned)",
+      leakBtn: "🔒 Enforce Cure (Decommission Thermal IPPs)",
+    },
+    portDelays: {
+      capitalB: 18.0,
+      annualTaxB: 28,
+      gdpBoostB: 85,
+      curePill: "🔒 24-HR SINGLE WINDOW AI CUSTOMS",
+      leakPill: "💔 18-SIGNATURE DELAYS",
+      cureBtn: "✓ Cure Enforced (24-Hr Port Automated)",
+      leakBtn: "🔒 Enforce Cure (Automate 24-Hr Port)",
+    },
+  };
+
+  function updateOagDashboard() {
+    let recoveredCapB = 0;
+    let savedTaxKshB = 0;
+    let boostGdpB = 0;
+    let curedCount = 0;
+
+    Object.keys(oagAuditState).forEach((key) => {
+      const isCured = oagAuditState[key];
+      const spec = OAG_CURE_SPECS[key];
+      if (!spec) return;
+      if (isCured) {
+        curedCount++;
+        recoveredCapB += spec.capitalB;
+        savedTaxKshB += spec.annualTaxB;
+        boostGdpB += spec.gdpBoostB;
+      }
+
+      const pill = document.querySelector(`[data-status-for="${key}"]`);
+      if (pill) {
+        pill.textContent = isCured ? spec.curePill : spec.leakPill;
+        pill.style.background = isCured ? "rgba(16, 185, 129, 0.15)" : "rgba(220, 38, 38, 0.15)";
+        pill.style.color = isCured ? "var(--emerald)" : "var(--crimson)";
+      }
+
+      const btn = document.querySelector(`[data-oag-toggle="${key}"]`);
+      if (btn) {
+        btn.textContent = isCured ? spec.cureBtn : spec.leakBtn;
+        btn.style.background = isCured ? "var(--emerald)" : "var(--bg-tertiary)";
+        btn.style.color = isCured ? "#FFFFFF" : "var(--ink-pure)";
+        btn.style.borderColor = isCured ? "var(--emerald)" : "var(--border-subtle)";
+      }
+    });
+
+    const capEl = document.getElementById("oagRecoveredCapital");
+    const capSubEl = document.getElementById("oagRecoveredSub");
+    const taxEl = document.getElementById("oagAnnualTaxSaved");
+    const gdpEl = document.getElementById("oagKenyaGdpProjected");
+    const gdpSubEl = document.getElementById("oagKenyaGdpSub");
+
+    if (capEl) capEl.textContent = `$${recoveredCapB.toFixed(1)} Billion`;
+    if (capSubEl) capSubEl.textContent = `${curedCount} of 5 Cures Enforced`;
+    if (taxEl) taxEl.textContent = `+KSh ${savedTaxKshB} Billion / yr`;
+
+    const projectedGdpB = 136 + boostGdpB;
+    if (gdpEl) {
+      if (curedCount === 0) {
+        gdpEl.textContent = "$136B (Current Stagnation)";
+        gdpEl.style.color = "var(--ink-pure)";
+      } else if (curedCount === 5) {
+        gdpEl.textContent = "$1.18 Trillion (Tiger Unleashed!)";
+        gdpEl.style.color = "var(--emerald)";
+      } else {
+        gdpEl.textContent = `$${(projectedGdpB / 1000).toFixed(2)}T (${projectedGdpB}B)`;
+        gdpEl.style.color = "var(--emerald)";
+      }
+    }
+
+    if (gdpSubEl) {
+      const lostPotentialB = 1180 - projectedGdpB;
+      if (lostPotentialB <= 0) {
+        gdpSubEl.textContent = "✓ 100% Potential Recovered!";
+        gdpSubEl.style.color = "var(--emerald)";
+      } else {
+        gdpSubEl.textContent = `-$${lostPotentialB}B Lost Potential Remaining`;
+        gdpSubEl.style.color = "var(--crimson)";
+      }
+    }
+  }
+
+  
+  // ==========================================================================
+  // KENYA $160B FORENSIC LOAN LEDGER & CAPITAL FLOW CONTROLLER
+  // ==========================================================================
+  let activeLoanFilter = 'all';
+  let activeLoanSearch = '';
+
+  function openLoanAuditModal(loanId) {
+    if (typeof KENYA_160B_LOAN_LEDGER === 'undefined') return;
+    const loan = KENYA_160B_LOAN_LEDGER.find((l) => l.id === loanId);
+    if (!loan) return;
+
+    const modal = document.getElementById('forensicLoanModal');
+    const modalBadge = document.getElementById('modalCategoryBadge');
+    const modalTitle = document.getElementById('modalLoanTitle');
+    const modalBody = document.getElementById('modalBody');
+
+    if (!modal || !modalBody) return;
+
+    if (modalBadge) {
+      modalBadge.className = 'status-badge ' + loan.statusBadgeClass;
+      modalBadge.textContent = loan.statusBadge;
+    }
+    if (modalTitle) {
+      modalTitle.textContent = loan.name;
+    }
+
+    modalBody.innerHTML = `
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-bottom: 1.15rem; background: var(--bg-primary); padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
+        <div>
+          <span style="font-size: 0.65rem; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;">Amount Borrowed</span>
+          <div style="font-family: var(--font-mono); font-size: 1.25rem; font-weight: 800; color: #D97706;">$${loan.amountUsdB.toFixed(2)} Billion</div>
+          <span style="font-size: 0.72rem; color: var(--ink-secondary);">Approx. KSh ${loan.amountKshB.toLocaleString()} Billion</span>
+        </div>
+        <div>
+          <span style="font-size: 0.65rem; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;">Year & Execution Date</span>
+          <div style="font-size: 0.95rem; font-weight: 700; color: var(--ink-pure);">${loan.yearBorrowed}</div>
+          <span style="font-size: 0.72rem; color: var(--ink-secondary);">${loan.categoryLabel}</span>
+        </div>
+        <div>
+          <span style="font-size: 0.65rem; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase;">Lender & Lead Arrangers</span>
+          <div style="font-size: 0.82rem; font-weight: 700; color: var(--ink-pure);">${loan.lender}</div>
+          <span style="font-size: 0.72rem; color: var(--ink-muted);">Terms: ${loan.interestRate}</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.15rem;">
+        <h4 style="margin: 0 0 0.35rem; font-size: 0.92rem; font-weight: 800; color: #475569; text-transform: uppercase;">
+          1. Official Stated Objective &amp; Promised Development Return
+        </h4>
+        <div style="background: rgba(100, 116, 139, 0.08); border-left: 4px solid #64748B; padding: 0.85rem; border-radius: 4px; font-size: 0.85rem; line-height: 1.55;">
+          ${loan.statedPurpose}
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.15rem;">
+        <h4 style="margin: 0 0 0.35rem; font-size: 0.92rem; font-weight: 800; color: var(--crimson); text-transform: uppercase;">
+          2. Forensic Audit Findings by ${loan.auditorGeneral}
+        </h4>
+        <div style="background: rgba(220, 38, 38, 0.08); border-left: 4px solid var(--crimson); padding: 0.85rem; border-radius: 4px; font-size: 0.85rem; line-height: 1.55;">
+          <p style="margin: 0 0 0.5rem; font-weight: 600; color: var(--ink-pure);">${loan.actualOutcome}</p>
+          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted); border-top: 1px solid var(--border-hairline); padding-top: 0.4rem; margin-top: 0.4rem;">
+            🏛️ <strong>Official Parliamentary & OAG Citation:</strong> ${loan.oagCitation}
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <h4 style="margin: 0 0 0.35rem; font-size: 0.92rem; font-weight: 800; color: var(--emerald); text-transform: uppercase;">
+          3. Beyond Lomborg Copenhagen Consensus Counterfactual Alternative
+        </h4>
+        <div style="background: rgba(16, 185, 129, 0.08); border-left: 4px solid var(--emerald); padding: 0.85rem; border-radius: 4px; font-size: 0.85rem; line-height: 1.55;">
+          ${loan.beyondLomborgAlternative}
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-hairline); padding-top: 0.85rem;">
+        <button type="button" class="btn-outline" id="modalDismissBtn" style="padding: 0.45rem 1rem;">Close Dossier</button>
+        <button type="button" class="btn-primary" id="modalCureLinkBtn" style="padding: 0.45rem 1rem;">
+          ⚡ Go to Step 3 (Test Forensic Cures) →
+        </button>
+      </div>
+    `;
+
+    modal.style.display = 'flex';
+
+    const dismissBtn = document.getElementById('modalDismissBtn');
+    if (dismissBtn) {
+      dismissBtn.onclick = () => { modal.style.display = 'none'; };
+    }
+
+    const cureLinkBtn = document.getElementById('modalCureLinkBtn');
+    if (cureLinkBtn) {
+      cureLinkBtn.onclick = () => {
+        modal.style.display = 'none';
+        const step3Tab = document.querySelector('[data-step-btn="3"]');
+        if (step3Tab) step3Tab.click();
+      };
+    }
+  }
+
+  function renderForensicLoanLedger() {
+    if (typeof KENYA_160B_LOAN_LEDGER === 'undefined') return;
+
+    const grid = document.getElementById('forensicLoansGrid');
+    if (!grid) return;
+
+    const query = (activeLoanSearch || '').toLowerCase().trim();
+
+    const filtered = KENYA_160B_LOAN_LEDGER.filter((loan) => {
+      // Category filter check
+      let categoryMatch = false;
+      if (activeLoanFilter === 'all') {
+        categoryMatch = true;
+      } else if (loan.category === activeLoanFilter) {
+        categoryMatch = true;
+      } else if (loan.capitalFlowCategory === activeLoanFilter) {
+        categoryMatch = true;
+      }
+
+      if (!categoryMatch) return false;
+
+      // Text query check
+      if (!query) return true;
+      return (
+        loan.name.toLowerCase().includes(query) ||
+        loan.lender.toLowerCase().includes(query) ||
+        loan.statedPurpose.toLowerCase().includes(query) ||
+        loan.actualOutcome.toLowerCase().includes(query) ||
+        loan.auditorGeneral.toLowerCase().includes(query) ||
+        loan.oagCitation.toLowerCase().includes(query) ||
+        loan.beyondLomborgAlternative.toLowerCase().includes(query) ||
+        loan.statusBadge.toLowerCase().includes(query) ||
+        loan.categoryLabel.toLowerCase().includes(query)
+      );
+    });
+
+    // Update count & totals
+    const countEl = document.getElementById('visibleLoanCount');
+    const usdEl = document.getElementById('visibleLoanUsdTotal');
+    const kshEl = document.getElementById('visibleLoanKshTotal');
+
+    const totalUsd = filtered.reduce((acc, l) => acc + l.amountUsdB, 0);
+    const totalKsh = filtered.reduce((acc, l) => acc + l.amountKshB, 0);
+
+    if (countEl) countEl.textContent = filtered.length;
+    if (usdEl) usdEl.textContent = `$${totalUsd.toFixed(1)} Billion`;
+    if (kshEl) kshEl.textContent = `KSh ${Math.round(totalKsh).toLocaleString()}B`;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; color: var(--ink-secondary);">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+          <div style="font-size: 1rem; font-weight: 700;">No matching forensic loan dossiers found</div>
+          <div style="font-size: 0.8rem; margin-top: 0.35rem;">Try clearing the search box or selecting "All 10 Packages" above.</div>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = filtered
+      .map((loan) => {
+        return `
+          <div class="forensic-loan-card" data-loan-id="${loan.id}">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <div>
+                  <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--ink-muted); text-transform: uppercase;">
+                    ${loan.categoryLabel} • ${loan.yearBorrowed}
+                  </span>
+                </div>
+                <span class="status-badge ${loan.statusBadgeClass}">${loan.statusBadge}</span>
+              </div>
+
+              <h4 style="margin: 0 0 0.5rem; font-size: 0.98rem; font-weight: 800; color: var(--ink-pure); line-height: 1.35;">
+                ${loan.name}
+              </h4>
+
+              <div class="loan-financial-box">
+                <div class="loan-fin-item">
+                  <span class="loan-fin-label">Loan Amount</span>
+                  <span class="loan-fin-val">$${loan.amountUsdB.toFixed(2)}B <span style="font-size: 0.72rem; color: var(--ink-secondary); font-weight: normal;">(KSh ${loan.amountKshB.toLocaleString()}B)</span></span>
+                </div>
+                <div class="loan-fin-item">
+                  <span class="loan-fin-label">Interest / Terms</span>
+                  <span class="loan-fin-val" style="font-size: 0.78rem; color: var(--ink-pure); line-height: 1.25;">${loan.interestRate}</span>
+                </div>
+              </div>
+
+              <div style="font-size: 0.72rem; color: var(--ink-muted); margin-bottom: 0.6rem;">
+                <strong>Lender:</strong> ${loan.lender}
+              </div>
+
+              <div class="loan-comparison-split">
+                <div class="loan-split-box loan-promise-box">
+                  <div style="font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 0.2rem;">
+                    📋 Stated Development Promise
+                  </div>
+                  <div>${loan.statedPurpose}</div>
+                </div>
+
+                <div class="loan-split-box loan-reality-box">
+                  <div style="font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; color: var(--crimson); text-transform: uppercase; margin-bottom: 0.2rem;">
+                    🔍 Official Auditor-General Finding
+                  </div>
+                  <div>${loan.actualOutcome}</div>
+                  <div style="margin-top: 0.35rem; font-size: 0.68rem; color: var(--ink-muted); font-style: italic;">
+                    Source: ${loan.oagCitation}
+                  </div>
+                </div>
+
+                <div class="loan-split-box loan-lomborg-box">
+                  <div style="font-family: var(--font-mono); font-size: 0.64rem; font-weight: 700; color: var(--emerald); text-transform: uppercase; margin-bottom: 0.2rem;">
+                    💡 Beyond Lomborg Opportunity Cost
+                  </div>
+                  <div>${loan.beyondLomborgAlternative}</div>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn-inspect-audit" data-loan-inspect="${loan.id}">
+              📑 Inspect Official Audit Dossier
+            </button>
+          </div>
+        `;
+      })
+      .join('');
+
+    // Attach inspect click handlers
+    grid.querySelectorAll('[data-loan-inspect]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-loan-inspect');
+        if (id) openLoanAuditModal(id);
+      });
+    });
+  }
+
+  function initForensicLoanLedger() {
+    // 1. Category Filter Buttons
+    document.querySelectorAll('[data-loan-filter]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-loan-filter]').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeLoanFilter = btn.getAttribute('data-loan-filter') || 'all';
+
+        // Clear active flow kpi cards if any
+        document.querySelectorAll('[data-flow-card]').forEach((c) => c.classList.remove('active'));
+
+        renderForensicLoanLedger();
+      });
+    });
+
+    // 2. Macro Flow Segments & KPI Cards Click-to-Filter
+    document.querySelectorAll('[data-flow-filter]').forEach((seg) => {
+      seg.addEventListener('click', () => {
+        const filterVal = seg.getAttribute('data-flow-filter');
+        activeLoanFilter = filterVal;
+        document.querySelectorAll('[data-loan-filter]').forEach((b) => b.classList.remove('active'));
+        document.querySelectorAll('[data-flow-card]').forEach((c) => {
+          c.classList.toggle('active', c.getAttribute('data-flow-card') === filterVal);
+        });
+        renderForensicLoanLedger();
+      });
+    });
+
+    document.querySelectorAll('[data-flow-card]').forEach((card) => {
+      card.addEventListener('click', () => {
+        const filterVal = card.getAttribute('data-flow-card');
+        activeLoanFilter = filterVal;
+        document.querySelectorAll('[data-loan-filter]').forEach((b) => b.classList.remove('active'));
+        document.querySelectorAll('[data-flow-card]').forEach((c) => {
+          c.classList.toggle('active', c === card);
+        });
+        renderForensicLoanLedger();
+      });
+    });
+
+    // 3. Search Input
+    const searchInput = document.getElementById('loanSearchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        activeLoanSearch = e.target.value;
+        renderForensicLoanLedger();
+      });
+    }
+
+    // 4. Modal Close Handlers
+    const modal = document.getElementById('forensicLoanModal');
+    const closeBtn = document.getElementById('modalCloseBtn');
+    if (closeBtn && modal) {
+      closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+    }
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+      });
+    }
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Initial render
+    renderForensicLoanLedger();
+  }
+
+  function initOagInvestigation() {
+    document.querySelectorAll("[data-oag-toggle]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-oag-toggle");
+        if (id && oagAuditState.hasOwnProperty(id)) {
+          oagAuditState[id] = !oagAuditState[id];
+          updateOagDashboard();
+        }
+      });
+    });
+
+    const plugAllBtn = document.getElementById("btnPlugAllOagLeaks");
+    if (plugAllBtn) {
+      plugAllBtn.addEventListener("click", () => {
+        Object.keys(oagAuditState).forEach((k) => (oagAuditState[k] = true));
+        updateOagDashboard();
+      });
+    }
+
+    const resetStatusQuoBtn = document.getElementById("btnResetOagStatusQuo");
+    if (resetStatusQuoBtn) {
+      resetStatusQuoBtn.addEventListener("click", () => {
+        Object.keys(oagAuditState).forEach((k) => (oagAuditState[k] = false));
+        updateOagDashboard();
+      });
+    }
+
+    const chinaApplyBtn = document.getElementById("btnApplyChinaLessonToKenya");
+    if (chinaApplyBtn) {
+      chinaApplyBtn.addEventListener("click", () => {
+        const eqMaxBtn = document.getElementById("eqPresetMaxBtn");
+        if (eqMaxBtn) eqMaxBtn.click();
+      });
+    }
+
+    updateOagDashboard();
+  }
+
   function setCountryScope(targetScope) {
     if (!targetScope || (targetScope !== "africa" && targetScope !== "kenya")) {
       targetScope = "africa";
@@ -4142,7 +4463,7 @@
     const t4 = document.getElementById("stepTab4Title");
     if (t1) t1.textContent = isKenya ? "🇰🇪 1. Kenya $161B Audit" : "💔 1. Where Did the Money Go?";
     if (t2) t2.textContent = isKenya ? "🎛️ 2. How Kenya's $160B Grows the Economy" : "🎛️ 2. The $75B Solution";
-    if (t3) t3.textContent = isKenya ? "🏁 3. Kenya Enters Top 10" : "🏁 3. Africa Takes the Lead";
+    if (t3) t3.textContent = isKenya ? "📑 3. Auditor-General's $160B Forensic Audit" : "🏁 3. Africa Takes the Lead";
     if (t4) t4.textContent = isKenya ? "🇰🇪 4. Explore Kenya in 3D" : "🌍 4. Explore 54 Countries in 3D";
 
     // 4. Step 1 Historical Audit
@@ -4251,12 +4572,13 @@
     const raceKicker = document.getElementById("overtakeRaceKicker");
     const raceTitle = document.getElementById("overtakeRaceTitle");
     const raceSub = document.getElementById("overtakeRaceSubtitle");
-    if (s3Badge) s3Badge.textContent = isKenya ? "🏁 STEP 3 OF 4 • KENYA ENTERS THE WORLD TOP 10" : "🏁 STEP 3 OF 4 • THE PAYOFF";
+    if (s3Badge) s3Badge.textContent = isKenya ? "📑 STEP 3 OF 4 • AUDITOR-GENERAL'S $160B FORENSIC AUDIT" : "🏁 STEP 3 OF 4 • THE PAYOFF";
     if (s3Callout) {
       s3Callout.innerHTML = isKenya
-        ? `<strong>Your Action:</strong> Press <strong>▶ Play Race</strong> (or click the <strong>Key Years</strong> below) to watch Kenya race from #74 today past South Africa, France, the UK, and Germany into the <strong>Global Top 5</strong>.`
+        ? `<strong>Your Action:</strong> Toggle the <strong>5 Forensic Cures below</strong> to see how halting Eurobond commercial rollovers, unfreezing paper land titles, and cutting thermal IPP capacity charges recovers over <strong>$101.5 Billion</strong> in lost capital and expands Kenya's economy to <strong>$1.18 Trillion</strong> today.`
         : `<strong>Your Action:</strong> Press <strong>▶ Play Yearly Race</strong> (or click the <strong>Key Years</strong> below) to watch Africa pass Europe, India, China, and the United States to become the world's #1 economy.`;
     }
+
     if (raceKicker) raceKicker.textContent = isKenya ? "STEP 3 • 2026 TO 2076 • WATCH KENYA ENTER THE GLOBAL TOP 10" : "STEP 3 • 2026 TO 2076 • WATCH AFRICA TAKE THE LEAD";
     if (raceTitle) raceTitle.textContent = isKenya ? "The Global Race: Watch Kenya Enter the World Top 10 by 2076" : "The Global Race: Watch Africa Overtake Europe, India, China & the United States";
     if (raceSub) {
@@ -4374,6 +4696,7 @@
       initKenyaCountyExplorer();
       renderKenyaCountiesTable(activeCountyBloc, countySearchQuery);
       renderKenyaBreakthroughEngines();
+  initOagInvestigation();
       selectKenyaCounty(selectedCountyCode, true);
     } else {
       if (africaMapControlsBar) africaMapControlsBar.style.display = "flex";
@@ -4417,6 +4740,40 @@
         b.classList.toggle("active", b.getAttribute("data-country") === "africa");
       });
       renderAllBlueprintSections();
+    }
+
+    // 11. Fly WebGL Camera and apply layer visibility
+    applyWebGlScopeVisibility(targetScope);
+    if (glMap) {
+      glMap.flyTo({
+        center: isKenya ? [37.8, 0.4] : [21.5, 1.5],
+        zoom: isKenya ? 6.2 : 2.55,
+        pitch: mapEngineMode === "3d" ? (isKenya ? 52 : 50) : 0,
+        bearing: mapEngineMode === "3d" ? (isKenya ? -10 : -8) : 0,
+        duration: 900,
+      });
+    }
+
+    // 12. Default Kenya Equalizer Dials & Special Audit to 0% (Current Reality / The Trap)
+    // To visibly demonstrate how much potential Kenya has lost before moving the controls!
+    if (isKenya) {
+      // Step 1: 0% redirect & unplugged valves (showing $136B current GDP & leaks)
+      if (sliderHistoricalRedirect) sliderHistoricalRedirect.value = 0;
+      if (typeof auditValves !== "undefined") {
+        Object.keys(auditValves).forEach((k) => (auditValves[k].plugged = false));
+      }
+      renderHistoricalAudit();
+
+      // Step 2: Dials at 0% (Old Debt Trap)
+      const eqDials = [eqDialBiology, eqDialEdtech, eqDialPowerTrade, eqDialSuperSectors];
+      eqDials.forEach((d) => { if (d) d.value = 0; });
+      const eqVals = [valEqBiology, valEqEdtech, valEqPowerTrade, valEqSuperSectors];
+      eqVals.forEach((v) => { if (v) { v.textContent = "0%"; v.className = "friedman-slider-val"; } });
+      const eqMaxBtn = document.getElementById("eqPresetMaxBtn");
+      const eqTrapBtn = document.getElementById("eqPresetTrapBtn");
+      if (eqMaxBtn) eqMaxBtn.classList.remove("active");
+      if (eqTrapBtn) eqTrapBtn.classList.add("active");
+      renderMasterEqualizer();
     }
   }
   window.setCountryScope = setCountryScope;
@@ -4589,17 +4946,13 @@
     renderValueChains();
   }
 
-  // Initial Boot
+  // Initial Boot (Exclusively Kenya)
   syncAngularDeviceSignal();
   renderMasterEqualizer();
-  populateCountryDropdown();
-  renderAfricaSvgMap();
-  renderCountryDossier();
   initWebGlMap();
   renderHistoricalAudit();
-  renderOvertakeRace();
-  renderOvertakeProofTable();
-  renderUntappedSectorsAndCoProsperity();
+  initForensicLoanLedger();
+  initOagInvestigation();
   renderFriedmanMarkets();
   renderStockMarketRace();
   renderPriceTheoryEngine();
@@ -4611,5 +4964,15 @@
   renderKenyaCountyMap();
   renderKenyaCountiesTable();
   renderKenyaBreakthroughEngines();
-  renderAllBlueprintSections();
+  selectKenyaCounty("047", false);
+
+  // If user opened with ?scope=kenya, automatically switch to Kenya scope
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("scope") === "kenya") {
+      setCountryScope("kenya");
+    }
+  } catch (e) {
+    // Ignore in non-browser env
+  }
 })();

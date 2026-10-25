@@ -2207,7 +2207,7 @@ const HISTORICAL_AUDIT_MODEL = {
     multipleOf75B: "2.15× the Entire $75B Continental Catalyst!",
     realizedBcr: "1.5 : 1",
     lomborgPotentialBcr: "54.2 : 1 (Copenhagen Consensus 'Kenya Priorities')",
-    defaultRedirectPct: 28,
+    defaultRedirectPct: 0,
     headline: "Kenya Alone Received & Borrowed $161 Billion (2.15× Lomborg’s Entire $75B Fund)—Why Is Kenya’s 2026 GDP $136B Instead of $1.18 Trillion?",
     summary: "Since Independence in 1963, Kenya has received $76.5B in Foreign Aid (ODA) and accumulated $84.5B (~KSh 11+ Trillion) in public debt—totaling $161.0 Billion. Ironically, Kenya is the literal global laboratory that proved Lomborg's highest-ROI breakthroughs (Busia's 60:1 School Deworming, 65:1 Tusome EdTech, and the Copenhagen Consensus 'Kenya Priorities' county blueprint). Had Kenya directed just 28% ($45B between 1995–2026) into 38:1 E-Procurement, 55:1 ArdhiSasa Digital Land Titles, 101:1/48:1 Health, 95:1 Paperless Mombasa Customs, and $0.038/kWh Olkaria Geothermal SEZs, Kenya TODAY in 2026 would be a $1.18 Trillion High-Income 'African Tiger' ($20,400/capita) with the Kenyan Shilling at KSh 24 per $1 USD!",
     inflowChannels: [
@@ -2263,8 +2263,271 @@ const HISTORICAL_AUDIT_MODEL = {
   }
 };
 
+
+/**
+ * KENYA_160B_LOAN_LEDGER
+ * Comprehensive forensic audit of Kenya's ~$160 Billion public debt and cumulative foreign aid.
+ * Compiled from official reports of:
+ * - Auditor-General Nancy Gathungu (OAG National & County Audit Reports FY 2020/21 – FY 2024/25)
+ * - Former Auditor-General Edward Ouko (Special Audit on Eurobond Proceeds)
+ * - Controller of Budget Margaret Nyakang'o (National & County Budget Implementation Review Reports)
+ * - National Treasury Annual Public Debt Reports
+ */
+const KENYA_MACRO_CAPITAL_FLOWS = {
+  totalSovereignCapitalUsdB: 161.0,
+  totalExternalDebtUsdB: 84.5,
+  totalCumulativeAidUsdB: 76.5,
+  domesticDebtKshTrillion: 5.5,
+  domesticDebtUsdB: 42.0,
+  unverifiedPendingBillsKshBillion: 700.0,
+  debtServiceToRevenuePct: "65.0% to 71.2%",
+  categories: [
+    {
+      id: "productive_assets",
+      label: "Productive Infrastructure Assets",
+      pct: 24.0,
+      amountUsdB: 38.6,
+      color: "#10B981", // Emerald
+      icon: "🏗️",
+      description: "Tangible operational capital assets: SGR Phase 1 tracks & rolling stock, Olkaria geothermal units 1-5, Nairobi Expressway, Dongo Kundu bypass, major paved highways. Generating real economic activity, though burdened by inflated procurement costs."
+    },
+    {
+      id: "rollovers_refinancing",
+      label: "Debt Rollovers & Principal Maturing Treadmill",
+      pct: 34.0,
+      amountUsdB: 54.7,
+      color: "#8B5CF6", // Purple
+      icon: "🔄",
+      description: "Borrowing expensive new debt solely to pay back maturing older principal (e.g., Feb 2024 Eurobond borrowed $1.5B at 10.375% coupon just to redeem 2014 bond; short-term commercial bank syndications rolled over). Zero new development built."
+    },
+    {
+      id: "stalled_inflated",
+      label: "Stalled Projects, Inflated Procurement & Ghost Contracts",
+      pct: 26.5,
+      amountUsdB: 42.7,
+      color: "#EF4444", // Crimson
+      icon: "💔",
+      description: "Ghost dams (Arror & Kimwarer $850M), SGR Phase 2A dead-end terminal at Suswa ($1.48B), 688 stalled county white-elephants (KSh 23.3B), KSh 540B national pending bills, over-invoiced government supplies, and 30% tender graft."
+    },
+    {
+      id: "fees_forex_gaps",
+      label: "Loan Fees, Commitment Penalties & Offshore Gaps",
+      pct: 15.5,
+      amountUsdB: 25.0,
+      color: "#F59E0B", // Amber
+      icon: "💸",
+      description: "Over KSh 7.7B paid in commitment fees on undisbursed loan balances; massive foreign exchange losses as Shilling slid from KSh 87 to KSh 130-160 per USD; unverified offshore NY Fed/JPMorgan bank accounts noted in Eurobond audits."
+    }
+  ]
+};
+
+const KENYA_160B_LOAN_LEDGER = [
+  {
+    id: "eurobond-2014",
+    name: "Eurobond Tranche 1 (Debut Sovereign Bond Issue)",
+    category: "eurobond",
+    categoryLabel: "Eurobonds",
+    amountUsdB: 2.75,
+    amountKshB: 280,
+    yearBorrowed: "June & Dec 2014",
+    lender: "International Sovereign Bond Markets (Lead Arrangers: JPMorgan Chase, Barclays, Standard Bank, QNB)",
+    interestRate: "5.875% (5-Yr, $500M) & 6.875% (10-Yr, $2.0B) + $750M Tap @ 5.9%",
+    statedPurpose: "Financing major infrastructure megaprojects (energy, roads, port expansion) and settling a $600M syndicated commercial loan.",
+    actualOutcome: "KSh 215.5 Billion ($2.1B) could not be traced to specific project ledgers. Inflow was deposited into offshore NY Fed and JPMorgan accounts; Treasury failed to provide ministry project accounting trails.",
+    auditorGeneral: "Auditor-General Edward Ouko",
+    oagCitation: "Special Audit Report on Receipt and Utilization of Eurobond Proceeds (Tabled in National Assembly). Parliamentary Public Accounts Committee (PAC) noted lack of traceable ministry ledger trails.",
+    statusBadge: "UNVERIFIED OFFSHORE LEDGER",
+    statusBadgeClass: "status-unverified",
+    capitalFlowCategory: "stalled_inflated",
+    flowLabel: "Offshore Ledger Gaps",
+    beyondLomborgAlternative: "At 60:1 Busia Deworming & 65:1 Tusome EdTech, $2.75B could have fully dewormed and equipped every primary school child across all 47 counties for 45 years, generating $165 Billion in lifetime earnings."
+  },
+  {
+    id: "sgr-phase-1",
+    name: "Standard Gauge Railway (SGR Phase 1: Mombasa–Nairobi)",
+    category: "sgr_roads",
+    categoryLabel: "China SGR & Roads",
+    amountUsdB: 3.233,
+    amountKshB: 327,
+    yearBorrowed: "May 2014",
+    lender: "Export-Import Bank of China (Commercial $1.6B @ Libor+2.6% + Concessional $1.633B @ 2.0%)",
+    interestRate: "Weighted ~3.6% (Libor margin + fixed concessional) with 15-20 year amortization",
+    statedPurpose: "Construct a 472 km modern standard gauge railway between Mombasa and Nairobi, cutting freight haulage costs by 60% and boosting GDP growth by 1.5% annually.",
+    actualOutcome: "Operating at chronic annual deficits (losing KSh 10B–14B/yr in operating revenue vs expenditure); subsidized by taxpayers through Railway Development Levy (RDL) & Consolidated Fund Services (CFS); Kenya Ports Authority (KPA) sovereign immunity waived.",
+    auditorGeneral: "Auditor-General Nancy Gathungu",
+    oagCitation: "OAG Audit of KPA Financial Statements: Clause 17.5 of China Exim contract explicitly waives sovereign immunity over KPA assets (Mombasa Port) in Take-or-Pay escrow default. Transport Ministry forced mandatory haulage onto rail.",
+    statusBadge: "SOVEREIGN ASSET COLLATERALIZED",
+    statusBadgeClass: "status-collateralized",
+    capitalFlowCategory: "productive_assets",
+    flowLabel: "Operational Infrastructure Asset",
+    beyondLomborgAlternative: "For $3.23B, Kenya could have installed 10,000 MW of Olkaria Geothermal power (38:1 BCR), cutting industrial power tariffs from $0.22/kWh to $0.038/kWh and powering 4,000 regional export factories."
+  },
+  {
+    id: "sgr-phase-2a",
+    name: "SGR Phase 2A (Nairobi to Naivasha ICD Dead End)",
+    category: "sgr_roads",
+    categoryLabel: "China SGR & Roads",
+    amountUsdB: 1.482,
+    amountKshB: 150,
+    yearBorrowed: "Dec 2015 – 2019",
+    lender: "Export-Import Bank of China (Commercial & Export Buyer's Credit)",
+    interestRate: "Libor + 3.0% margin (Floating rate commercial loan)",
+    statedPurpose: "Extend SGR 120 km from Nairobi to Naivasha Inland Container Depot (ICD) and Special Economic Zone, connecting towards Kisumu and the Malaba Uganda border.",
+    actualOutcome: "Terminated abruptly at Suswa/Naivasha in the Rift Valley bush without connecting to Uganda, Kisumu, or Malaba. Cargo volume remains deeply sub-capacity; trucks double-handle cargo from railhead; zero regional transit integration.",
+    auditorGeneral: "Auditor-General Nancy Gathungu",
+    oagCitation: "OAG Report on Kenya Railways Corporation (FY 2021/22): Phase 2A Naivasha terminal lacks freight feeder links; rail cargo operations sustained solely through exchequer bailouts and CFS debt repayments.",
+    statusBadge: "STALLED DEAD-END TERMINAL",
+    statusBadgeClass: "status-stalled",
+    capitalFlowCategory: "stalled_inflated",
+    flowLabel: "Stranded / Underutilized Capital",
+    beyondLomborgAlternative: "For $1.48B, Kenya could have fully funded 55:1 ArdhiSasa blockchain cadastral digitization across all 47 counties, unlocking $65B in private land titles, housing investment, and commercial mortgages."
+  },
+  {
+    id: "eurobonds-refinancing",
+    name: "Eurobonds Series 2, 3, 4 & 5 (Rollover & Buyback Treadmill)",
+    category: "eurobond",
+    categoryLabel: "Eurobonds",
+    amountUsdB: 6.6,
+    amountKshB: 850,
+    yearBorrowed: "2018 ($2.0B), 2019 ($2.1B), 2021 ($1.0B), Feb 2024 ($1.5B buyback)",
+    lender: "International Commercial Bondholders (London & New York Stock Exchanges)",
+    interestRate: "7.25% (2018), 8.00% (2019), 6.30% (2021), and record 10.375% (Feb 2024 buyback)",
+    statedPurpose: "General budget support, liability management, and refinancing maturing commercial maturities.",
+    actualOutcome: "KSh 30B diverted illegally to settle domestic debt; Feb 2024 issuance borrowed $1.5B at 10.375% interest solely to retire the maturing 2014 Eurobond—creating zero new schools, roads, or hospitals while committing taxpayers to KSh 20B/yr in interest.",
+    auditorGeneral: "Auditor-General Nancy Gathungu",
+    oagCitation: "OAG National Treasury Audit FY 2022/23: Noted unlawful diversion of KSh 30 Billion Eurobond proceeds into domestic bond financing without Parliamentary approval; warned on compounding debt-servicing spiral.",
+    statusBadge: "DEBT ROLLOVER TREADMILL",
+    statusBadgeClass: "status-rollover",
+    capitalFlowCategory: "rollovers_refinancing",
+    flowLabel: "Commercial Debt Refinancing",
+    beyondLomborgAlternative: "Redirecting $6.6B into 95:1 Paperless AI Customs & 101:1 Community Health Workers would generate $450 Billion in GDP dividends over 20 years without incurring foreign currency coupons."
+  },
+  {
+    id: "italian-dam-loans",
+    name: "Italian Commercial Dam Loans (Arror, Kimwarer & Itare Dams)",
+    category: "italian_dams",
+    categoryLabel: "Italian Dam Loans",
+    amountUsdB: 0.85,
+    amountKshB: 87,
+    yearBorrowed: "2014 – 2018",
+    lender: "Consortium of Italian Banks (Intesa Sanpaolo, BNP Paribas Fortis Milan) guaranteed by SACE",
+    interestRate: "Commercial floating Euro-rates + 11.2% upfront export insurance & management fees",
+    statedPurpose: "Construct multi-purpose dams for hydro-electric power (60MW), water supply, and irrigation in Elgeyo-Marakwet and Nakuru counties.",
+    actualOutcome: "Ghost dams: Contractor CMC di Ravenna went bankrupt in Italy. Over KSh 11 Billion paid in advance commitment fees, design, and insurance without a single bucket of cement poured at Kimwarer or Arror. Kenya defaulted on loan instalments; project stalled indefinitely.",
+    auditorGeneral: "Auditor-General Nancy Gathungu & EACC Forensic Investigation",
+    oagCitation: "Special Audit on the KVDA & Rift Valley Water Services Board: Advance payments made without land acquisition; SACE insurance fees inflated; project abandoned with Treasury penalized millions in default interest.",
+    statusBadge: "GHOST DAM CONTRACTS",
+    statusBadgeClass: "status-stalled",
+    capitalFlowCategory: "stalled_inflated",
+    flowLabel: "Ghost Projects & Default Penalties",
+    beyondLomborgAlternative: "$850M could have funded drip-irrigation kits and borehole solar micro-grids across 15 ASAL counties, permanently ending drought relief and boosting smallholder agricultural output by $6.8B."
+  },
+  {
+    id: "syndicated-commercial-loans",
+    name: "Commercial Bank Syndications (StanChart, TDB, Credit Suisse, Citi)",
+    category: "syndicated",
+    categoryLabel: "Commercial Syndicated",
+    amountUsdB: 4.8,
+    amountKshB: 520,
+    yearBorrowed: "2015 – 2020",
+    lender: "Syndicate of Foreign Commercial Banks (Trade & Development Bank, Standard Chartered, Credit Suisse, Citi)",
+    interestRate: "Libor/SOFR + 350 to 520 bps (Effective 8.5% – 11.5% in USD)",
+    statedPurpose: "Bridge financing for budget deficits and developmental cashflow support.",
+    actualOutcome: "Short maturities (2 to 5 years) triggered severe dollar liquidity crises upon maturity. Treasury rolled these into fresh high-rate commercial borrowing, heavily depleting Central Bank forex reserves and accelerating KSh depreciation from 101 to 160 per USD.",
+    auditorGeneral: "Auditor-General Nancy Gathungu & Controller of Budget (Margaret Nyakang'o)",
+    oagCitation: "CoB Annual National Government Budget Implementation Review Reports: Highlighted dangerous reliance on short-term external commercial debt with bullet repayments that breached debt sustainability ceilings.",
+    statusBadge: "SHORT-TERM LIQUIDITY SQUEEZE",
+    statusBadgeClass: "status-rollover",
+    capitalFlowCategory: "rollovers_refinancing",
+    flowLabel: "Commercial Debt Refinancing",
+    beyondLomborgAlternative: "Commercial syndication repayments drained $4.8B in forex; invested instead in export-led leather, tea, and horticulture cold-chains (48:1 BCR), Kenya's FX reserves would have doubled."
+  },
+  {
+    id: "world-bank-dpos",
+    name: "World Bank Development Policy Operations (DPO 1 to DPO 6)",
+    category: "multilateral",
+    categoryLabel: "Multilateral WB & IMF",
+    amountUsdB: 5.45,
+    amountKshB: 710,
+    yearBorrowed: "2019 – 2024",
+    lender: "World Bank / International Development Association (IDA) & IBRD",
+    interestRate: "Concessional (1.25% – 2.50%) with 25-35 year repayment periods",
+    statedPurpose: "Governance reforms, public finance transparency, land registry digitization (ArdhiSasa), anti-corruption in state procurement, and green energy transition.",
+    actualOutcome: "Disbursed directly as general budget support; swallowed into Consolidated Fund Services (CFS) for national debt repayments. Promised reforms (such as terminating expensive thermal IPP contracts and rolling out digital land cadastre to all 47 counties) faced bureaucratic inertia and remain largely incomplete.",
+    auditorGeneral: "Auditor-General Nancy Gathungu",
+    oagCitation: "OAG CFS & Development Expenditure Audit: Noted lack of direct attribution of DPO program funds to verified capital assets, with loan funds utilized to fund recurrent deficits.",
+    statusBadge: "UNATTRIBUTED BUDGET SINK",
+    statusBadgeClass: "status-unverified",
+    capitalFlowCategory: "rollovers_refinancing",
+    flowLabel: "Budget Support & CFS Debt Absorption",
+    beyondLomborgAlternative: "Had DPO conditionalities been strictly enforced with automated e-procurement (38:1 BCR), Kenya would have eliminated KSh 300B in annual tender graft."
+  },
+  {
+    id: "imf-eff-ecf",
+    name: "IMF Extended Fund Facility & Resilience Facility (EFF/ECF/RSF)",
+    category: "multilateral",
+    categoryLabel: "Multilateral WB & IMF",
+    amountUsdB: 4.43,
+    amountKshB: 580,
+    yearBorrowed: "April 2021 – 2025",
+    lender: "International Monetary Fund (IMF)",
+    interestRate: "SDR interest rate (~3.8% – 4.2%)",
+    statedPurpose: "Fiscal stabilization, restoring debt sustainability, addressing balance of payments pressures, and governance reforms.",
+    actualOutcome: "Program drove punitive tax conditionality triggers (Finance Acts 2023 & 2024, 16% VAT on fuel, aggressive excise taxes, Housing Levy), dampening private investment and causing widespread public protests, while failing to stop exchequer bailouts to insolvent state parastatals (Kenya Airways KSh 30B+, Kenya Power).",
+    auditorGeneral: "Auditor-General Nancy Gathungu & CoB Margaret Nyakang'o",
+    oagCitation: "OAG Special Audit on State Parastatals: Continuous exchequer bailouts of loss-making SOEs without restructuring, violating IMF structural benchmarks and burdening citizens with unbudgeted expenditures.",
+    statusBadge: "AUSTERITY CONDITIONALITY TRAP",
+    statusBadgeClass: "status-unverified",
+    capitalFlowCategory: "fees_forex_gaps",
+    flowLabel: "Austerity & Parastatal Bailouts",
+    beyondLomborgAlternative: "Instead of tax hikes on bread and fuel, eliminating zombie parastatal subsidies and deploying 48:1 preventative health would have restored fiscal health sustainably."
+  },
+  {
+    id: "bilateral-infra-loans",
+    name: "Bilateral Infrastructure Packages (Japan JICA, France AfD, Germany KfW)",
+    category: "sgr_roads",
+    categoryLabel: "China SGR & Roads",
+    amountUsdB: 6.5,
+    amountKshB: 850,
+    yearBorrowed: "2010 – 2024",
+    lender: "Bilateral Partners (Japan JICA, France AfD, Germany KfW, African Development Bank - AfDB)",
+    interestRate: "Concessional 0.2% – 2.0% with 30-40 year maturities",
+    statedPurpose: "Olkaria I-IV Geothermal expansion, Dongo Kundu Mombasa Bypass & Special Economic Zone, Mwea Irrigation Dam, and Kisumu Urban Roads.",
+    actualOutcome: "High capital delivery on physical plants (Olkaria generates 800MW+ baseload power), but severe implementation delays caused taxpayers to bleed KSh 7.7 Billion in commitment fees on undisbursed loan funds. Delays in counterpart land acquisition compensation stalled transmission evacuation.",
+    auditorGeneral: "Auditor-General Nancy Gathungu",
+    oagCitation: "OAG National Treasury Audit: Reported over KSh 7.7 Billion paid in commitment fees for loans whose disbursements stalled due to lack of counterpart budget and delayed right-of-way approvals.",
+    statusBadge: "COMMITMENT FEE BLEED",
+    statusBadgeClass: "status-commitment",
+    capitalFlowCategory: "productive_assets",
+    flowLabel: "Operational Infrastructure Asset",
+    beyondLomborgAlternative: "Olkaria geothermal is Kenya's greatest asset: accelerating 10GW of power to dedicated county SEZs would generate $35B in manufacturing value added annually."
+  },
+  {
+    id: "domestic-debt-pending-bills",
+    name: "Domestic Bank Debt & Unverified Pending Bills Accumulation",
+    category: "domestic",
+    categoryLabel: "Domestic Debt & Pending Bills",
+    amountUsdB: 47.4,
+    amountKshB: 6200,
+    yearBorrowed: "Cumulative to 2026 (CBK T-Bills/Bonds & Ministry/County Pending Claims)",
+    lender: "Domestic Commercial Banks (Equity, KCB, Stanbic), Pension Funds, and Unpaid Local Contractors",
+    interestRate: "14.5% – 17.5% T-Bond yields (Crowding out private sector borrowing)",
+    statedPurpose: "Fund domestic budget deficits and county/national infrastructure procurements.",
+    actualOutcome: "KSh 5.5 Trillion in domestic public debt absorbs KSh 1.05 Trillion annually in domestic interest alone (43.6% of ordinary revenue). Compounded by KSh 700B+ (KSh 540B national + KSh 160B county) in unpaid contractor pending bills; 688 county projects worth KSh 23.3B and 24 national megaprojects worth KSh 37.9B completely stalled or abandoned.",
+    auditorGeneral: "Auditor-General Nancy Gathungu & CoB FY 2024/25 Reports",
+    oagCitation: "OAG County Audit Reports & National Government Consolidated Financial Statements: Identified 688 stalled county projects, hundreds of unverified pending bill invoices lacking delivery notes, and severe crowding-out of private SME bank credit.",
+    statusBadge: "71.2% REVENUE ABSORPTION & STALLED PROJECTS",
+    statusBadgeClass: "status-stalled",
+    capitalFlowCategory: "stalled_inflated",
+    flowLabel: "Domestic Debt & Contractor Lock",
+    beyondLomborgAlternative: "Clearing verified SME pending bills via Treasury Single Account escrow and redirecting domestic capital from paper bonds into 38:1 e-procurement would unlock 2.5% in real private GDP growth."
+  }
+];
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
+    KENYA_MACRO_CAPITAL_FLOWS,
+    KENYA_160B_LOAN_LEDGER,
     BEST_THINGS_FIRST_12,
     OVERTAKE_RACE_BLOCS,
     OVERTAKE_RACE_BLOCS_KENYA,
