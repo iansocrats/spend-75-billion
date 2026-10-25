@@ -284,6 +284,20 @@
     if (glMap && glMap.getSource("africa-countries")) {
       glMap.getSource("africa-countries").setData(AFRICA_GEOJSON);
     }
+
+    if (glMap && glMap.getSource("kenya-counties") && typeof KENYA_COUNTIES_GEOJSON !== "undefined" && typeof KENYA_47_COUNTIES_DATA !== "undefined") {
+      KENYA_COUNTIES_GEOJSON.features.forEach((f) => {
+        const c = KENYA_47_COUNTIES_DATA[f.properties.code];
+        if (c) {
+          const isSectorMatch = activeCountySector === "ALL" || c.sector === activeCountySector;
+          const isBlocMatch = activeCountyBloc === "ALL" || c.bloc === activeCountyBloc;
+          const isMatch = isSectorMatch && isBlocMatch;
+          f.properties.extrusionHeight = mapEngineMode === "2d-gl" ? 0 : (isMatch ? Math.round(c.gcp2076T * 45000) : 4000);
+          f.properties.fillColor = isMatch ? (SECTOR_COLORS[c.sector] || "#D97706") : "#334155";
+        }
+      });
+      glMap.getSource("kenya-counties").setData(KENYA_COUNTIES_GEOJSON);
+    }
   }
 
   function initWebGlMap() {
@@ -381,6 +395,80 @@
 
       glMap.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "bottom-right");
 
+      // Add Kenya 47 Counties 3D Extrusion Source & Layers
+      if (typeof KENYA_COUNTIES_GEOJSON !== "undefined") {
+        glMap.addSource("kenya-counties", {
+          type: "geojson",
+          data: KENYA_COUNTIES_GEOJSON,
+        });
+
+        glMap.addLayer({
+          id: "kenya-counties-extrusion",
+          type: "fill-extrusion",
+          source: "kenya-counties",
+          layout: {
+            visibility: activeCountryScope === "kenya" ? "visible" : "none",
+          },
+          paint: {
+            "fill-extrusion-color": ["get", "fillColor"],
+            "fill-extrusion-height": ["get", "extrusionHeight"],
+            "fill-extrusion-base": 0,
+            "fill-extrusion-opacity": 0.92,
+          },
+        });
+
+        glMap.addLayer({
+          id: "kenya-counties-borders",
+          type: "line",
+          source: "kenya-counties",
+          layout: {
+            visibility: activeCountryScope === "kenya" ? "visible" : "none",
+          },
+          paint: {
+            "line-color": "#FFFFFF",
+            "line-width": 1.2,
+            "line-opacity": 0.45,
+          },
+        });
+
+        glMap.addLayer({
+          id: "kenya-counties-selected-outline",
+          type: "line",
+          source: "kenya-counties",
+          filter: ["==", ["get", "code"], selectedCountyCode],
+          layout: {
+            visibility: activeCountryScope === "kenya" ? "visible" : "none",
+          },
+          paint: {
+            "line-color": "#F59E0B",
+            "line-width": 4.0,
+          },
+        });
+
+        glMap.on("mousemove", "kenya-counties-extrusion", (e) => {
+          if (!e.features || !e.features.length) return;
+          glMap.getCanvas().style.cursor = "pointer";
+          const p = e.features[0].properties;
+          if (mapFloatingTooltip) {
+            mapFloatingTooltip.innerHTML = `
+              <strong style="font-size: 0.92rem;">${p.icon} ${p.code} • ${p.name}</strong> (${p.sectorName})<br/>
+              Current GCP: <strong style="color: var(--crimson);">${p.gcp2026B}B</strong> ➔ $100B Fund: <strong style="color: #F59E0B;">+${(p.alloc100BM / 1000).toFixed(1)}B</strong><br/>
+              2076 Superpower Horizon: <strong style="color: var(--emerald);">${p.gcp2076T} Trillion</strong> • <em>${p.multiplier}</em>
+            `;
+          }
+        });
+
+        glMap.on("mouseleave", "kenya-counties-extrusion", () => {
+          glMap.getCanvas().style.cursor = "";
+        });
+
+        glMap.on("click", "kenya-counties-extrusion", (e) => {
+          if (!e.features || !e.features.length) return;
+          const code = e.features[0].properties.code;
+          selectKenyaCounty(code, false);
+        });
+      }
+
       glMap.on("mousemove", "africa-extrusion", (e) => {
         glMap.getCanvas().style.cursor = "pointer";
         if (e.features && e.features.length > 0) {
@@ -420,14 +508,49 @@
 
     const isKenya = activeCountryScope === "kenya";
     if (isKenya) {
-      if (maplibreContainer) maplibreContainer.style.display = "none";
       if (africaSvgMap) africaSvgMap.style.display = "none";
-      if (kenyaCountySvgMap) {
-        kenyaCountySvgMap.style.display = "block";
-        renderKenyaCountyMap();
+      if (mode === "svg") {
+        if (maplibreContainer) maplibreContainer.style.display = "none";
+        if (kenyaCountySvgMap) {
+          kenyaCountySvgMap.style.display = "block";
+          renderKenyaCountyMap();
+        }
+      } else {
+        // 3D or 2D-GL WebGL Mode
+        if (kenyaCountySvgMap) kenyaCountySvgMap.style.display = "none";
+        if (maplibreContainer) {
+          maplibreContainer.style.display = "block";
+          if (glMap) {
+            glMap.resize();
+            // Ensure Kenya layers are visible and Africa layers hidden
+            ["africa-extrusion", "africa-borders", "africa-selected-outline"].forEach((id) => {
+              if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "none");
+            });
+            ["kenya-counties-extrusion", "kenya-counties-borders", "kenya-counties-selected-outline"].forEach((id) => {
+              if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "visible");
+            });
+            syncGeoJsonMetrics();
+            glMap.easeTo({
+              center: [37.8, 0.4],
+              zoom: 6.2,
+              pitch: mode === "3d" ? 52 : 0,
+              bearing: mode === "3d" ? -12 : 0,
+              duration: 800,
+            });
+          }
+        }
       }
     } else {
       if (kenyaCountySvgMap) kenyaCountySvgMap.style.display = "none";
+      if (glMap) {
+        ["kenya-counties-extrusion", "kenya-counties-borders", "kenya-counties-selected-outline"].forEach((id) => {
+          if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "none");
+        });
+        ["africa-extrusion", "africa-borders", "africa-selected-outline"].forEach((id) => {
+          if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "visible");
+        });
+      }
+
       if (mode === "svg") {
         if (maplibreContainer) maplibreContainer.style.display = "none";
         if (africaSvgMap) {
@@ -1050,6 +1173,10 @@
       });
     }
 
+    if (glMap && glMap.getLayer("kenya-counties-selected-outline")) {
+      glMap.setFilter("kenya-counties-selected-outline", ["==", ["get", "code"], c.code]);
+    }
+
     renderCountyDossier(c);
   }
 
@@ -1473,8 +1600,8 @@
     let hasDecoys = false;
 
     const isKenya = activeCountryScope === "kenya";
-    const budgetLimit = isKenya ? 8.2 : MAX_BUDGET_B;
-    const scaleFactor = isKenya ? (8.2 / 75.0) : 1.0;
+    const budgetLimit = isKenya ? 160.0 : MAX_BUDGET_B;
+    const scaleFactor = isKenya ? (160.0 / 75.0) : 1.0;
 
     GLOBAL_INTERVENTIONS.forEach((item) => {
       if (selectedIds.has(item.id)) {
@@ -2195,21 +2322,22 @@
   function getMilestoneMessage(yr) {
     const blocs = getActiveOvertakeBlocs();
     if (activeCountryScope === "kenya") {
-      const kyGdp = interpolateBlocGdp(blocs[0], yr).toFixed(2);
+      const hero = blocs.find((b) => b.isAfricaHero) || blocs[0];
+      const kyGdp = interpolateBlocGdp(hero, yr).toFixed(2);
       if (yr <= 2030) {
-        return `<strong>${yr} • Phase I: Health &amp; Cognitive Shield (Yr ${yr - 2026}/50):</strong> Kenya deploys its $8.2B catalyst into Busia school deworming (60:1), Tusome EdTech (65:1), and maternal survival. Rural stunting falls below 8%.`;
+        return `<strong>${yr} • Phase I: Health &amp; Education Shield (Yr ${yr - 2026}/50):</strong> Kenya redirects its <strong>$160B debt</strong> into Busia school deworming (60:1), Tusome EdTech (65:1), and maternal survival. Child stunting falls below 8%.`;
       } else if (yr <= 2035) {
-        return `<strong>${yr} • Phase II: Geothermal &amp; Land Rights Tiger (Yr ${yr - 2026}/50):</strong> Kenya reaches <strong>$${kyGdp}T</strong>! ArdhiSasa digital titles unlock $150B+ dead land capital, and 10 GW Olkaria/Menengai geothermal steam delivers $0.038/kWh clean baseload.`;
+        return `<strong>${yr} • Phase II: Geothermal &amp; Land Rights Tiger (Yr ${yr - 2026}/50):</strong> Kenya reaches <strong>$${kyGdp}T</strong>! ArdhiSasa digital titles unlock $48B+ dead capital, and 10 GW Olkaria/Menengai geothermal steam delivers $0.038/kWh clean baseload.`;
       } else if (yr <= 2040) {
         return `<strong>${yr} • OVERTAKE #1 (SOUTH AFRICA SURPASSED):</strong> 🇰🇪 <strong>Kenya ($${kyGdp}T) overtakes South Africa!</strong> Kenya becomes the #1 largest and most industrialized economy in Sub-Saharan Africa.`;
       } else if (yr <= 2046) {
-        return `<strong>${yr} • OVERTAKE #2 (FRANCE SURPASSED):</strong> 🇰🇪 <strong>Kenya ($${kyGdp}T) overtakes France!</strong> The Silicon Savannah AI compute clusters and Mombasa-DRC high-speed transit corridor boom.`;
+        return `<strong>${yr} • OVERTAKE #2 (FRANCE SURPASSED):</strong> 🇰🇪 <strong>Kenya ($${kyGdp}T) overtakes France!</strong> Silicon Savannah AI compute clusters and Mombasa–DRC 24-hr transit corridors boom.`;
       } else if (yr <= 2048) {
-        return `<strong>${yr} • OVERTAKE #3 (UNITED KINGDOM SURPASSED):</strong> 🇰🇪 <strong>Kenya ($${kyGdp}T) overtakes the UK!</strong> Former colonial ruler surpassed; the Nairobi Bourse becomes a top-10 financial powerhouse.`;
+        return `<strong>${yr} • OVERTAKE #3 (UNITED KINGDOM SURPASSED):</strong> 🇰🇪 <strong>Kenya ($${kyGdp}T) overtakes the UK!</strong> Former colonial ruler surpassed; Nairobi Securities Exchange reaches $10T+ market cap.`;
       } else if (yr <= 2056) {
-        return `<strong>${yr} • OVERTAKE #4 (GERMANY SURPASSED):</strong> 🇰🇪 <strong>Kenya ($${kyGdp}T) overtakes Germany!</strong> Kenya firmly enters the World Top 10 economies with an educated workforce of 70M+ youth.`;
+        return `<strong>${yr} • OVERTAKE #4 (GERMANY SURPASSED):</strong> 🇰🇪 <strong>Kenya ($${kyGdp}T) overtakes Germany!</strong> Kenya firmly enters the World Top 10 economies with an educated workforce of 68M+ youth.`;
       } else {
-        return `<strong>${yr} • SILICON SAVANNAH ECONOMIC TITAN:</strong> 🇰🇪 <strong>Kenya reaches $${kyGdp} Trillion!</strong> An Indian Ocean financial, geothermal, and AI powerhouse serving 2.5 billion Africans.`;
+        return `<strong>${yr} • SILICON SAVANNAH ECONOMIC TITAN (#5 ON EARTH):</strong> 🇰🇪 <strong>Kenya reaches $${kyGdp} Trillion!</strong> An Indian Ocean financial, geothermal, and AI powerhouse entering the Global Top 5.`;
       }
     }
 
@@ -2243,6 +2371,7 @@
 
     raceBarsContainer.innerHTML = "";
     raceRowElements = {};
+    raceBarsContainer.style.height = `${blocs.length * getRaceRowPitchPx() + 20}px`;
     blocs.forEach((bloc, idx) => {
       const row = document.createElement("div");
       row.className = `race-bar-row ${bloc.isAfricaHero ? "hero-bloc" : ""}`;
@@ -2415,6 +2544,55 @@
   function renderUntappedSectorsAndCoProsperity() {
     const sectorsGrid = document.getElementById("untappedSectorsGrid");
     const partnersGrid = document.getElementById("coProsperityPartnersGrid");
+    const isKenya = activeCountryScope === "kenya";
+
+    if (isKenya) {
+      if (sectorsGrid && typeof KENYA_HOMEGROWN_ENGINES !== "undefined") {
+        sectorsGrid.innerHTML = KENYA_HOMEGROWN_ENGINES.map((e) => `
+          <div class="megacap-card" style="border-top: 3px solid #D97706;">
+            <div>
+              <div class="megacap-top">
+                <span class="megacap-ticker" style="background-color: #D97706;">🇰🇪 ENGINE ${e.num}</span>
+                <span class="megacap-cap" style="color: #D97706; font-size: 0.76rem;">${e.kicker}</span>
+              </div>
+              <div style="font-weight: 700; font-size: 0.94rem; margin-top: 0.45rem; line-height: 1.25;">
+                ${e.title}
+              </div>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--crimson); margin-top: 0.4rem;">
+              <strong>Bottleneck Broken:</strong> ${e.currentPain}
+            </div>
+            <div style="font-size: 0.78rem; color: var(--ink-primary); margin-top: 0.25rem;">
+              <strong>The Fix:</strong> ${e.lomborgSolution}
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--emerald); font-weight: 700; border-top: 1px dashed var(--border-hairline); padding-top: 0.4rem; margin-top: 0.4rem;">
+              🚀 Result: ${e.economicImpact}
+            </div>
+          </div>
+        `).join("");
+      }
+
+      if (partnersGrid) {
+        partnersGrid.innerHTML = `
+          <div class="friedman-kpi-card" style="border-left-color: #0284C7;">
+            <div class="friedman-kpi-label">🇺🇬 Great Lakes Neighbors (Uganda, Rwanda, DRC)</div>
+            <div class="friedman-kpi-val" style="color: #0284C7;">-65% Transport Costs</div>
+            <div class="friedman-kpi-sub">Mombasa &amp; Lamu 24-hr rail corridors cut landlocked freight times from 14 days to 48 hours.</div>
+          </div>
+          <div class="friedman-kpi-card" style="border-left-color: #10B981;">
+            <div class="friedman-kpi-label">🌍 AfCFTA Inter-African Trade</div>
+            <div class="friedman-kpi-val emerald">+$180B Annual Flow</div>
+            <div class="friedman-kpi-sub">M-Pesa payment rails settle African trade instantly in local currencies without dollar shortages.</div>
+          </div>
+          <div class="friedman-kpi-card" style="border-left-color: #D97706;">
+            <div class="friedman-kpi-label">🇪🇺 European &amp; US Industry</div>
+            <div class="friedman-kpi-val" style="color: #D97706;">$0.038/kWh Clean Power</div>
+            <div class="friedman-kpi-sub">Global AI server farms and green titanium buyers source zero-carbon products directly at Rift steam wellheads.</div>
+          </div>
+        `;
+      }
+      return;
+    }
 
     if (sectorsGrid && typeof UNTAPPED_SUPER_SECTORS !== "undefined") {
       sectorsGrid.innerHTML = UNTAPPED_SUPER_SECTORS.map(
@@ -3963,7 +4141,7 @@
     const t3 = document.getElementById("stepTab3Title");
     const t4 = document.getElementById("stepTab4Title");
     if (t1) t1.textContent = isKenya ? "🇰🇪 1. Kenya $161B Audit" : "💔 1. Where Did the Money Go?";
-    if (t2) t2.textContent = isKenya ? "🎛️ 2. The $8.2B Kenya Fix" : "🎛️ 2. The $75B Solution";
+    if (t2) t2.textContent = isKenya ? "🎛️ 2. How Kenya's $160B Grows the Economy" : "🎛️ 2. The $75B Solution";
     if (t3) t3.textContent = isKenya ? "🏁 3. Kenya Enters Top 10" : "🏁 3. Africa Takes the Lead";
     if (t4) t4.textContent = isKenya ? "🇰🇪 4. Explore Kenya in 3D" : "🌍 4. Explore 54 Countries in 3D";
 
@@ -4011,26 +4189,26 @@
     const eqCurrencyLbl = document.getElementById("eqScoreCurrencyLabel");
     const eqTwinLbl = document.getElementById("eqBarTwinAxisLabel");
 
-    if (s2Badge) s2Badge.textContent = isKenya ? "🎛️ STEP 2 OF 4 • THE $8.2B KENYA FIX" : "🎛️ STEP 2 OF 4 • THE $75B FIX";
+    if (s2Badge) s2Badge.textContent = isKenya ? "🎛️ STEP 2 OF 4 • HOW KENYA'S $160B DEBT GROWS THE ECONOMY" : "🎛️ STEP 2 OF 4 • THE $75B FIX";
     if (s2Callout) {
       s2Callout.innerHTML = isKenya
-        ? `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Kenya Growth</strong> vs. <strong>⚠️ Old Debt Trap</strong>) to see how spending $8.2 Billion smartly across 47 counties unlocks an <strong>$18.6 Trillion</strong> Silicon Savannah economy.`
+        ? `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Kenya Growth</strong> vs. <strong>⚠️ Old $160B Debt Trap</strong>) to see how investing Kenya's <strong>$160 Billion</strong> debt and borrowing into high-return Beyond Lomborg priorities grows the economy from $136B to <strong>$1.18 Trillion today</strong> and <strong>$18.6 Trillion by 2076</strong>.`
         : `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Growth</strong> vs. <strong>⚠️ Old Trap</strong>) to see how spending $75 Billion smartly unlocks an <strong>$183.5 Trillion</strong> economy.`;
     }
-    if (s2Kicker) s2Kicker.textContent = isKenya ? "STEP 2 • MOVE THE 4 CONTROLS (KENYA EDITION)" : "STEP 2 • MOVE THE 4 CONTROLS";
+    if (s2Kicker) s2Kicker.textContent = isKenya ? "STEP 2 • MOVE THE 4 CONTROLS ($160B KENYA INVESTMENT)" : "STEP 2 • MOVE THE 4 CONTROLS";
     if (heroHeadline) {
       heroHeadline.innerHTML = isKenya
-        ? `<span class="highlight">How $8.2 Billion Changes Kenya:</span> Turn the 4 Dials to Build an <span class="highlight-drc">$18.6 Trillion Superpower</span>`
+        ? `<span class="highlight">How Kenya's $160 Billion Grows the Economy:</span> Turn the 4 Dials to Build an <span class="highlight-drc">$18.6 Trillion Superpower</span>`
         : `<span class="highlight">How $75 Billion Changes Everything:</span> Turn the 4 Dials to Build a <span class="highlight-drc">$183.5 Trillion Superpower</span>`;
     }
     if (heroLead) {
       heroLead.innerHTML = isKenya
-        ? `Kenya is the world's testbed for high-return development: Busia proved that deworming schools boosts earnings by 20% (60:1), and Kenyan classrooms proved that adaptive tablets give 3 years of learning in 1 year (65:1). Move the 4 dials below to see how applying these across Kenya's 47 counties—with Olkaria geothermal power and Mombasa port automation—turns Kenya into an $18.6 Trillion powerhouse:`
+        ? `Kenya already borrowed and received over <strong>$160 Billion</strong> in debt and aid, but 65% of national taxes are eaten by debt interest while funds leaked into tender corruption. What if that $160 Billion was invested through the Beyond Lomborg blueprint into Busia deworming (60:1), Tusome EdTech (65:1), 10,000 MW Olkaria geothermal steam, Mombasa 24-hr paperless customs, and 100% onshore agro-processing? Move the 4 dials below to test:`
         : `In 1324, Emperor Mansa Musa handed out raw gold in Cairo and crashed Egypt's economy for 12 years. Realizing his mistake, in 1325 he pivoted to building <strong>Sankore University in Timbuktu</strong>—investing in education, trade routes, and local industries. Move the 4 dials below to test what happens when we invest in human potential and cheap clean energy instead of just digging up raw minerals:`;
     }
-    if (eqTopBarTitle) eqTopBarTitle.textContent = isKenya ? "🎛️ Live 4-Pillar Economic Controls ($8.2B Kenya Catalyst)" : "🎛️ Live 4-Pillar Economic Controls ($75B Catalyst)";
+    if (eqTopBarTitle) eqTopBarTitle.textContent = isKenya ? "🎛️ Live 4-Pillar Economic Controls ($160B Kenya Growth Model)" : "🎛️ Live 4-Pillar Economic Controls ($75B Catalyst)";
     if (eqMaxBtn) eqMaxBtn.textContent = isKenya ? "🔥 Max Kenya Growth ($18.6T)" : "🔥 Max Growth ($183.5T)";
-    if (eqTrapBtn) eqTrapBtn.textContent = isKenya ? "⚠️ Old Debt & Tender Trap ($1.4T)" : "⚠️ Old Raw-Ore Trap ($8.2T)";
+    if (eqTrapBtn) eqTrapBtn.textContent = isKenya ? "⚠️ Old $160B Debt Trap ($1.4T)" : "⚠️ Old Raw-Ore Trap ($8.2T)";
     if (nobelKicker) nobelKicker.textContent = isKenya ? "KENYA'S LIVE SCORECARD (YEAR 2076)" : "AFRICA'S LIVE SCORECARD (YEAR 2076)";
     if (eqGdpLbl) eqGdpLbl.textContent = isKenya ? "Total Economy Size (vs. $136B Today)" : "Total Economy Size (vs. $3.7T Today)";
     if (eqBourseLbl) eqBourseLbl.textContent = isKenya ? "Nairobi Securities Exchange (NSE)" : "Stock Market Value (1.8× Economy)";
@@ -4050,44 +4228,87 @@
     const loadNobelBtn = document.getElementById("loadNobelBtn");
     const loadTrapBtn = document.getElementById("loadTrapBtn");
 
-    if (simKicker) simKicker.textContent = isKenya ? "KENYA'S $8.2 BILLION ALLOCATION • 12 HOMEGROWN BREAKTHROUGHS" : "HOW $75 BILLION IS ALLOCATED • 12 HIGHEST-RETURN INVESTMENTS";
-    if (simTitle) simTitle.textContent = isKenya ? "How Kenya's Proven Breakthroughs (Tusome, Busia & Olkaria) Build a Superhub" : "Why Education, Health & Trade Beat Concrete Every Time";
+    if (simKicker) simKicker.textContent = isKenya ? "KENYA'S $160 BILLION PRODUCTIVE ALLOCATION • BEYOND LOMBORG BREAKTHROUGHS" : "HOW $75 BILLION IS ALLOCATED • 12 HIGHEST-RETURN INVESTMENTS";
+    if (simTitle) simTitle.textContent = isKenya ? "How Investing Kenya's $160B into Proven Breakthroughs (Geothermal, EdTech & Ports) Multiplies the Economy" : "Why Education, Health & Trade Beat Concrete Every Time";
     if (simSub) {
       simSub.innerHTML = isKenya
-        ? `Kenya is where the world's highest-return solutions were tested and proved! Scaling Tusome adaptive pedagogy, Busia school deworming, Olkaria geothermal steam, and ArdhiSasa digital land titles across all 47 counties yields over <strong>$58 in benefits per $1 spent</strong>:`
+        ? `Kenya already spent $160 Billion on foreign loans, Eurobonds, and bilateral aid—with little lasting growth. Scaling Tusome adaptive pedagogy, Busia school deworming, Olkaria geothermal steam, and ArdhiSasa digital land titles across all 47 counties yields over <strong>$58 in real economic output per $1 spent</strong>:`
         : `Why did Mansa Musa invest in universities and trade routes rather than just digging more gold mines? Because raw resource mining only yields <strong>$1.90 per $1 spent</strong>, while basic health, schooling, and open trade return <strong>$33 to $101 per $1 spent</strong>. Test your own budget below:`;
     }
     if (btfBadge) btfBadge.textContent = isKenya ? "Saves 165,000 Kenyan Lives / Year • 58.4 : 1 Return Per $1" : "Saves 4.2M Lives Every Year • $52 Average Return Per $1";
     if (btfPanelKicker) btfPanelKicker.textContent = isKenya ? "KENYA'S 12 HIGHEST-RETURN POLICIES" : "THE 12 HIGHEST-RETURN POLICIES ON EARTH";
     if (btfPanelTitle) btfPanelTitle.textContent = isKenya ? "12 Solutions That Propel Kenya into the World Top 10" : "12 Proven Solutions That Save Lives and Multiply Wealth";
-    if (loadNobelBtn) loadNobelBtn.textContent = isKenya ? "★ Load Optimal $8.2B Kenya Portfolio" : "★ Load Optimal $75B Superpower Portfolio";
-    if (loadTrapBtn) loadTrapBtn.textContent = isKenya ? "⚠️ Load Old Debt & Tender Trap" : "⚠️ Load White-Elephant Decoys (Low BCR Trap)";
+    if (loadNobelBtn) loadNobelBtn.textContent = isKenya ? "★ Load Optimal $160B Kenya Portfolio" : "★ Load Optimal $75B Superpower Portfolio";
+    if (loadTrapBtn) loadTrapBtn.textContent = isKenya ? "⚠️ Load Old $160B Debt & Tender Trap" : "⚠️ Load White-Elephant Decoys (Low BCR Trap)";
 
     updateSimulatorSummary();
     renderInterventionsGrid();
     renderMarimekkoChart();
 
-    // 7. Step 3 Overtake Race
+    // 7. Step 3 Overtake Race: Full Top 10 Leaderboard
+    const s3Badge = document.getElementById("step3CalloutBadge");
     const s3Callout = document.getElementById("step3CalloutText");
     const raceKicker = document.getElementById("overtakeRaceKicker");
     const raceTitle = document.getElementById("overtakeRaceTitle");
     const raceSub = document.getElementById("overtakeRaceSubtitle");
+    if (s3Badge) s3Badge.textContent = isKenya ? "🏁 STEP 3 OF 4 • KENYA ENTERS THE WORLD TOP 10" : "🏁 STEP 3 OF 4 • THE PAYOFF";
     if (s3Callout) {
       s3Callout.innerHTML = isKenya
-        ? `<strong>Your Action:</strong> Press <strong>▶ Play Yearly Race</strong> (or click the <strong>Key Years</strong> below) to watch Kenya pass South Africa, France, the UK, and Germany into the Global Top 10.`
+        ? `<strong>Your Action:</strong> Press <strong>▶ Play Race</strong> (or click the <strong>Key Years</strong> below) to watch Kenya race from #74 today past South Africa, France, the UK, and Germany into the <strong>Global Top 5</strong>.`
         : `<strong>Your Action:</strong> Press <strong>▶ Play Yearly Race</strong> (or click the <strong>Key Years</strong> below) to watch Africa pass Europe, India, China, and the United States to become the world's #1 economy.`;
     }
-    if (raceKicker) raceKicker.textContent = isKenya ? "STEP 3 • 2026 TO 2076 • WATCH KENYA JOIN THE GLOBAL TOP 10" : "STEP 3 • 2026 TO 2076 • WATCH AFRICA TAKE THE LEAD";
-    if (raceTitle) raceTitle.textContent = isKenya ? "The Global Race: Watch Kenya Overtake the UK, France & Germany" : "The Global Race: Watch Africa Overtake Europe, India, China & the United States";
+    if (raceKicker) raceKicker.textContent = isKenya ? "STEP 3 • 2026 TO 2076 • WATCH KENYA ENTER THE GLOBAL TOP 10" : "STEP 3 • 2026 TO 2076 • WATCH AFRICA TAKE THE LEAD";
+    if (raceTitle) raceTitle.textContent = isKenya ? "The Global Race: Watch Kenya Enter the World Top 10 by 2076" : "The Global Race: Watch Africa Overtake Europe, India, China & the United States";
     if (raceSub) {
       raceSub.innerHTML = isKenya
-        ? `Starting from $136B in 2026, Kenya redirects wasteful borrowing into health, education, and geothermal power—racing past South Africa, France, the UK, and Germany to become an $18.6 Trillion powerhouse by 2076:`
+        ? `Starting from $136B in 2026 (#74 globally), Kenya redirects its $160B borrowing into geothermal energy, port automation, and digital education—racing past South Africa, France, the UK, and Germany to become an $18.6 Trillion powerhouse by 2076:`
         : `In 1324, Mansa Musa’s Mali was wealthier than any kingdom in Europe or Asia. Press <strong>▶ Play Yearly Race</strong> (or slide the years 2026 to 2076) to watch how high-impact investments lift Africa’s young population past aging world powers into the #1 economic spot on Earth:`;
     }
+
+    // Dynamic Milestone Buttons for Kenya vs Africa
+    const raceMilestonesBar = document.getElementById("raceMilestonesBar");
+    if (raceMilestonesBar) {
+      if (isKenya) {
+        raceMilestonesBar.innerHTML = `
+          <span style="font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700; margin-right: 0.25rem;">
+            Kenya Milestones:
+          </span>
+          <button type="button" class="filter-pill" data-race-year="2026">2026 (#74: $136B)</button>
+          <button type="button" class="filter-pill" data-race-year="2036">2036 (Passes Nigeria: $1.18T)</button>
+          <button type="button" class="filter-pill" data-race-year="2040">2040 (Overtakes South Africa: $2.4T)</button>
+          <button type="button" class="filter-pill" data-race-year="2046">2046 (Overtakes France: $4.5T)</button>
+          <button type="button" class="filter-pill" data-race-year="2048">2048 (Overtakes UK: $5.8T)</button>
+          <button type="button" class="filter-pill" data-race-year="2056">2056 (Overtakes Germany: $8.5T)</button>
+          <button type="button" class="filter-pill active" data-race-year="2076">2076 (Enters Global Top 5: $18.6T)</button>
+        `;
+      } else {
+        raceMilestonesBar.innerHTML = `
+          <span style="font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700; margin-right: 0.25rem;">
+            Milestones:
+          </span>
+          <button type="button" class="filter-pill" data-race-year="2026">2026 (Starting Point)</button>
+          <button type="button" class="filter-pill" data-race-year="2036">2036 (Growth Takeoff)</button>
+          <button type="button" class="filter-pill" data-race-year="2045">2045 (Passes Europe)</button>
+          <button type="button" class="filter-pill" data-race-year="2051">2051 (Passes India)</button>
+          <button type="button" class="filter-pill" data-race-year="2053">2053 (Passes China)</button>
+          <button type="button" class="filter-pill" data-race-year="2055">2055 (Passes USA to become #1)</button>
+          <button type="button" class="filter-pill" data-race-year="2068">2068 (Kenya + Congo Alone Passes USA)</button>
+          <button type="button" class="filter-pill active" data-race-year="2076">2076 ($183.5T Superpower)</button>
+        `;
+      }
+      raceMilestonesBar.querySelectorAll("[data-race-year]").forEach((b) => {
+        b.addEventListener("click", () => {
+          raceYear = parseInt(b.getAttribute("data-race-year"), 10);
+          renderOvertakeRace(false);
+        });
+      });
+    }
+
     raceRowElements = {};
     if (raceBarsContainer) raceBarsContainer.innerHTML = "";
     renderOvertakeRace(false);
     renderOvertakeProofTable();
+    renderUntappedSectorsAndCoProsperity();
 
     // 8. Step 3 Friedman Engine
     const fKicker = document.getElementById("friedmanKicker");
@@ -4117,11 +4338,38 @@
       if (africaMapControlsBar) africaMapControlsBar.style.display = "none";
       if (kenyaCountyControlsBar) kenyaCountyControlsBar.style.display = "flex";
       if (africaSvgMap) africaSvgMap.style.display = "none";
-      if (maplibreContainer) maplibreContainer.style.display = "none";
-      if (kenyaCountySvgMap) {
-        kenyaCountySvgMap.style.display = "block";
-        renderKenyaCountyMap();
+
+      if (mapEngineMode === "svg") {
+        if (maplibreContainer) maplibreContainer.style.display = "none";
+        if (kenyaCountySvgMap) {
+          kenyaCountySvgMap.style.display = "block";
+          renderKenyaCountyMap();
+        }
+      } else {
+        // 3D or 2D-GL WebGL Extrusion Mode
+        if (kenyaCountySvgMap) kenyaCountySvgMap.style.display = "none";
+        if (maplibreContainer) {
+          maplibreContainer.style.display = "block";
+          if (glMap) {
+            glMap.resize();
+            ["africa-extrusion", "africa-borders", "africa-selected-outline"].forEach((id) => {
+              if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "none");
+            });
+            ["kenya-counties-extrusion", "kenya-counties-borders", "kenya-counties-selected-outline"].forEach((id) => {
+              if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "visible");
+            });
+            syncGeoJsonMetrics();
+            glMap.flyTo({
+              center: [37.8, 0.4],
+              zoom: 6.2,
+              pitch: mapEngineMode === "3d" ? 52 : 0,
+              bearing: -12,
+              duration: 1500,
+            });
+          }
+        }
       }
+
       if (kenyaCountiesMatrixSection) kenyaCountiesMatrixSection.style.display = "block";
       initKenyaCountyExplorer();
       renderKenyaCountiesTable(activeCountyBloc, countySearchQuery);
@@ -4131,6 +4379,16 @@
       if (africaMapControlsBar) africaMapControlsBar.style.display = "flex";
       if (kenyaCountyControlsBar) kenyaCountyControlsBar.style.display = "none";
       if (kenyaCountySvgMap) kenyaCountySvgMap.style.display = "none";
+
+      if (glMap) {
+        ["kenya-counties-extrusion", "kenya-counties-borders", "kenya-counties-selected-outline"].forEach((id) => {
+          if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "none");
+        });
+        ["africa-extrusion", "africa-borders", "africa-selected-outline"].forEach((id) => {
+          if (glMap.getLayer(id)) glMap.setLayoutProperty(id, "visibility", "visible");
+        });
+      }
+
       if (mapEngineMode === "svg") {
         if (maplibreContainer) maplibreContainer.style.display = "none";
         if (africaSvgMap) {

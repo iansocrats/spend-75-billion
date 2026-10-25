@@ -1469,9 +1469,57 @@ const OVERTAKE_RACE_BLOCS = [
 
 const OVERTAKE_RACE_BLOCS_KENYA = [
   {
+    id: "china",
+    name: "China",
+    shortName: "China",
+    flag: "🇨🇳",
+    color: "#EF4444",
+    isAfricaHero: false,
+    workingAge2076: "490M (-38% Shrink)",
+    medianAge2076: "54 yrs",
+    powerCostKwh: "$0.09/kWh",
+    gdpByDecade: { 2026: 18.5, 2036: 25.2, 2046: 31.0, 2056: 35.2, 2066: 37.4, 2076: 38.5 }
+  },
+  {
+    id: "usa",
+    name: "United States",
+    shortName: "United States",
+    flag: "🇺🇸",
+    color: "#3B82F6",
+    isAfricaHero: false,
+    workingAge2076: "195M (+5%)",
+    medianAge2076: "44 yrs",
+    powerCostKwh: "$0.12/kWh",
+    gdpByDecade: { 2026: 28.0, 2036: 30.5, 2046: 31.8, 2056: 32.2, 2066: 32.3, 2076: 32.4 }
+  },
+  {
+    id: "india",
+    name: "India",
+    shortName: "India",
+    flag: "🇮🇳",
+    color: "#F59E0B",
+    isAfricaHero: false,
+    workingAge2076: "720M (-8%)",
+    medianAge2076: "42 yrs",
+    powerCostKwh: "$0.08/kWh",
+    gdpByDecade: { 2026: 3.9, 2036: 8.5, 2046: 14.2, 2056: 19.8, 2066: 24.5, 2076: 28.0 }
+  },
+  {
+    id: "drc_superpower",
+    name: "DRC (Heartland Mineral & Hydro Giant)",
+    shortName: "DRC (Congo Heartland)",
+    flag: "🇨🇩",
+    color: "#0284C7",
+    isAfricaHero: false,
+    workingAge2076: "135M (+180%)",
+    medianAge2076: "28 yrs",
+    powerCostKwh: "$0.015/kWh (Grand Inga Hydro)",
+    gdpByDecade: { 2026: 0.07, 2036: 1.4, 2046: 5.8, 2056: 11.2, 2066: 17.0, 2076: 22.5 }
+  },
+  {
     id: "kenya_lomborg",
-    name: "Kenya (Silicon Savannah • Best Things First Catalyst)",
-    shortName: "Kenya (Lomborg Model)",
+    name: "Kenya (Silicon Savannah • Beyond Lomborg Model)",
+    shortName: "Kenya (Beyond Lomborg)",
     flag: "🇰🇪",
     color: "#D97706",
     isAfricaHero: true,
@@ -1493,11 +1541,23 @@ const OVERTAKE_RACE_BLOCS_KENYA = [
     gdpByDecade: { 2026: 4.6, 2036: 5.4, 2046: 6.3, 2056: 7.2, 2066: 7.9, 2076: 8.5 }
   },
   {
+    id: "japan",
+    name: "Japan",
+    shortName: "Japan",
+    flag: "🇯🇵",
+    color: "#EC4899",
+    isAfricaHero: false,
+    workingAge2076: "45M (-40% Aging)",
+    medianAge2076: "56 yrs",
+    powerCostKwh: "$0.20/kWh",
+    gdpByDecade: { 2026: 4.2, 2036: 4.8, 2046: 5.5, 2056: 6.2, 2066: 6.8, 2076: 7.2 }
+  },
+  {
     id: "uk",
     name: "United Kingdom",
     shortName: "United Kingdom",
     flag: "🇬🇧",
-    color: "#3B82F6",
+    color: "#475569",
     isAfricaHero: false,
     workingAge2076: "36M (-12% Aging)",
     medianAge2076: "48 yrs",
@@ -1530,7 +1590,7 @@ const OVERTAKE_RACE_BLOCS_KENYA = [
   },
   {
     id: "kenya_status_quo",
-    name: "Kenya Under Debt & Tender Trap (No Reform)",
+    name: "Kenya Under Old Debt & Corruption Trap",
     shortName: "Kenya (Debt & Tender Trap)",
     flag: "⚠️",
     color: "#9CA3AF",
@@ -2202,6 +2262,16 @@ const HISTORICAL_AUDIT_MODEL = {
     }
   }
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    BEST_THINGS_FIRST_12,
+    OVERTAKE_RACE_BLOCS,
+    OVERTAKE_RACE_BLOCS_KENYA,
+    HISTORICAL_AUDIT_MODEL,
+    FRIEDMAN_CAPITAL_MARKETS_MODEL
+  };
+}
 
 
 

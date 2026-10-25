@@ -912,7 +912,7 @@ body {
 
 .race-bars-list {
   position: relative;
-  height: 448px;
+  min-height: 448px;
   width: 100%;
 }
 
