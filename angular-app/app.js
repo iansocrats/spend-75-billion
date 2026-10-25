@@ -13,8 +13,8 @@
   let activeCategory = "ALL";
   let discountRate = "3"; // "3" or "5"
   let dalyValuation = "base"; // "base" ($1k) or "high" ($5k)
-  let activeCountryKey = "africa"; // Macro blueprint tab ("africa", "drc", "kenya", "twinAxis")
-  let activeCountryScope = "africa"; // Country Scope Switcher ("africa" or "kenya")
+  let activeCountryKey = "kenya"; // Exclusively Kenya // Macro blueprint tab ("africa", "drc", "kenya", "twinAxis")
+  let activeCountryScope = "kenya"; // Exclusively Kenya // Country Scope Switcher ("africa" or "kenya")
   let activeDrcPhase = 1;
   let activeScenarioKey = "lomborg";
 
@@ -259,68 +259,26 @@
 
   // Update dynamic properties on AFRICA_GEOJSON features for current year & metric
   function syncGeoJsonMetrics() {
-    if (typeof AFRICA_GEOJSON === "undefined") return;
-    AFRICA_GEOJSON.features.forEach((f) => {
-      const iso = f.properties.iso;
-      const c = AFRICA_MAP_COUNTRIES[iso];
-      if (!c) return;
-      const curGdp = getCountryGdpAtYear(c, mapSimYear);
-      f.properties.currentGdpT = curGdp;
-      f.properties.fillColor = getCountryFillColor(c);
+    if (typeof KENYA_COUNTIES_GEOJSON === "undefined" || typeof KENYA_47_COUNTIES_DATA === "undefined") return;
 
-      // Compute 3D extrusion height in meters for WebGL view
-      let h = 25000;
-      if (mapColorMetric === "gdp2076T") {
-        h = Math.max(25000, curGdp * 42000);
-      } else if (mapColorMetric === "bcrWeighted") {
-        h = Math.max(25000, (c.bcrWeighted - 22) * 65000);
-      } else {
-        h = Math.max(25000, c.catalystShareB * 140000);
+    KENYA_COUNTIES_GEOJSON.features.forEach((f) => {
+      const c = KENYA_47_COUNTIES_DATA[f.properties.code];
+      if (c) {
+        const isSectorMatch = activeCountySector === "ALL" || c.sector === activeCountySector;
+        const isBlocMatch = activeCountyBloc === "ALL" || c.bloc === activeCountyBloc;
+        const isMatch = isSectorMatch && isBlocMatch;
+        f.properties.extrusionHeight = mapEngineMode === "2d-gl" ? 0 : (isMatch ? Math.round(c.gcp2076T * 45000) : 4000);
+        f.properties.fillColor = isMatch ? (SECTOR_COLORS[c.sector] || "#D97706") : "#334155";
       }
-      f.properties.extrusionHeight = mapEngineMode === "2d-gl" ? 0 : Math.round(h);
-      f.properties.label = `${c.iso}\n$${curGdp}T`;
     });
 
-    if (glMap && glMap.getSource("africa-countries")) {
-      glMap.getSource("africa-countries").setData(AFRICA_GEOJSON);
-    }
-
-    if (glMap && glMap.getSource("kenya-counties") && typeof KENYA_COUNTIES_GEOJSON !== "undefined" && typeof KENYA_47_COUNTIES_DATA !== "undefined") {
-      KENYA_COUNTIES_GEOJSON.features.forEach((f) => {
-        const c = KENYA_47_COUNTIES_DATA[f.properties.code];
-        if (c) {
-          const isSectorMatch = activeCountySector === "ALL" || c.sector === activeCountySector;
-          const isBlocMatch = activeCountyBloc === "ALL" || c.bloc === activeCountyBloc;
-          const isMatch = isSectorMatch && isBlocMatch;
-          f.properties.extrusionHeight = mapEngineMode === "2d-gl" ? 0 : (isMatch ? Math.round(c.gcp2076T * 45000) : 4000);
-          f.properties.fillColor = isMatch ? (SECTOR_COLORS[c.sector] || "#D97706") : "#334155";
-        }
-      });
+    if (glMap && glMap.getSource("kenya-counties")) {
       glMap.getSource("kenya-counties").setData(KENYA_COUNTIES_GEOJSON);
     }
   }
 
-  function applyWebGlScopeVisibility(scope) {
-    if (!glMap) return;
-    const isK = scope === "kenya";
-    const africaLayers = ["africa-extrusion", "africa-borders", "africa-selected-outline", "corridors-glow", "corridors-core"];
-    const kenyaLayers = ["kenya-counties-extrusion", "kenya-counties-borders", "kenya-counties-selected-outline"];
-
-    africaLayers.forEach((id) => {
-      if (glMap.getLayer && glMap.getLayer(id)) {
-        glMap.setLayoutProperty(id, "visibility", isK ? "none" : "visible");
-      }
-    });
-
-    kenyaLayers.forEach((id) => {
-      if (glMap.getLayer && glMap.getLayer(id)) {
-        glMap.setLayoutProperty(id, "visibility", isK ? "visible" : "none");
-      }
-    });
-  }
-
   function initWebGlMap() {
-    if (typeof maplibregl === "undefined" || typeof AFRICA_GEOJSON === "undefined") {
+    if (typeof maplibregl === "undefined" || typeof KENYA_COUNTIES_GEOJSON === "undefined") {
       setMapEngineMode("svg");
       return;
     }
@@ -328,219 +286,98 @@
     syncGeoJsonMetrics();
 
     try {
-      const isKenyaInit = activeCountryScope === "kenya";
-
-      const mapSources = {
-        "africa-countries": {
-          type: "geojson",
-          data: AFRICA_GEOJSON,
-        },
-        "africa-corridors": {
-          type: "geojson",
-          data: buildCorridorsGeoJson(),
-        },
-      };
-
-      if (typeof KENYA_COUNTIES_GEOJSON !== "undefined") {
-        mapSources["kenya-counties"] = {
-          type: "geojson",
-          data: KENYA_COUNTIES_GEOJSON,
-        };
-      }
-
-      const mapLayers = [
-        {
-          id: "ocean-bg",
-          type: "background",
-          paint: {
-            "background-color": "#090D16",
-          },
-        },
-        {
-          id: "africa-extrusion",
-          type: "fill-extrusion",
-          source: "africa-countries",
-          layout: {
-            visibility: isKenyaInit ? "none" : "visible",
-          },
-          paint: {
-            "fill-extrusion-color": ["get", "fillColor"],
-            "fill-extrusion-height": ["get", "extrusionHeight"],
-            "fill-extrusion-base": 0,
-            "fill-extrusion-opacity": 0.9,
-          },
-        },
-        {
-          id: "africa-borders",
-          type: "line",
-          source: "africa-countries",
-          layout: {
-            visibility: isKenyaInit ? "none" : "visible",
-          },
-          paint: {
-            "line-color": "#0F172A",
-            "line-width": 1.2,
-          },
-        },
-        {
-          id: "africa-selected-outline",
-          type: "line",
-          source: "africa-countries",
-          filter: ["==", ["get", "iso"], selectedMapIso],
-          layout: {
-            visibility: isKenyaInit ? "none" : "visible",
-          },
-          paint: {
-            "line-color": "#FF3B30",
-            "line-width": 3.5,
-          },
-        },
-        {
-          id: "corridors-glow",
-          type: "line",
-          source: "africa-corridors",
-          layout: {
-            visibility: isKenyaInit ? "none" : "visible",
-          },
-          paint: {
-            "line-color": "#FF3B30",
-            "line-width": 6,
-            "line-blur": 4,
-            "line-opacity": 0.55,
-          },
-        },
-        {
-          id: "corridors-core",
-          type: "line",
-          source: "africa-corridors",
-          layout: {
-            visibility: isKenyaInit ? "none" : "visible",
-          },
-          paint: {
-            "line-color": "#FFFFFF",
-            "line-width": 2,
-            "line-dasharray": [2, 2],
-            "line-opacity": 0.9,
-          },
-        },
-      ];
-
-      if (typeof KENYA_COUNTIES_GEOJSON !== "undefined") {
-        mapLayers.push(
-          {
-            id: "kenya-counties-extrusion",
-            type: "fill-extrusion",
-            source: "kenya-counties",
-            layout: {
-              visibility: isKenyaInit ? "visible" : "none",
-            },
-            paint: {
-              "fill-extrusion-color": ["get", "fillColor"],
-              "fill-extrusion-height": ["get", "extrusionHeight"],
-              "fill-extrusion-base": 0,
-              "fill-extrusion-opacity": 0.92,
-            },
-          },
-          {
-            id: "kenya-counties-borders",
-            type: "line",
-            source: "kenya-counties",
-            layout: {
-              visibility: isKenyaInit ? "visible" : "none",
-            },
-            paint: {
-              "line-color": "#FFFFFF",
-              "line-width": 1.2,
-              "line-opacity": 0.45,
-            },
-          },
-          {
-            id: "kenya-counties-selected-outline",
-            type: "line",
-            source: "kenya-counties",
-            filter: ["==", ["get", "code"], selectedCountyCode],
-            layout: {
-              visibility: isKenyaInit ? "visible" : "none",
-            },
-            paint: {
-              "line-color": "#F59E0B",
-              "line-width": 4.0,
-            },
-          }
-        );
-      }
-
       glMap = new maplibregl.Map({
         container: "maplibreContainer",
         style: {
           version: 8,
-          sources: mapSources,
-          layers: mapLayers,
+          sources: {
+            "kenya-counties": {
+              type: "geojson",
+              data: KENYA_COUNTIES_GEOJSON,
+            },
+          },
+          layers: [
+            {
+              id: "ocean-bg",
+              type: "background",
+              paint: {
+                "background-color": "#090D16",
+              },
+            },
+            {
+              id: "kenya-counties-extrusion",
+              type: "fill-extrusion",
+              source: "kenya-counties",
+              layout: {
+                visibility: "visible",
+              },
+              paint: {
+                "fill-extrusion-color": ["get", "fillColor"],
+                "fill-extrusion-height": ["get", "extrusionHeight"],
+                "fill-extrusion-base": 0,
+                "fill-extrusion-opacity": 0.92,
+              },
+            },
+            {
+              id: "kenya-counties-borders",
+              type: "line",
+              source: "kenya-counties",
+              layout: {
+                visibility: "visible",
+              },
+              paint: {
+                "line-color": "#FFFFFF",
+                "line-width": 1.2,
+                "line-opacity": 0.45,
+              },
+            },
+            {
+              id: "kenya-counties-selected-outline",
+              type: "line",
+              source: "kenya-counties",
+              filter: ["==", ["get", "code"], selectedCountyCode],
+              layout: {
+                visibility: "visible",
+              },
+              paint: {
+                "line-color": "#F59E0B",
+                "line-width": 4.0,
+              },
+            },
+          ],
         },
-        center: isKenyaInit ? [37.8, 0.4] : [21.5, 1.5],
-        zoom: isKenyaInit ? 6.2 : 2.55,
-        pitch: mapEngineMode === "3d" ? (isKenyaInit ? 52 : 50) : 0,
-        bearing: mapEngineMode === "3d" ? (isKenyaInit ? -10 : -8) : 0,
+        center: [37.8, 0.4],
+        zoom: 6.2,
+        pitch: mapEngineMode === "3d" ? 52 : 0,
+        bearing: mapEngineMode === "3d" ? -10 : 0,
         antialias: true,
       });
 
       glMap.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "bottom-right");
 
       glMap.on("load", () => {
-        applyWebGlScopeVisibility(activeCountryScope);
-
-        // Africa Extrusion Events
-        glMap.on("mousemove", "africa-extrusion", (e) => {
+        glMap.on("mousemove", "kenya-counties-extrusion", (e) => {
+          if (!e.features || !e.features.length) return;
           glMap.getCanvas().style.cursor = "pointer";
-          if (e.features && e.features.length > 0) {
-            const props = e.features[0].properties;
-            const c = AFRICA_MAP_COUNTRIES[props.iso];
-            if (c && mapFloatingTooltip) {
-              const curGdp = getCountryGdpAtYear(c, mapSimYear);
-              mapFloatingTooltip.innerHTML = `
-                <strong>${c.flag} ${c.name}</strong> (${c.region})<br/>
-                Year ${mapSimYear} GDP: <strong style="color: var(--emerald);">$${curGdp}T</strong> (2076 Peak: <strong>$${c.gdp2076T}T</strong>) • BCR: <strong>${c.bcrWeighted}:1</strong>
-              `;
-            }
+          const p = e.features[0].properties;
+          if (mapFloatingTooltip) {
+            mapFloatingTooltip.innerHTML = `
+              <strong style="font-size: 0.92rem;">${p.icon || "📍"} ${p.code} • ${p.name}</strong> (${p.sectorName || ""})<br/>
+              Current GCP: <strong style="color: var(--crimson);">$${p.gcp2026B || 1.0}B</strong> ➔ $100B Fund: <strong style="color: #F59E0B;">+$${((p.alloc100BM || 2000) / 1000).toFixed(1)}B</strong><br/>
+              2076 Superpower Horizon: <strong style="color: var(--emerald);">$${p.gcp2076T || 0.5} Trillion</strong> • <em>${p.multiplier || "Economic Multiplier"}</em>
+            `;
           }
         });
 
-        glMap.on("mouseleave", "africa-extrusion", () => {
+        glMap.on("mouseleave", "kenya-counties-extrusion", () => {
           glMap.getCanvas().style.cursor = "";
         });
 
-        glMap.on("click", "africa-extrusion", (e) => {
-          if (e.features && e.features.length > 0) {
-            const iso = e.features[0].properties.iso;
-            selectMapCountry(iso, true);
-          }
+        glMap.on("click", "kenya-counties-extrusion", (e) => {
+          if (!e.features || !e.features.length) return;
+          const code = e.features[0].properties.code;
+          selectKenyaCounty(code, true);
         });
-
-        // Kenya Counties Extrusion Events
-        if (typeof KENYA_COUNTIES_GEOJSON !== "undefined") {
-          glMap.on("mousemove", "kenya-counties-extrusion", (e) => {
-            if (!e.features || !e.features.length) return;
-            glMap.getCanvas().style.cursor = "pointer";
-            const p = e.features[0].properties;
-            if (mapFloatingTooltip) {
-              mapFloatingTooltip.innerHTML = `
-                <strong style="font-size: 0.92rem;">${p.icon || "📍"} ${p.code} • ${p.name}</strong> (${p.sectorName || ""})<br/>
-                Current GCP: <strong style="color: var(--crimson);">$${p.gcp2026B || 1.0}B</strong> ➔ $100B Fund: <strong style="color: #F59E0B;">+$${((p.alloc100BM || 2000) / 1000).toFixed(1)}B</strong><br/>
-                2076 Superpower Horizon: <strong style="color: var(--emerald);">$${p.gcp2076T || 0.5} Trillion</strong> • <em>${p.multiplier || "Economic Multiplier"}</em>
-              `;
-            }
-          });
-
-          glMap.on("mouseleave", "kenya-counties-extrusion", () => {
-            glMap.getCanvas().style.cursor = "";
-          });
-
-          glMap.on("click", "kenya-counties-extrusion", (e) => {
-            if (!e.features || !e.features.length) return;
-            const code = e.features[0].properties.code;
-            selectKenyaCounty(code, false);
-          });
-        }
       });
     } catch (err) {
       console.warn("WebGL fallback to SVG:", err);
@@ -554,43 +391,32 @@
       btn.classList.toggle("active", btn.getAttribute("data-engine-mode") === mode);
     });
 
-    const isKenya = activeCountryScope === "kenya";
     if (mode === "svg") {
       if (maplibreContainer) maplibreContainer.style.display = "none";
-      if (isKenya) {
-        if (africaSvgMap) africaSvgMap.style.display = "none";
-        if (kenyaCountySvgMap) {
-          kenyaCountySvgMap.style.display = "block";
-          renderKenyaCountyMap();
-        }
-      } else {
-        if (kenyaCountySvgMap) kenyaCountySvgMap.style.display = "none";
-        if (africaSvgMap) {
-          africaSvgMap.style.display = "block";
-          renderAfricaSvgMap();
-        }
+      if (kenyaCountySvgMap) {
+        kenyaCountySvgMap.style.display = "block";
+        renderKenyaCountyMap();
       }
     } else {
-      // 3D or 2D-GL WebGL Mode
-      if (africaSvgMap) africaSvgMap.style.display = "none";
       if (kenyaCountySvgMap) kenyaCountySvgMap.style.display = "none";
       if (maplibreContainer) {
         maplibreContainer.style.display = "block";
         if (glMap) {
           glMap.resize();
-          applyWebGlScopeVisibility(activeCountryScope);
           syncGeoJsonMetrics();
           glMap.easeTo({
-            center: isKenya ? [37.8, 0.4] : [21.5, 1.5],
-            zoom: isKenya ? 6.2 : 2.55,
-            pitch: mode === "3d" ? (isKenya ? 52 : 50) : 0,
-            bearing: mode === "3d" ? (isKenya ? -10 : -8) : 0,
+            center: [37.8, 0.4],
+            zoom: 6.2,
+            pitch: mode === "3d" ? 52 : 0,
+            bearing: mode === "3d" ? -10 : 0,
             duration: 800,
           });
         }
       }
     }
   }
+
+
 
 
   document.querySelectorAll("[data-engine-mode]").forEach((btn) => {
@@ -3641,7 +3467,7 @@
   // ==========================================================================
   // 11. HISTORICAL $3.33T AUDIT (ALL-AFRICA) & KENYA $161B LEAKY-PIPE VALVE GAME
   // ==========================================================================
-  let activeAuditScope = "africa"; // "africa" | "kenya"
+  let activeAuditScope = "kenya"; // Exclusively Kenya // "africa" | "kenya"
   const valveStates = { graft: true, tiedAid: true, deadCapital: true };
   const sliderHistoricalRedirect = document.getElementById("sliderHistoricalRedirect");
   const valHistoricalRedirect = document.getElementById("valHistoricalRedirect");
@@ -4813,17 +4639,12 @@
     renderValueChains();
   }
 
-  // Initial Boot
+  // Initial Boot (Exclusively Kenya)
   syncAngularDeviceSignal();
   renderMasterEqualizer();
-  populateCountryDropdown();
-  renderAfricaSvgMap();
-  renderCountryDossier();
   initWebGlMap();
   renderHistoricalAudit();
-  renderOvertakeRace();
-  renderOvertakeProofTable();
-  renderUntappedSectorsAndCoProsperity();
+  initOagInvestigation();
   renderFriedmanMarkets();
   renderStockMarketRace();
   renderPriceTheoryEngine();
@@ -4835,8 +4656,7 @@
   renderKenyaCountyMap();
   renderKenyaCountiesTable();
   renderKenyaBreakthroughEngines();
-  renderAllBlueprintSections();
-  initOagInvestigation();
+  selectKenyaCounty("047", false);
 
   // If user opened with ?scope=kenya, automatically switch to Kenya scope
   try {
