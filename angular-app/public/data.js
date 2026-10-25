@@ -2253,14 +2253,28 @@ const HISTORICAL_AUDIT_MODEL = {
       foodTradeBalance: "Net Importer of Wheat, Rice & Oil"
     },
     counterfactualBase2026: {
-      gdpT: 1.18,
-      perCapitaUsd: 20400,
-      bourseCapT: 1.88,
-      currencyLabel: "KSh 24 per $1 USD (5.4× Stronger)",
-      debtServiceTaxPct: "6.8% (AAA 2.9% Bond Yield)",
-      stuntingPct: "< 1.2% Across All 47 Counties",
-      powerTariff: "$0.038/kWh (10GW Olkaria Geothermal SEZs)",
-      foodTradeBalance: "+$28B/yr Irrigated Agro-Export Surplus"
+      gdpT: 0.356, // $356.0 Billion USD (2.62× of current $136B GDP)
+      perCapitaUsd: 6150, // $6,150/person/year (Upper-Middle Income status)
+      bourseCapT: 0.420, // $420.0 Billion USD
+      currencyLabel: "KSh 65 per $1 USD (2.0× Stronger)",
+      debtServiceTaxPct: "18.5% of Tax Revenue (Sovereign Investment-Grade)",
+      stuntingPct: "< 3.5% Across All 47 Counties",
+      powerTariff: "$0.045/kWh (10GW Olkaria Geothermal SEZs)",
+      foodTradeBalance: "+$8.5B/yr Irrigated Agro-Export Surplus",
+      annualGdpLostB: 220.0, // $220.0 Billion / year lost GDP
+      cumulative10YrLostB: 540.0 // $540.0 Billion cumulative 10-year wealth lost
+    },
+    forwardPotential2036: {
+      horizonYears: 10,
+      totalLoanUsdB: 41.0,
+      borrowingTenureYears: 10, // 2014-2024 borrowing era
+      year0GdpB: 136.0,
+      year3GdpB: 185.0,
+      year5GdpB: 250.0,
+      year10GdpB: 380.0,
+      year10PerCapitaUsd: 5800,
+      addedAnnualGdpB: 244.0,
+      cumulative10YrOutputB: 1250.0
     }
   }
 };

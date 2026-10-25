@@ -4075,7 +4075,7 @@
         gdpEl.textContent = "$136B (Current Stagnation)";
         gdpEl.style.color = "var(--ink-pure)";
       } else if (curedCount === 5) {
-        gdpEl.textContent = "$1.18 Trillion (Tiger Unleashed!)";
+        gdpEl.textContent = "$356.0 Billion (Tiger Unleashed!)";
         gdpEl.style.color = "var(--emerald)";
       } else {
         gdpEl.textContent = `$${(projectedGdpB / 1000).toFixed(2)}T (${projectedGdpB}B)`;
@@ -4084,7 +4084,7 @@
     }
 
     if (gdpSubEl) {
-      const lostPotentialB = 1180 - projectedGdpB;
+      const lostPotentialB = 356 - projectedGdpB;
       if (lostPotentialB <= 0) {
         gdpSubEl.textContent = "✓ 100% Potential Recovered!";
         gdpSubEl.style.color = "var(--emerald)";
@@ -4491,11 +4491,11 @@
     if (s1Badge) s1Badge.textContent = isKenya ? "🇰🇪 STEP 1 OF 4 • KENYA SPECIAL AUDIT" : "👉 STEP 1 OF 4 • START HERE";
     if (s1Callout) {
       s1Callout.innerHTML = isKenya
-        ? `<strong>Why is Kenya's GDP $136B instead of $1.18 Trillion?</strong> Kenya borrowed <strong>$41.0 Billion</strong> in foreign debt ($84.5B total public debt), but tender fraud, debt interest, and unbankable land drained it away. <strong>Click the 3 valves below</strong> to see how directing just 28% into high-return priorities turns Kenya into a <strong>$1.18 Trillion</strong> high-income tiger today!`
-        : `<strong>Why is Africa still poor?</strong> Africa already received <strong>$3.33 Trillion</strong> in foreign aid and loans (and Kenya <strong>$161 Billion</strong>). But <strong>3 big leaks</strong> drained almost all of it away. <strong>Click the 3 valves below</strong> to plug the leaks and see what Africa (<strong>$28.4T</strong>) &amp; Kenya (<strong>$1.18T</strong>) should already be worth today!`;
+        ? `<strong>Why is Kenya's GDP $136B instead of $356.0 Billion?</strong> Kenya borrowed <strong>$41.0 Billion</strong> in foreign debt ($84.5B total public debt), but tender fraud, debt interest, and unbankable land drained it away. <strong>Click the 3 valves below</strong> to see how directing just 28% into high-return priorities turns Kenya into a <strong>$356.0 Billion</strong> high-income tiger today!`
+        : `<strong>Why is Africa still poor?</strong> Africa already received <strong>$3.33 Trillion</strong> in foreign aid and loans (and Kenya <strong>$161 Billion</strong>). But <strong>3 big leaks</strong> drained almost all of it away. <strong>Click the 3 valves below</strong> to plug the leaks and see what Africa (<strong>$28.4T</strong>) &amp; Kenya (<strong>$356.0B</strong>) should already be worth today!`;
     }
     if (s1Kicker) s1Kicker.textContent = isKenya ? "STEP 1 • WHERE DID KENYA'S BORROWED DEBT GO?" : "STEP 1 • WHERE DID $3.33 TRILLION GO?";
-    if (s1Title) s1Title.textContent = isKenya ? "Kenya Special Audit: How Fixing 3 Leaks Unlocks a $1.18 Trillion Tiger Today" : "Plug the 3 Leaks: See What Africa & Kenya Should Already Be Worth Today";
+    if (s1Title) s1Title.textContent = isKenya ? "Kenya Special Audit: How Fixing 3 Leaks Unlocks a $356.0 Billion Tiger Today" : "Plug the 3 Leaks: See What Africa & Kenya Should Already Be Worth Today";
     if (s1Subtitle) {
       s1Subtitle.innerHTML = isKenya
         ? `Since 1963, Kenya received <strong>$76.5 Billion</strong> in foreign aid and borrowed <strong>$84.5 Billion</strong> in debt ($41.0B foreign debt + $43.5B domestic debt = $84.5B total public debt) Yet tender cartels, ghost payroll, and dead paper land titles drained it. Click each valve below to redirect funding into high-return priorities:`
@@ -4522,7 +4522,7 @@
     if (s2Badge) s2Badge.textContent = isKenya ? "🎛️ STEP 2 OF 4 • HOW KENYA'S $160B DEBT GROWS THE ECONOMY" : "🎛️ STEP 2 OF 4 • THE $75B FIX";
     if (s2Callout) {
       s2Callout.innerHTML = isKenya
-        ? `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Kenya Growth</strong> vs. <strong>⚠️ Old $160B Debt Trap</strong>) to see how investing Kenya's <strong>$160 Billion</strong> debt and borrowing into high-return Beyond Lomborg priorities grows the economy from $136B to <strong>$1.18 Trillion today</strong> and <strong>$18.6 Trillion by 2036</strong>.`
+        ? `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Kenya Growth</strong> vs. <strong>⚠️ Old $160B Debt Trap</strong>) to see how investing Kenya's <strong>$160 Billion</strong> debt and borrowing into high-return Beyond Lomborg priorities grows the economy from $136B to <strong>$356.0 Billion today</strong> and <strong>$18.6 Trillion by 2036</strong>.`
         : `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Growth</strong> vs. <strong>⚠️ Old Trap</strong>) to see how spending $75 Billion smartly unlocks an <strong>$183.5 Trillion</strong> economy.`;
     }
     if (s2Kicker) s2Kicker.textContent = isKenya ? "STEP 2 • MOVE THE 4 CONTROLS ($160B KENYA INVESTMENT)" : "STEP 2 • MOVE THE 4 CONTROLS";
@@ -4584,7 +4584,7 @@
     if (s3Badge) s3Badge.textContent = isKenya ? "📑 STEP 3 OF 4 • AUDITOR-GENERAL'S $160B FORENSIC AUDIT" : "🏁 STEP 3 OF 4 • THE PAYOFF";
     if (s3Callout) {
       s3Callout.innerHTML = isKenya
-        ? `<strong>Your Action:</strong> Toggle the <strong>5 Forensic Cures below</strong> to see how halting Eurobond commercial rollovers, unfreezing paper land titles, and cutting thermal IPP capacity charges recovers over <strong>$101.5 Billion</strong> in lost capital and expands Kenya's economy to <strong>$1.18 Trillion</strong> today.`
+        ? `<strong>Your Action:</strong> Toggle the <strong>5 Forensic Cures below</strong> to see how halting Eurobond commercial rollovers, unfreezing paper land titles, and cutting thermal IPP capacity charges recovers over <strong>$101.5 Billion</strong> in lost capital and expands Kenya's economy to <strong>$356.0 Billion</strong> today.`
         : `<strong>Your Action:</strong> Press <strong>▶ Play Yearly Race</strong> (or click the <strong>Key Years</strong> below) to watch Africa pass Europe, India, China, and the United States to become the world's #1 economy.`;
     }
 
@@ -4605,7 +4605,7 @@
             Kenya Milestones:
           </span>
           <button type="button" class="filter-pill" data-race-year="2026">2026 (#74: $136B)</button>
-          <button type="button" class="filter-pill" data-race-year="2036">2036 (Passes Nigeria: $1.18T)</button>
+          <button type="button" class="filter-pill" data-race-year="2036">2036 (Passes Nigeria: $356.0B)</button>
           <button type="button" class="filter-pill" data-race-year="2040">2040 (Overtakes South Africa: $2.4T)</button>
           <button type="button" class="filter-pill" data-race-year="2046">2046 (Overtakes France: $4.5T)</button>
           <button type="button" class="filter-pill" data-race-year="2048">2048 (Overtakes UK: $5.8T)</button>
