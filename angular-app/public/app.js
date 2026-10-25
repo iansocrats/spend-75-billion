@@ -927,11 +927,15 @@
   }
 
   // ==========================================================================
-  // 2B. KENYA 47 COUNTIES MAP, EXPLORER & BREAKTHROUGH ENGINES MODULE
+  // 2B. KENYA 47 COUNTIES MAP, EXPLORER & $100B BEYOND LOMBORG MODULE
   // ==========================================================================
   let selectedCountyCode = "047"; // Default Nairobi Metropolis
+  let activeCountySector = "ALL";
   let activeCountyBloc = "ALL";
   let countySearchQuery = "";
+  let showCountyIcons = true;
+  let showCountyCorridors = true;
+  let showCountyLabels = true;
 
   const kenyaCountyControlsBar = document.getElementById("kenyaCountyControlsBar");
   const africaMapControlsBar = document.getElementById("africaMapControlsBar");
@@ -941,6 +945,15 @@
   const kenyaCountiesTableBody = document.getElementById("kenyaCountiesTableBody");
   const countySearchInput = document.getElementById("countySearchInput");
   const kenyaBreakthroughGrid = document.getElementById("kenyaBreakthroughGrid");
+
+  const SECTOR_COLORS = {
+    AGRO: "#16A34A",
+    GEOTHERMAL: "#EAB308",
+    MARITIME: "#0284C7",
+    TECH: "#8B5CF6",
+    MINING: "#F97316",
+    NATURE: "#059669"
+  };
 
   const COUNTY_BLOC_COLORS = {
     NAIROBI: "#D97706",
@@ -956,20 +969,60 @@
     if (typeof KENYA_47_COUNTIES_DATA === "undefined" || !countySelectDropdown) return;
     if (countySelectDropdown.options.length === 0) {
       countySelectDropdown.innerHTML = Object.values(KENYA_47_COUNTIES_DATA)
-        .map((c) => `<option value="${c.code}">County ${c.code} • ${c.name} (${c.roleBadge.split("•")[0].trim()}) - $${c.gcp2076T}T</option>`)
+        .map((c) => `<option value="${c.code}">${c.icon} ${c.code} • ${c.name} (${c.sectorName}) - $${c.gcp2076T}T</option>`)
         .join("");
 
       countySelectDropdown.addEventListener("change", (e) => {
-        selectKenyaCounty(e.target.value, true);
+        selectKenyaCounty(e.target.value, false);
       });
     }
 
     if (countySelectDropdown) {
       countySelectDropdown.value = selectedCountyCode;
     }
+
+    // Attach listeners for layer toggles if not already attached
+    const tIcons = document.getElementById("toggleCountyIcons");
+    if (tIcons && !tIcons._bound) {
+      tIcons._bound = true;
+      tIcons.addEventListener("change", (e) => {
+        showCountyIcons = e.target.checked;
+        renderKenyaCountyMap();
+      });
+    }
+    const tCorridors = document.getElementById("toggleCountyCorridors");
+    if (tCorridors && !tCorridors._bound) {
+      tCorridors._bound = true;
+      tCorridors.addEventListener("change", (e) => {
+        showCountyCorridors = e.target.checked;
+        renderKenyaCountyMap();
+      });
+    }
+    const tLabels = document.getElementById("toggleCountyLabels");
+    if (tLabels && !tLabels._bound) {
+      tLabels._bound = true;
+      tLabels.addEventListener("change", (e) => {
+        showCountyLabels = e.target.checked;
+        renderKenyaCountyMap();
+      });
+    }
+
+    // Attach listeners for sector filter buttons in controls bar
+    document.querySelectorAll("#kenyaCountyControlsBar [data-county-sector]").forEach((btn) => {
+      if (!btn._bound) {
+        btn._bound = true;
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#kenyaCountyControlsBar [data-county-sector]").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          activeCountySector = btn.getAttribute("data-county-sector");
+          renderKenyaCountyMap();
+          renderKenyaCountiesTable(activeCountyBloc, countySearchQuery);
+        });
+      }
+    });
   }
 
-  function selectKenyaCounty(code, flyCamera = true) {
+  function selectKenyaCounty(code, flyCamera = false) {
     if (typeof KENYA_47_COUNTIES_DATA === "undefined") return;
     const c = KENYA_47_COUNTIES_DATA[code] || KENYA_47_COUNTIES_DATA["047"];
     selectedCountyCode = c.code;
@@ -983,8 +1036,11 @@
     });
 
     if (kenyaCountySvgMap) {
-      kenyaCountySvgMap.querySelectorAll(".county-svg-node").forEach((node) => {
-        node.classList.toggle("active", node.getAttribute("data-county-code") === c.code);
+      kenyaCountySvgMap.querySelectorAll(".kenya-county-path").forEach((path) => {
+        path.classList.toggle("active", path.getAttribute("data-county-code") === c.code);
+      });
+      kenyaCountySvgMap.querySelectorAll(".county-marker-group").forEach((grp) => {
+        grp.classList.toggle("active", grp.getAttribute("data-county-code") === c.code);
       });
     }
 
@@ -994,179 +1050,300 @@
       });
     }
 
-    if (glMap && flyCamera) {
-      glMap.flyTo({
-        center: [36.82, -1.29],
-        zoom: 5.6,
-        pitch: mapEngineMode === "3d" ? 48 : 0,
-        bearing: -8,
-        duration: 1100
-      });
-    }
-
     renderCountyDossier(c);
   }
 
   function renderCountyDossier(county) {
     if (!countryDossierCard || typeof KENYA_47_COUNTIES_DATA === "undefined") return;
     const c = county || KENYA_47_COUNTIES_DATA[selectedCountyCode] || KENYA_47_COUNTIES_DATA["047"];
-    const gainB = +(c.gcpShouldBe2026B - c.gcp2026B).toFixed(1);
-    const multiplier = (c.gcpShouldBe2026B / c.gcp2026B).toFixed(1);
+    const secColor = SECTOR_COLORS[c.sector] || "#D97706";
+    const countyList = Object.keys(KENYA_47_COUNTIES_DATA);
+    const currIdx = countyList.indexOf(c.code);
+    const prevCode = countyList[(currIdx - 1 + countyList.length) % countyList.length];
+    const nextCode = countyList[(currIdx + 1) % countyList.length];
+
+    const sectorCount = Object.values(KENYA_47_COUNTIES_DATA).filter((x) => x.sector === c.sector).length;
+    const allocPct = ((c.alloc100BM / 100000) * 100).toFixed(1);
 
     countryDossierCard.innerHTML = `
-      <div class="dossier-header">
+      <div class="dossier-header" style="align-items: flex-start; gap: 0.75rem;">
         <div>
-          <div class="kicker" style="color: #D97706;">COUNTY ${c.code} • ${KENYA_ECONOMIC_BLOCS[c.bloc]?.name || c.bloc}</div>
-          <h3 class="dossier-country-title">🇰🇪 ${c.name} County</h3>
+          <div class="kicker" style="color: ${secColor}; display: flex; align-items: center; gap: 0.4rem; font-weight: 800;">
+            <span style="font-size: 1.1rem;">${c.icon}</span>
+            <span>COUNTY ${c.code} • ${c.sectorName.toUpperCase()}</span>
+          </div>
+          <h3 class="dossier-country-title" style="margin-top: 0.2rem; font-size: 1.5rem;">🇰🇪 ${c.name} County</h3>
+          <div style="font-size: 0.76rem; color: var(--ink-secondary); margin-top: 0.15rem;">
+            ${KENYA_ECONOMIC_BLOCS[c.bloc]?.name || c.bloc} • Population: <strong>${c.pop2026M} Million</strong>
+          </div>
         </div>
-        <span class="filter-pill active" style="font-size: 0.74rem; border-color: #D97706; color: #D97706;">
-          ${c.roleBadge}
-        </span>
-      </div>
-
-      <div class="dossier-metrics-grid">
-        <div class="dossier-metric-box">
-          <span class="dossier-metric-label">Current 2026 GCP (KNBS)</span>
-          <span class="dossier-metric-val" style="color: var(--crimson);">$${c.gcp2026B.toFixed(1)}B</span>
-        </div>
-        <div class="dossier-metric-box">
-          <span class="dossier-metric-label">Should Have Been (2026)</span>
-          <span class="dossier-metric-val" style="color: #D97706;">$${c.gcpShouldBe2026B.toFixed(1)}B</span>
-        </div>
-        <div class="dossier-metric-box">
-          <span class="dossier-metric-label">Immediate Unlock Gain</span>
-          <span class="dossier-metric-val emerald">+$${gainB}B (${multiplier}×)</span>
-        </div>
-        <div class="dossier-metric-box">
-          <span class="dossier-metric-label">2076 Superpower Potential</span>
-          <span class="dossier-metric-val emerald">$${c.gcp2076T.toFixed(2)} Trillion</span>
+        <div style="text-align: right;">
+          <span class="filter-pill active" style="border-color: ${secColor}; color: ${secColor}; font-weight: 800; font-size: 0.78rem;">
+            $${(c.alloc100BM / 1000).toFixed(1)}B Allocated (${allocPct}%)
+          </span>
         </div>
       </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.65rem 0.85rem; background: var(--bg-secondary); border-left: 3px solid #D97706; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.73rem;">
-        <span>🏛️ <strong>County Bourse Capitalization (1.8× GCP):</strong> <strong style="color: var(--emerald);">$${(c.gcp2076T * 1.8).toFixed(2)}T Value</strong></span>
-        <span>👥 <strong>Population (2026):</strong> <strong>${c.pop2026M} Million Citizens</strong></span>
-      </div>
-
-      <div>
-        <div style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--emerald); font-weight: 700; margin-bottom: 0.25rem;">
-          🌟 Unique County Economic Superpower:
+      <!-- Visual Comparative Bar Gauges -->
+      <div class="visual-gauges-container" style="background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; margin: 0.9rem 0;">
+        <div style="font-family: var(--font-mono); font-size: 0.72rem; font-weight: 800; color: var(--ink-muted); text-transform: uppercase; margin-bottom: 0.75rem; letter-spacing: 0.05em; display: flex; justify-content: space-between;">
+          <span>📊 ECONOMIC POTENTIAL GROWTH SPECTRUM:</span>
+          <span style="color: ${secColor}; font-weight: 800;">${c.roleBadge}</span>
         </div>
-        <p style="font-size: 0.86rem; color: var(--ink-primary); margin-bottom: 0.85rem; line-height: 1.45;">
-          ${c.superpower}
-        </p>
+
+        <!-- Meter 1: Current GCP (Now) -->
+        <div style="margin-bottom: 0.75rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-family: var(--font-mono); margin-bottom: 0.25rem;">
+            <span style="color: var(--crimson); font-weight: 700;">🔴 1. Current GCP (KNBS Actual 2026):</span>
+            <strong style="color: var(--crimson); font-size: 0.85rem;">$${c.gcp2026B.toFixed(1)} Billion</strong>
+          </div>
+          <div style="height: 10px; background: rgba(239, 68, 68, 0.15); border-radius: 999px; overflow: hidden;">
+            <div style="width: ${Math.max(6, Math.min(100, (c.gcp2026B / 40) * 100))}%; height: 100%; background: linear-gradient(90deg, #EF4444, #DC2626); border-radius: 999px;"></div>
+          </div>
+        </div>
+
+        <!-- Meter 2: Beyond Lomborg $100B Fund Investment -->
+        <div style="margin-bottom: 0.75rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-family: var(--font-mono); margin-bottom: 0.25rem;">
+            <span style="color: #F59E0B; font-weight: 700;">🟡 2. Targeted $100B Fund Investment:</span>
+            <strong style="color: #F59E0B; font-size: 0.85rem;">+$${(c.alloc100BM / 1000).toFixed(1)} Billion</strong>
+          </div>
+          <div style="height: 10px; background: rgba(245, 158, 11, 0.15); border-radius: 999px; overflow: hidden;">
+            <div style="width: ${Math.max(8, Math.min(100, (c.alloc100BM / 14000) * 100))}%; height: 100%; background: linear-gradient(90deg, #F59E0B, #D97706); border-radius: 999px;"></div>
+          </div>
+        </div>
+
+        <!-- Meter 3: 2076 Superpower Potential -->
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-family: var(--font-mono); margin-bottom: 0.25rem;">
+            <span style="color: var(--emerald); font-weight: 700;">🟢 3. 2076 Superpower Horizon:</span>
+            <strong style="color: var(--emerald); font-size: 0.85rem;">$${c.gcp2076T.toFixed(2)} Trillion</strong>
+          </div>
+          <div style="height: 10px; background: rgba(16, 185, 129, 0.15); border-radius: 999px; overflow: hidden;">
+            <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #10B981, #059669); border-radius: 999px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);"></div>
+          </div>
+        </div>
       </div>
 
-      <div class="endowment-bottleneck" style="margin-bottom: 0.85rem;">
-        <strong>Historical Bottleneck / Drag:</strong> ${c.bottleneck}
+      <!-- 3 Visual Step Cards: NOW vs FIX vs MULTIPLIER -->
+      <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem;">
+        <!-- Card 1: What is done right now -->
+        <div style="background: rgba(239, 68, 68, 0.05); border-left: 4px solid #EF4444; border-radius: var(--radius-sm); padding: 0.75rem 0.95rem;">
+          <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: #DC2626; text-transform: uppercase; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.35rem;">
+            <span>🛑</span> WHAT THIS COUNTY DOES NOW (ACTUAL ACTIVITY)
+          </div>
+          <div style="font-size: 0.84rem; line-height: 1.45; color: var(--ink-primary);">
+            ${c.whatNow}
+          </div>
+        </div>
+
+        <!-- Card 2: The $100B Beyond Lomborg Fix -->
+        <div style="background: rgba(245, 158, 11, 0.06); border-left: 4px solid #F59E0B; border-radius: var(--radius-sm); padding: 0.75rem 0.95rem;">
+          <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: #D97706; text-transform: uppercase; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.35rem;">
+            <span>⚡</span> THE BEYOND LOMBORG $100B FIX (ACTIVITY UPGRADE)
+          </div>
+          <div style="font-size: 0.84rem; line-height: 1.45; color: var(--ink-primary);">
+            ${c.theFix}
+          </div>
+        </div>
+
+        <!-- Card 3: The Economic Multiplier Result -->
+        <div style="background: rgba(16, 185, 129, 0.07); border-left: 4px solid #10B981; border-radius: var(--radius-sm); padding: 0.75rem 0.95rem;">
+          <div style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 800; color: #059669; text-transform: uppercase; margin-bottom: 0.25rem; display: flex; align-items: center; justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 0.35rem;"><span>🚀</span> THE ECONOMIC MULTIPLIER RESULT</span>
+            <span style="background: #10B981; color: #fff; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.68rem; font-weight: 800;">${c.multiplier}</span>
+          </div>
+          <div style="font-size: 0.84rem; line-height: 1.45; color: var(--ink-primary);">
+            ${c.superpower}
+          </div>
+        </div>
       </div>
 
-      <div style="background: var(--bg-secondary); border: 1px solid var(--border-hairline); border-left: 4px solid var(--cobalt); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 0.85rem;">
-        <strong style="color: var(--cobalt); font-family: var(--font-mono); text-transform: uppercase; font-size: 0.72rem; display: block; margin-bottom: 0.25rem;">
-          ⚡ Bjørn Lomborg High-Return Unlock:
-        </strong>
-        <span style="font-size: 0.84rem; line-height: 1.45; color: var(--ink-primary);">
-          ${c.lomborgUnlock}
-        </span>
-      </div>
-
-      <div style="background: var(--emerald-soft); border-left: 4px solid var(--emerald); padding: 0.85rem 1rem; border-radius: var(--radius-sm); font-size: 0.84rem;">
-        <strong style="color: var(--emerald); font-family: var(--font-mono); text-transform: uppercase; font-size: 0.72rem; display: block; margin-bottom: 0.25rem;">
-          🛡️ Broken Pipeline / Corruption Leak Plugged:
-        </strong>
-        <span style="line-height: 1.45; color: var(--ink-primary);">
-          ${c.leakFixed}
-        </span>
+      <!-- Quick Navigation Controls -->
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--border-hairline);">
+        <button type="button" class="btn-outline" id="prevCountyBtn" style="font-size: 0.76rem; padding: 0.35rem 0.75rem;">
+          ◀ Prev County
+        </button>
+        <button type="button" class="btn-outline" id="filterByThisSectorBtn" style="font-size: 0.76rem; padding: 0.35rem 0.75rem; color: ${secColor}; border-color: ${secColor}; font-weight: 700;">
+          Focus: ${c.sectorName} (${sectorCount} Counties)
+        </button>
+        <button type="button" class="btn-outline" id="nextCountyBtn" style="font-size: 0.76rem; padding: 0.35rem 0.75rem;">
+          Next County ▶
+        </button>
       </div>
     `;
+
+    // Bind navigation buttons
+    const pBtn = document.getElementById("prevCountyBtn");
+    if (pBtn) pBtn.addEventListener("click", () => selectKenyaCounty(prevCode, false));
+    const nBtn = document.getElementById("nextCountyBtn");
+    if (nBtn) nBtn.addEventListener("click", () => selectKenyaCounty(nextCode, false));
+    const fBtn = document.getElementById("filterByThisSectorBtn");
+    if (fBtn) {
+      fBtn.addEventListener("click", () => {
+        activeCountySector = c.sector;
+        document.querySelectorAll("#kenyaCountyControlsBar [data-county-sector]").forEach((b) => {
+          b.classList.toggle("active", b.getAttribute("data-county-sector") === c.sector);
+        });
+        renderKenyaCountyMap();
+        renderKenyaCountiesTable(activeCountyBloc, countySearchQuery);
+      });
+    }
   }
 
   function renderKenyaCountyMap() {
     if (typeof KENYA_47_COUNTIES_DATA === "undefined" || !kenyaCountySvgMap) return;
+    if (typeof KENYA_COUNTY_SVG_PATHS === "undefined") {
+      console.warn("KENYA_COUNTY_SVG_PATHS not loaded yet");
+      return;
+    }
+
     kenyaCountySvgMap.innerHTML = "";
+    kenyaCountySvgMap.setAttribute("viewBox", "0 0 780 930");
 
-    const corridors = [
-      {
-        name: "SGR & Northern Trade Corridor",
-        stroke: "#D97706",
-        points: [[480, 630], [420, 550], [390, 470], [360, 440], [340, 420], [270, 430], [240, 410]]
-      },
-      {
-        name: "LAPSSET Northern Gateway Corridor",
-        stroke: "#0284C7",
-        points: [[580, 500], [500, 420], [410, 360], [380, 240], [410, 160]]
-      },
-      {
-        name: "10 GW Rift Geothermal Energy Backbone",
-        stroke: "#059669",
-        points: [[300, 200], [330, 370], [340, 420], [370, 460], [400, 520]]
-      }
-    ];
+    // SVG Defs (Glow and drop-shadow filters)
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    defs.innerHTML = `
+      <filter id="countyGlowActive" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#F59E0B" flood-opacity="0.9" />
+      </filter>
+      <filter id="corridorGlow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#0284C7" flood-opacity="0.8" />
+      </filter>
+    `;
+    kenyaCountySvgMap.appendChild(defs);
 
-    corridors.forEach((corridor) => {
-      const poly = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      poly.setAttribute("points", corridor.points.map((p) => `${p[0]},${p[1]}`).join(" "));
-      poly.setAttribute("fill", "none");
-      poly.setAttribute("stroke", corridor.stroke);
-      poly.setAttribute("stroke-width", "3");
-      poly.setAttribute("stroke-opacity", "0.4");
-      poly.setAttribute("class", "county-svg-corridor");
-      kenyaCountySvgMap.appendChild(poly);
-    });
+    // 1. County Polygons Layer (Real official county boundary paths)
+    const polygonsLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    polygonsLayer.setAttribute("class", "county-polygons-layer");
 
-    const counties = Object.values(KENYA_47_COUNTIES_DATA);
+    for (const [code, pathObj] of Object.entries(KENYA_COUNTY_SVG_PATHS)) {
+      const c = KENYA_47_COUNTIES_DATA[code];
+      if (!c) continue;
 
-    counties.forEach((c) => {
-      const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      group.setAttribute("class", `county-svg-node ${c.code === selectedCountyCode ? "active" : ""}`);
-      group.setAttribute("data-county-code", c.code);
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", pathObj.d);
+      path.setAttribute("data-county-code", code);
 
-      const radius = Math.max(9, Math.min(26, Math.round(Math.sqrt(c.gcp2076T * 42))));
-      const color = COUNTY_BLOC_COLORS[c.bloc] || "#D97706";
+      const color = SECTOR_COLORS[c.sector] || "#D97706";
+      const isSectorMatch = activeCountySector === "ALL" || c.sector === activeCountySector;
+      const isBlocMatch = activeCountyBloc === "ALL" || c.bloc === activeCountyBloc;
+      const isMatch = isSectorMatch && isBlocMatch;
+      const isSelected = code === selectedCountyCode;
 
-      const halo = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      halo.setAttribute("cx", c.cx);
-      halo.setAttribute("cy", c.cy);
-      halo.setAttribute("r", radius + 4);
-      halo.setAttribute("fill", color);
-      halo.setAttribute("fill-opacity", "0.15");
-      group.appendChild(halo);
+      path.setAttribute("class", `kenya-county-path ${isSelected ? "active" : ""} ${isMatch ? "" : "county-path-dimmed"}`);
+      path.setAttribute("fill", color);
+      path.setAttribute("fill-opacity", isMatch ? (isSelected ? "0.95" : "0.78") : "0.18");
 
-      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      circle.setAttribute("cx", c.cx);
-      circle.setAttribute("cy", c.cy);
-      circle.setAttribute("r", radius);
-      circle.setAttribute("fill", color);
-      circle.setAttribute("fill-opacity", "0.85");
-      circle.setAttribute("stroke", "#FFFFFF");
-      circle.setAttribute("stroke-width", c.code === selectedCountyCode ? "3.5" : "1.5");
-      group.appendChild(circle);
-
-      const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      txt.setAttribute("x", c.cx);
-      txt.setAttribute("y", c.cy + radius + 11);
-      txt.setAttribute("text-anchor", "middle");
-      txt.setAttribute("class", "county-svg-label");
-      txt.textContent = `${c.code} ${c.name}`;
-      group.appendChild(txt);
-
-      group.addEventListener("mouseenter", () => {
+      path.addEventListener("mouseenter", () => {
         if (mapFloatingTooltip) {
           mapFloatingTooltip.innerHTML = `
-            <strong>🇰🇪 County ${c.code} • ${c.name}</strong> (${c.roleBadge})<br/>
-            Current GCP: <strong style="color: var(--crimson);">$${c.gcp2026B}B</strong> •
-            Should Have Been: <strong style="color: #D97706;">$${c.gcpShouldBe2026B}B</strong><br/>
-            2076 Superpower Potential: <strong style="color: var(--emerald);">$${c.gcp2076T} Trillion</strong>
+            <strong style="font-size: 0.9rem;">${c.icon} ${c.code} • ${c.name}</strong> (${c.sectorName})<br/>
+            Current GCP: <strong style="color: var(--crimson);">$${c.gcp2026B}B</strong> ➔ $100B Fund: <strong style="color: #F59E0B;">+$${(c.alloc100BM / 1000).toFixed(1)}B</strong><br/>
+            2076 Potential: <strong style="color: var(--emerald);">$${c.gcp2076T} Trillion</strong> • <em>${c.multiplier}</em>
           `;
         }
       });
 
-      group.addEventListener("click", () => {
-        selectKenyaCounty(c.code, true);
+      path.addEventListener("click", () => {
+        selectKenyaCounty(code, false);
       });
 
-      kenyaCountySvgMap.appendChild(group);
-    });
+      polygonsLayer.appendChild(path);
+    }
+    kenyaCountySvgMap.appendChild(polygonsLayer);
+
+    // 2. Corridors Layer (Real coordinates for SGR, LAPSSET, Geothermal)
+    if (showCountyCorridors) {
+      const corridorsLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      corridorsLayer.setAttribute("class", "county-corridors-layer");
+
+      const corridors = [
+        {
+          name: "SGR & Northern Trade Corridor",
+          color: "#0284C7",
+          points: [[554, 841], [446, 777], [393, 682], [359, 607], [311, 610], [236, 536], [138, 514], [78, 463]]
+        },
+        {
+          name: "LAPSSET Northern Gateway Corridor",
+          color: "#F59E0B",
+          points: [[644, 683], [561, 516], [430, 435], [321, 385], [206, 263]]
+        },
+        {
+          name: "10 GW Rift Geothermal Energy Backbone",
+          color: "#EAB308",
+          points: [[206, 263], [224, 451], [236, 536], [318, 673]]
+        }
+      ];
+
+      corridors.forEach((corr) => {
+        const poly = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+        poly.setAttribute("points", corr.points.map((p) => `${p[0]},${p[1]}`).join(" "));
+        poly.setAttribute("fill", "none");
+        poly.setAttribute("stroke", corr.color);
+        poly.setAttribute("stroke-width", "3.2");
+        poly.setAttribute("class", "county-corridor-animated");
+        poly.setAttribute("filter", "url(#corridorGlow)");
+        corridorsLayer.appendChild(poly);
+      });
+
+      kenyaCountySvgMap.appendChild(corridorsLayer);
+    }
+
+    // 3. Markers Layer (Pins, Icons & Labels at exact centroids)
+    if (showCountyIcons || showCountyLabels) {
+      const markersLayer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      markersLayer.setAttribute("class", "county-markers-layer");
+
+      for (const [code, c] of Object.entries(KENYA_47_COUNTIES_DATA)) {
+        const isSectorMatch = activeCountySector === "ALL" || c.sector === activeCountySector;
+        const isBlocMatch = activeCountyBloc === "ALL" || c.bloc === activeCountyBloc;
+        const isMatch = isSectorMatch && isBlocMatch;
+        const isSelected = code === selectedCountyCode;
+
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        group.setAttribute("class", `county-marker-group ${isSelected ? "active" : ""} ${isMatch ? "" : "county-path-dimmed"}`);
+        group.setAttribute("data-county-code", code);
+        group.setAttribute("transform", `translate(${c.cx}, ${c.cy})`);
+
+        const color = SECTOR_COLORS[c.sector] || "#D97706";
+
+        if (showCountyIcons) {
+          const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          circle.setAttribute("r", isSelected ? "13" : "9.5");
+          circle.setAttribute("class", "county-marker-circle");
+          circle.setAttribute("fill", color);
+          circle.setAttribute("fill-opacity", "0.92");
+          circle.setAttribute("stroke", isSelected ? "#F59E0B" : "#FFFFFF");
+          circle.setAttribute("stroke-width", isSelected ? "2.5" : "1.2");
+          group.appendChild(circle);
+
+          const iconText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          iconText.setAttribute("class", "county-marker-icon");
+          iconText.setAttribute("text-anchor", "middle");
+          iconText.setAttribute("y", "0.5");
+          iconText.textContent = c.icon;
+          group.appendChild(iconText);
+        }
+
+        if (showCountyLabels) {
+          const lblText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          lblText.setAttribute("class", "county-marker-label");
+          lblText.setAttribute("text-anchor", "middle");
+          lblText.setAttribute("y", showCountyIcons ? "18" : "3");
+          lblText.textContent = `${c.code} ${c.name}`;
+          group.appendChild(lblText);
+        }
+
+        group.addEventListener("click", () => {
+          selectKenyaCounty(code, false);
+        });
+
+        markersLayer.appendChild(group);
+      }
+
+      kenyaCountySvgMap.appendChild(markersLayer);
+    }
   }
 
   function renderKenyaCountiesTable(filterBloc = "ALL", searchQuery = "") {
@@ -1175,33 +1352,43 @@
     const q = (searchQuery || "").trim().toLowerCase();
 
     const filtered = counties.filter((c) => {
+      const matchSector = activeCountySector === "ALL" || c.sector === activeCountySector;
       const matchBloc = filterBloc === "ALL" || c.bloc === filterBloc;
       const matchSearch =
         !q ||
         c.name.toLowerCase().includes(q) ||
         c.code.includes(q) ||
+        c.sectorName.toLowerCase().includes(q) ||
         c.roleBadge.toLowerCase().includes(q) ||
-        c.superpower.toLowerCase().includes(q);
-      return matchBloc && matchSearch;
+        c.whatNow.toLowerCase().includes(q) ||
+        c.theFix.toLowerCase().includes(q);
+      return matchSector && matchBloc && matchSearch;
     });
 
     kenyaCountiesTableBody.innerHTML = filtered
       .map((c) => {
-        const gainB = +(c.gcpShouldBe2026B - c.gcp2026B).toFixed(1);
         const isSelected = c.code === selectedCountyCode;
-        const blocName = KENYA_ECONOMIC_BLOCS[c.bloc]?.name.split("(")[0].trim() || c.bloc;
+        const secColor = SECTOR_COLORS[c.sector] || "#D97706";
         return `
           <tr class="${isSelected ? "selected" : ""}" data-county-code="${c.code}">
-            <td style="font-family: var(--font-mono); font-weight: 700; color: #D97706;">${c.code}</td>
-            <td style="font-weight: 700;">${c.name}</td>
-            <td style="font-size: 0.76rem; color: var(--ink-secondary);">${blocName}</td>
+            <td style="font-family: var(--font-mono); font-weight: 800; color: ${secColor};">${c.code}</td>
+            <td style="font-weight: 800; white-space: nowrap;">${c.icon} ${c.name}</td>
+            <td style="font-size: 0.74rem;">
+              <span style="display: inline-block; padding: 0.15rem 0.45rem; border-radius: 4px; background: ${secColor}22; color: ${secColor}; font-weight: 700;">
+                ${c.sectorName}
+              </span>
+            </td>
             <td style="font-family: var(--font-mono); font-size: 0.78rem;">${c.pop2026M}M</td>
-            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--crimson); font-weight: 700;">$${c.gcp2026B.toFixed(1)}B</td>
-            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: #D97706; font-weight: 700;">$${c.gcpShouldBe2026B.toFixed(1)}B</td>
-            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--emerald); font-weight: 700;">+$${gainB}B</td>
-            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--emerald); font-weight: 700;">$${c.gcp2076T.toFixed(2)}T</td>
-            <td style="font-size: 0.78rem; max-width: 200px; line-height: 1.35;">${c.superpower}</td>
-            <td style="font-size: 0.78rem; max-width: 220px; line-height: 1.35; color: var(--cobalt);">${c.lomborgUnlock}</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--crimson); font-weight: 800;">$${c.gcp2026B.toFixed(1)}B</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: #F59E0B; font-weight: 800;">+$${(c.alloc100BM / 1000).toFixed(1)}B</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--emerald); font-weight: 800;">$${c.gcp2076T.toFixed(2)}T</td>
+            <td>
+              <span style="display: inline-block; padding: 0.15rem 0.45rem; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: var(--emerald); font-weight: 800; font-size: 0.72rem;">
+                ${c.multiplier}
+              </span>
+            </td>
+            <td style="font-size: 0.76rem; max-width: 240px; line-height: 1.35;">${c.whatNow}</td>
+            <td style="font-size: 0.76rem; max-width: 240px; line-height: 1.35; color: var(--cobalt);">${c.theFix}</td>
           </tr>
         `;
       })
@@ -1211,7 +1398,7 @@
       tr.addEventListener("click", () => {
         const code = tr.getAttribute("data-county-code");
         if (code) {
-          selectKenyaCounty(code, true);
+          selectKenyaCounty(code, false);
         }
       });
     });
@@ -1244,17 +1431,7 @@
   document.querySelectorAll("[data-quick-county]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const code = btn.getAttribute("data-quick-county");
-      selectKenyaCounty(code, true);
-    });
-  });
-
-  // County bloc filters in controls bar
-  document.querySelectorAll("#kenyaCountyControlsBar [data-county-bloc]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("#kenyaCountyControlsBar [data-county-bloc]").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeCountyBloc = btn.getAttribute("data-county-bloc");
-      renderKenyaCountiesTable(activeCountyBloc, countySearchQuery);
+      selectKenyaCounty(code, false);
     });
   });
 
@@ -1264,6 +1441,7 @@
       document.querySelectorAll("#kenyaCountiesMatrixSection [data-table-bloc]").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       activeCountyBloc = btn.getAttribute("data-table-bloc");
+      renderKenyaCountyMap();
       renderKenyaCountiesTable(activeCountyBloc, countySearchQuery);
     });
   });

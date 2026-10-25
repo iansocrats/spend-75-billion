@@ -3253,6 +3253,87 @@ html[data-ux-step="4"] [data-step-panel="4"] {
   font-weight: 700;
 }
 
+/* ============================================================================
+   TRUE 47-COUNTY SVG VECTOR MAP & BEYOND LOMBORG VISUAL STYLES
+   ============================================================================ */
+
+.kenya-county-path {
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 1.1px;
+  stroke-linejoin: round;
+  cursor: pointer;
+  transition: fill 0.25s ease, stroke 0.2s ease, opacity 0.25s ease, filter 0.2s ease, transform 0.2s ease;
+}
+
+.kenya-county-path:hover {
+  stroke: #FBBF24 !important;
+  stroke-width: 2.8px !important;
+  filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.85));
+}
+
+.kenya-county-path.active {
+  stroke: #F59E0B !important;
+  stroke-width: 3.5px !important;
+  filter: drop-shadow(0 0 14px rgba(245, 158, 11, 0.95)) drop-shadow(0 0 4px #FFFFFF);
+}
+
+.county-path-dimmed {
+  opacity: 0.22 !important;
+  fill-opacity: 0.22 !important;
+}
+
+.county-marker-group {
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.2s ease;
+}
+
+.county-marker-group:hover {
+  transform: scale(1.22);
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.8));
+}
+
+.county-marker-group.active {
+  transform: scale(1.35);
+  filter: drop-shadow(0 0 12px rgba(245, 158, 11, 1));
+}
+
+.county-marker-circle {
+  stroke: #FFFFFF;
+  stroke-width: 1.5px;
+  transition: stroke-width 0.2s ease, r 0.2s ease;
+}
+
+.county-marker-icon {
+  font-size: 11px;
+  user-select: none;
+  pointer-events: none;
+  dominant-baseline: central;
+}
+
+.county-marker-label {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  fill: var(--ink-primary);
+  paint-order: stroke;
+  stroke: var(--bg-primary);
+  stroke-width: 2.5px;
+  stroke-linejoin: round;
+  user-select: none;
+  pointer-events: none;
+}
+
+.county-corridor-animated {
+  stroke-dasharray: 6, 4;
+  animation: dashKenyaFlow 18s linear infinite;
+}
+
+.speed-pill-btn[data-county-sector].active {
+  background: var(--bg-card);
+  box-shadow: 0 0 0 2px #D97706;
+  font-weight: 700;
+}
+
 
 
 

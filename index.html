@@ -917,29 +917,55 @@
 
       <!-- Kenya 47 Counties Controls Bar (Kenya Mode Only) -->
       <div id="kenyaCountyControlsBar" class="map-controls-bar" style="display: none;">
-        <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
-          <label for="countySelectDropdown" style="font-family: var(--font-mono); font-size: 0.76rem; font-weight: 700; color: #D97706;">SELECT COUNTY (001–047):</label>
-          <select id="countySelectDropdown" class="sensitivity-select" style="min-width: 220px; max-width: 100%; font-weight: 600; border-color: #D97706;"></select>
-
-          <button type="button" class="filter-pill active" data-quick-county="047">🏙️ 047 Nairobi ($3.85T)</button>
-          <button type="button" class="filter-pill" data-quick-county="001">⚓ 001 Mombasa ($1.25T)</button>
-          <button type="button" class="filter-pill" data-quick-county="032">🌋 032 Nakuru ($1.15T)</button>
-          <button type="button" class="filter-pill" data-quick-county="027">🌾 027 Uasin Gishu ($0.82T)</button>
-          <button type="button" class="filter-pill" data-quick-county="042">🐟 042 Kisumu ($0.88T)</button>
-          <button type="button" class="filter-pill" data-quick-county="011">🐫 011 Isiolo ($0.28T)</button>
-          <button type="button" class="filter-pill" data-quick-county="023">💨 023 Turkana ($0.42T)</button>
+        <!-- Beyond Lomborg $100B Sector Filters -->
+        <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 0.55rem; padding-bottom: 0.55rem; border-bottom: 1px solid var(--border-hairline);">
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: #D97706; font-weight: 800; display: flex; align-items: center; gap: 0.3rem;">
+            <span>🇰🇪</span> $100B BEYOND LOMBORG SECTORS:
+          </span>
+          <button type="button" class="speed-pill-btn active" data-county-sector="ALL">All 47 Counties ($100B)</button>
+          <button type="button" class="speed-pill-btn" data-county-sector="AGRO" style="border-left: 3px solid #16A34A;">🌾 Agro-Processing ($28.0B)</button>
+          <button type="button" class="speed-pill-btn" data-county-sector="GEOTHERMAL" style="border-left: 3px solid #EAB308;">⚡ Geothermal Steam ($24.0B)</button>
+          <button type="button" class="speed-pill-btn" data-county-sector="MARITIME" style="border-left: 3px solid #0284C7;">🚢 Maritime &amp; Corridors ($22.0B)</button>
+          <button type="button" class="speed-pill-btn" data-county-sector="TECH" style="border-left: 3px solid #8B5CF6;">💻 Silicon Savannah ($14.0B)</button>
+          <button type="button" class="speed-pill-btn" data-county-sector="MINING" style="border-left: 3px solid #F97316;">⛏️ Mining &amp; Refining ($8.0B)</button>
+          <button type="button" class="speed-pill-btn" data-county-sector="NATURE" style="border-left: 3px solid #059669;">🦁 Eco-Tourism &amp; Carbon ($4.0B)</button>
         </div>
 
+        <!-- Layer Toggles & County Dropdown -->
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.55rem;">
+          <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+            <label for="countySelectDropdown" style="font-family: var(--font-mono); font-size: 0.74rem; font-weight: 700; color: #D97706;">SELECT COUNTY (001–047):</label>
+            <select id="countySelectDropdown" class="sensitivity-select" style="min-width: 220px; max-width: 100%; font-weight: 600; border-color: #D97706;"></select>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-secondary);">
+            <label style="display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; user-select: none;">
+              <input type="checkbox" id="toggleCountyIcons" checked style="accent-color: #D97706;" />
+              <span>Activity Icons</span>
+            </label>
+            <label style="display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; user-select: none;">
+              <input type="checkbox" id="toggleCountyCorridors" checked style="accent-color: #0284C7;" />
+              <span>Megacorridors</span>
+            </label>
+            <label style="display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; user-select: none;">
+              <input type="checkbox" id="toggleCountyLabels" checked style="accent-color: #10B981;" />
+              <span>Labels</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Quick Hub Pills -->
         <div style="display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap;">
-          <span style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700;">Regional Blocs:</span>
-          <button type="button" class="speed-pill-btn active" data-county-bloc="ALL">All 47</button>
-          <button type="button" class="speed-pill-btn" data-county-bloc="NAIROBI">Nairobi</button>
-          <button type="button" class="speed-pill-btn" data-county-bloc="RIFT">NOREB (Rift)</button>
-          <button type="button" class="speed-pill-btn" data-county-bloc="PWANI">Pwani (Coast)</button>
-          <button type="button" class="speed-pill-btn" data-county-bloc="LAKE">LREB (Lake)</button>
-          <button type="button" class="speed-pill-btn" data-county-bloc="MT_KENYA">COMEB (Mt Kenya)</button>
-          <button type="button" class="speed-pill-btn" data-county-bloc="FRONTIER">FCDC (Frontier)</button>
-          <button type="button" class="speed-pill-btn" data-county-bloc="SEKEB">SEKEB (South East)</button>
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700;">Key Hubs:</span>
+          <button type="button" class="filter-pill active" data-quick-county="047">💻 047 Nairobi ($3.85T)</button>
+          <button type="button" class="filter-pill" data-quick-county="001">⚓ 001 Mombasa ($1.25T)</button>
+          <button type="button" class="filter-pill" data-quick-county="032">🌋 032 Nakuru ($1.15T)</button>
+          <button type="button" class="filter-pill" data-quick-county="035">☕ 035 Kericho ($0.62T)</button>
+          <button type="button" class="filter-pill" data-quick-county="019">☕ 019 Nyeri ($0.58T)</button>
+          <button type="button" class="filter-pill" data-quick-county="027">🌾 027 Uasin Gishu ($0.82T)</button>
+          <button type="button" class="filter-pill" data-quick-county="042">🐟 042 Kisumu ($0.88T)</button>
+          <button type="button" class="filter-pill" data-quick-county="002">⛏️ 002 Kwale ($0.38T)</button>
+          <button type="button" class="filter-pill" data-quick-county="033">🦁 033 Narok ($0.78T)</button>
         </div>
       </div>
 
@@ -1021,7 +1047,7 @@
             </div>
             <div id="maplibreContainer"></div>
             <svg id="africaSvgMap" class="africa-svg-map" viewBox="0 0 800 860" role="img" aria-label="Interactive map of all African countries"></svg>
-            <svg id="kenyaCountySvgMap" class="kenya-county-svg-map" viewBox="0 0 800 860" role="img" aria-label="Interactive map of Kenya's 47 counties" style="display: none;"></svg>
+            <svg id="kenyaCountySvgMap" class="kenya-county-svg-map" viewBox="0 0 780 930" role="img" aria-label="Interactive map of Kenya's 47 counties" style="display: none;"></svg>
           </div>
 
           <div class="map-legend-row">
@@ -1117,14 +1143,14 @@
               <tr>
                 <th style="width: 50px;">Code</th>
                 <th>County</th>
-                <th>Bloc</th>
-                <th>Pop (2026)</th>
+                <th>Beyond Lomborg Sector</th>
+                <th>Pop</th>
                 <th>Current GCP (2026)</th>
-                <th>Should Have Been (2026)</th>
-                <th>Immediate Gain</th>
-                <th>2076 Superpower</th>
-                <th>County Superpower</th>
-                <th>Specific Lomborg Unlock</th>
+                <th>$100B Fund Share</th>
+                <th>2076 Horizon</th>
+                <th>Multiplier</th>
+                <th>What It Does Now (Actual)</th>
+                <th>Beyond Lomborg Fix</th>
               </tr>
             </thead>
             <tbody id="kenyaCountiesTableBody"></tbody>
@@ -1463,6 +1489,7 @@
   </app-root>
 
   <script src="africa-map-data.js"></script>
+  <script src="kenya-svg-paths.js"></script>
   <script src="kenya-counties-data.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
