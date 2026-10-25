@@ -2207,7 +2207,7 @@ const HISTORICAL_AUDIT_MODEL = {
     multipleOf75B: "2.15× the Entire $75B Continental Catalyst!",
     realizedBcr: "1.5 : 1",
     lomborgPotentialBcr: "54.2 : 1 (Copenhagen Consensus 'Kenya Priorities')",
-    defaultRedirectPct: 28,
+    defaultRedirectPct: 0,
     headline: "Kenya Alone Received & Borrowed $161 Billion (2.15× Lomborg’s Entire $75B Fund)—Why Is Kenya’s 2026 GDP $136B Instead of $1.18 Trillion?",
     summary: "Since Independence in 1963, Kenya has received $76.5B in Foreign Aid (ODA) and accumulated $84.5B (~KSh 11+ Trillion) in public debt—totaling $161.0 Billion. Ironically, Kenya is the literal global laboratory that proved Lomborg's highest-ROI breakthroughs (Busia's 60:1 School Deworming, 65:1 Tusome EdTech, and the Copenhagen Consensus 'Kenya Priorities' county blueprint). Had Kenya directed just 28% ($45B between 1995–2026) into 38:1 E-Procurement, 55:1 ArdhiSasa Digital Land Titles, 101:1/48:1 Health, 95:1 Paperless Mombasa Customs, and $0.038/kWh Olkaria Geothermal SEZs, Kenya TODAY in 2026 would be a $1.18 Trillion High-Income 'African Tiger' ($20,400/capita) with the Kenyan Shilling at KSh 24 per $1 USD!",
     inflowChannels: [

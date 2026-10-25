@@ -3334,6 +3334,35 @@ html[data-ux-step="4"] [data-step-panel="4"] {
   font-weight: 700;
 }
 
+/* Kenya vs China Comparison Card */
+.kenya-china-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.kenya-china-card:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
+}
+
+/* Auditor-General Forensic Investigation Cards */
+.audit-dossier-card {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.audit-dossier-card:hover {
+  transform: translateY(-2px);
+  border-color: #D97706;
+  box-shadow: 0 8px 20px -4px rgba(217, 119, 6, 0.2);
+}
+.btn-toggle-cure {
+  transition: all 0.2s ease;
+}
+.btn-toggle-cure:hover {
+  filter: brightness(1.1);
+  transform: scale(1.01);
+}
+.oag-status-pill {
+  transition: all 0.2s ease;
+}
+
+
 
 
 
