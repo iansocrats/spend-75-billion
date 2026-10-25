@@ -1354,8 +1354,8 @@
             </td>
             <td style="font-family: var(--font-mono); font-size: 0.78rem;">${c.pop2026M}M</td>
             <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--crimson); font-weight: 800;">$${c.gcp2026B.toFixed(1)}B</td>
-            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: #F59E0B; font-weight: 800;">+$${(c.alloc100BM / 1000).toFixed(1)}B</td>
-            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--emerald); font-weight: 800;">$${c.gcp2036T.toFixed(2)}T</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: #F59E0B; font-weight: 800;">${c.gcpShouldBe2026B ? c.gcpShouldBe2026B.toFixed(1) : (c.gcp2026B * 8.68).toFixed(1)}B</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--emerald); font-weight: 800;">+${((c.gcpShouldBe2026B || c.gcp2026B * 8.68) - c.gcp2026B).toFixed(1)}B</td>
             <td>
               <span style="display: inline-block; padding: 0.15rem 0.45rem; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: var(--emerald); font-weight: 800; font-size: 0.72rem;">
                 ${c.multiplier}
@@ -3468,7 +3468,7 @@
   // 11. HISTORICAL $3.33T AUDIT (ALL-AFRICA) & KENYA $161B LEAKY-PIPE VALVE GAME
   // ==========================================================================
   let activeAuditScope = "kenya"; // Exclusively Kenya // "africa" | "kenya"
-  const valveStates = { graft: true, tiedAid: true, deadCapital: true };
+  const valveStates = { graft: false, tiedAid: false, deadCapital: false };
   const sliderHistoricalRedirect = document.getElementById("sliderHistoricalRedirect");
   const valHistoricalRedirect = document.getElementById("valHistoricalRedirect");
   const auditSummaryBanner = document.getElementById("auditSummaryBanner");
@@ -3526,7 +3526,9 @@
     const audit =
       HISTORICAL_AUDIT_MODEL[activeAuditScope] || HISTORICAL_AUDIT_MODEL.africa;
     const redirectPct = parseFloat(sliderHistoricalRedirect.value);
-    const scaleVsDefault = redirectPct / audit.defaultRedirectPct;
+    // Benchmark target is 28% of capital redirected into Lomborg priorities
+    const benchmarkTargetPct = 28.0;
+    const progress = Math.max(0, Math.min(2.0, redirectPct / benchmarkTargetPct));
     const redirectedCapitalB = +(
       (audit.totalPublicCapitalB * redirectPct) /
       100
@@ -3535,41 +3537,48 @@
     const bcrNum = activeAuditScope === "kenya" ? 54.2 : 48.7;
 
     if (valHistoricalRedirect) {
-      valHistoricalRedirect.textContent = `${redirectPct}% Sequenced ($${redirectedCapitalB.toLocaleString()}B @ ${bcrNum}:1)`;
+      valHistoricalRedirect.textContent = `${redirectPct}% Sequenced (${redirectedCapitalB.toLocaleString()}B @ ${bcrNum}:1)`;
     }
 
-    const cfGdpT = +(
-      audit.actual2026.gdpT +
-      (audit.counterfactualBase2026.gdpT - audit.actual2026.gdpT) *
-        Math.pow(scaleVsDefault, 0.85)
-    ).toFixed(2);
+    // When redirectPct is 0, economy equals actual 2026 baseline exactly (no Infinity)
+    const cfGdpT = redirectPct === 0
+      ? audit.actual2026.gdpT
+      : +(
+          audit.actual2026.gdpT +
+          (audit.counterfactualBase2026.gdpT - audit.actual2026.gdpT) *
+            Math.pow(progress, 0.85)
+        ).toFixed(2);
 
-    const cfPerCapita = Math.round(
-      audit.actual2026.perCapitaUsd +
-        (audit.counterfactualBase2026.perCapitaUsd -
-          audit.actual2026.perCapitaUsd) *
-          Math.pow(scaleVsDefault, 0.85)
-    );
+    const cfPerCapita = redirectPct === 0
+      ? audit.actual2026.perCapitaUsd
+      : Math.round(
+          audit.actual2026.perCapitaUsd +
+            (audit.counterfactualBase2026.perCapitaUsd -
+              audit.actual2026.perCapitaUsd) *
+              Math.pow(progress, 0.85)
+        );
 
-    const cfBourseT = +(
-      audit.actual2026.bourseCapT +
-      (audit.counterfactualBase2026.bourseCapT - audit.actual2026.bourseCapT) *
-        Math.pow(scaleVsDefault, 0.92)
-    ).toFixed(2);
+    const cfBourseT = redirectPct === 0
+      ? audit.actual2026.bourseCapT
+      : +(
+          audit.actual2026.bourseCapT +
+          (audit.counterfactualBase2026.bourseCapT - audit.actual2026.bourseCapT) *
+            Math.pow(progress, 0.92)
+        ).toFixed(2);
 
     const gdpLostGapT = +(cfGdpT - audit.actual2026.gdpT).toFixed(2);
     const gdpMultiple = (cfGdpT / audit.actual2026.gdpT).toFixed(1);
 
-    const kesRate = Math.max(
-      14,
-      Math.round(129 / Math.max(1, Math.pow(scaleVsDefault * 3.1, 0.72)))
-    );
+    const kesRate = redirectPct === 0
+      ? 129
+      : Math.max(14, Math.round(129 / Math.max(1, Math.pow(progress * 3.1, 0.72))));
+
     const cfCurrencyText =
       activeAuditScope === "kenya"
         ? redirectPct === 0
           ? "KSh 129 / $1 USD"
           : `KSh ${kesRate} / $1 USD`
-        : `REER ${Math.round(100 + 240 * Math.pow(scaleVsDefault, 0.8))}`;
+        : `REER ${Math.round(100 + 240 * Math.pow(progress, 0.8))}`;
 
     if (auditSummaryBanner) {
       auditSummaryBanner.style.borderLeftColor =
@@ -4461,7 +4470,7 @@
     const t2 = document.getElementById("stepTab2Title");
     const t3 = document.getElementById("stepTab3Title");
     const t4 = document.getElementById("stepTab4Title");
-    if (t1) t1.textContent = isKenya ? "🇰🇪 1. Kenya $161B Audit" : "💔 1. Where Did the Money Go?";
+    if (t1) t1.textContent = isKenya ? "🇰🇪 1. Kenya Debt Audit ($41.0B Foreign)" : "💔 1. Where Did the Money Go?";
     if (t2) t2.textContent = isKenya ? "🎛️ 2. How Kenya's $160B Grows the Economy" : "🎛️ 2. The $75B Solution";
     if (t3) t3.textContent = isKenya ? "📑 3. Auditor-General's $160B Forensic Audit" : "🏁 3. Africa Takes the Lead";
     if (t4) t4.textContent = isKenya ? "🇰🇪 4. Explore Kenya in 3D" : "🌍 4. Explore 54 Countries in 3D";
@@ -4482,14 +4491,14 @@
     if (s1Badge) s1Badge.textContent = isKenya ? "🇰🇪 STEP 1 OF 4 • KENYA SPECIAL AUDIT" : "👉 STEP 1 OF 4 • START HERE";
     if (s1Callout) {
       s1Callout.innerHTML = isKenya
-        ? `<strong>Why is Kenya's GDP $136B instead of $1.18 Trillion?</strong> Kenya received and borrowed <strong>$161 Billion</strong>, but tender fraud, debt interest, and unbankable land drained it away. <strong>Click the 3 valves below</strong> to see how directing just 28% into high-return priorities turns Kenya into a <strong>$1.18 Trillion</strong> high-income tiger today!`
+        ? `<strong>Why is Kenya's GDP $136B instead of $1.18 Trillion?</strong> Kenya borrowed <strong>$41.0 Billion</strong> in foreign debt ($84.5B total public debt), but tender fraud, debt interest, and unbankable land drained it away. <strong>Click the 3 valves below</strong> to see how directing just 28% into high-return priorities turns Kenya into a <strong>$1.18 Trillion</strong> high-income tiger today!`
         : `<strong>Why is Africa still poor?</strong> Africa already received <strong>$3.33 Trillion</strong> in foreign aid and loans (and Kenya <strong>$161 Billion</strong>). But <strong>3 big leaks</strong> drained almost all of it away. <strong>Click the 3 valves below</strong> to plug the leaks and see what Africa (<strong>$28.4T</strong>) &amp; Kenya (<strong>$1.18T</strong>) should already be worth today!`;
     }
-    if (s1Kicker) s1Kicker.textContent = isKenya ? "STEP 1 • WHERE DID KENYA'S $161 BILLION GO?" : "STEP 1 • WHERE DID $3.33 TRILLION GO?";
+    if (s1Kicker) s1Kicker.textContent = isKenya ? "STEP 1 • WHERE DID KENYA'S BORROWED DEBT GO?" : "STEP 1 • WHERE DID $3.33 TRILLION GO?";
     if (s1Title) s1Title.textContent = isKenya ? "Kenya Special Audit: How Fixing 3 Leaks Unlocks a $1.18 Trillion Tiger Today" : "Plug the 3 Leaks: See What Africa & Kenya Should Already Be Worth Today";
     if (s1Subtitle) {
       s1Subtitle.innerHTML = isKenya
-        ? `Since 1963, Kenya received <strong>$76.5 Billion</strong> in foreign aid and borrowed <strong>$84.5 Billion</strong> in debt ($161.0B total)—<strong>2.15 times Bjørn Lomborg's entire $75B fund!</strong> Yet tender cartels, ghost payroll, and dead paper land titles drained it. Click each valve below to redirect funding into high-return priorities:`
+        ? `Since 1963, Kenya received <strong>$76.5 Billion</strong> in foreign aid and borrowed <strong>$84.5 Billion</strong> in debt ($41.0B foreign debt + $43.5B domestic debt = $84.5B total public debt) Yet tender cartels, ghost payroll, and dead paper land titles drained it. Click each valve below to redirect funding into high-return priorities:`
         : `Over the past 40 years, Africa was given <strong>$3.33 Trillion</strong> in loans and aid—44 times what we need today. Yet for every $1 received, Africa only kept <strong>$1.30</strong> in real value because 3 broken pipes drained the rest away. Click each valve below to plug the leaks:`;
     }
     renderHistoricalAudit();

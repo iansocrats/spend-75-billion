@@ -2200,16 +2200,18 @@ const HISTORICAL_AUDIT_MODEL = {
   kenya: {
     id: "kenya",
     flag: "🇰🇪",
-    name: "Kenya Special Audit (1963–2026 • $161B Public Capital)",
-    period: "1963–2026 (Independence to Present • Constant 2026 USD)",
-    totalPublicCapitalB: 161.0,
-    totalWithFdiB: 182.0,
-    multipleOf75B: "2.15× the Entire $75B Continental Catalyst!",
+    name: "Kenya Sovereign Debt Audit ($41.0B Foreign Debt • $84.5B Total Debt)",
+    period: "Current Official Stock (National Treasury & CBK Actuals)",
+    totalPublicCapitalB: 41.0,
+    totalForeignDebtB: 41.0,
+    totalPublicDebtB: 84.5,
+    amountReceivedLabel: "$41.0B Foreign Debt ($84.5B Total Debt)",
+    multipleOf75B: "Over Half the Entire $75B Continental Fund!",
     realizedBcr: "1.5 : 1",
     lomborgPotentialBcr: "54.2 : 1 (Copenhagen Consensus 'Kenya Priorities')",
     defaultRedirectPct: 0,
-    headline: "Kenya Alone Received & Borrowed $161 Billion (2.15× Lomborg’s Entire $75B Fund)—Why Is Kenya’s 2026 GDP $136B Instead of $1.18 Trillion?",
-    summary: "Since Independence in 1963, Kenya has received $76.5B in Foreign Aid (ODA) and accumulated $84.5B (~KSh 11+ Trillion) in public debt—totaling $161.0 Billion. Ironically, Kenya is the literal global laboratory that proved Lomborg's highest-ROI breakthroughs (Busia's 60:1 School Deworming, 65:1 Tusome EdTech, and the Copenhagen Consensus 'Kenya Priorities' county blueprint). Had Kenya directed just 28% ($45B between 1995–2026) into 38:1 E-Procurement, 55:1 ArdhiSasa Digital Land Titles, 101:1/48:1 Health, 95:1 Paperless Mombasa Customs, and $0.038/kWh Olkaria Geothermal SEZs, Kenya TODAY in 2026 would be a $1.18 Trillion High-Income 'African Tiger' ($20,400/capita) with the Kenyan Shilling at KSh 24 per $1 USD!",
+    headline: "Kenya Borrowed $41.0 Billion in Foreign Debt ($84.5B Total Debt)—Why Is Kenya’s GDP $136B Instead of $759B to $1.18 Trillion?",
+    summary: "Kenya currently owes $41.0 Billion (KSh 5.3 Trillion) in foreign debt from bilateral nations (China, France, Japan, Germany, Italy) and multilaterals (World Bank, IMF), and $84.5 Billion (KSh 11.0 Trillion) in total public debt. Yet 65% to 71.2% of national taxes are swallowed by debt service while funds leaked into stalled dams, pending bills, and idle thermal IPPs. Had Kenya directed 28% into high-return priorities (deworming 60:1, digital land titles 55:1, Olkaria geothermal 38:1, paperless customs 95:1), Kenya's GDP would be $759B to $1.18 Trillion today!",
     inflowChannels: [
       {
         title: "1. Cumulative Official Foreign Aid / ODA to Kenya (1963–2026)",
@@ -2462,11 +2464,10 @@ const KENYA_FOREIGN_LOANS_BY_COUNTRY = {
 };
 
 const KENYA_MACRO_CAPITAL_FLOWS = {
-  totalSovereignCapitalUsdB: 161.0,
-  totalExternalDebtUsdB: 84.5,
-  totalCumulativeAidUsdB: 76.5,
-  domesticDebtKshTrillion: 5.5,
-  domesticDebtUsdB: 42.0,
+  totalPublicDebtUsdB: 84.5,            // $84.5 Billion USD total national debt stock (KSh 11.0T)
+  totalForeignDebtUsdB: 41.0,           // $41.0 Billion USD actual foreign borrowed debt (KSh 5.3T)
+  totalDomesticDebtUsdB: 43.5,          // $43.5 Billion USD domestic debt (KSh 5.7T)
+  domesticDebtKshTrillion: 5.7,
   unverifiedPendingBillsKshBillion: 700.0,
   debtServiceToRevenuePct: "65.0% to 71.2%",
   categories: [
@@ -2474,34 +2475,34 @@ const KENYA_MACRO_CAPITAL_FLOWS = {
       id: "productive_assets",
       label: "Productive Infrastructure Assets",
       pct: 24.0,
-      amountUsdB: 38.6,
+      amountUsdB: 20.3, // 24% of $84.5B public debt ($9.8B of foreign debt)
       color: "#10B981", // Emerald
       icon: "🏗️",
-      description: "Tangible operational capital assets: SGR Phase 1 tracks & rolling stock, Olkaria geothermal units 1-5, Nairobi Expressway, Dongo Kundu bypass, major paved highways. Generating real economic activity, though burdened by inflated procurement costs."
+      description: "Tangible operational capital assets: SGR Phase 1 Mombasa-Nairobi track, Olkaria geothermal units 1-5, Nairobi Expressway, Dongo Kundu bypass, and major paved highways. Generated real connectivity, though burdened by inflated procurement costs."
     },
     {
       id: "rollovers_refinancing",
       label: "Debt Rollovers & Principal Maturing Treadmill",
       pct: 34.0,
-      amountUsdB: 54.7,
+      amountUsdB: 28.7, // 34% of $84.5B public debt
       color: "#8B5CF6", // Purple
       icon: "🔄",
-      description: "Borrowing expensive new debt solely to pay back maturing older principal (e.g., Feb 2024 Eurobond borrowed $1.5B at 10.375% coupon just to redeem 2014 bond; short-term commercial bank syndications rolled over). Zero new development built."
+      description: "Borrowing expensive new foreign debt solely to pay back maturing older principal (e.g., Feb 2024 Eurobond borrowed $1.5B at 10.375% coupon just to redeem 2014 bond; short-term commercial bank syndications rolled over). Zero new development built."
     },
     {
       id: "stalled_inflated",
       label: "Stalled Projects, Inflated Procurement & Ghost Contracts",
       pct: 26.5,
-      amountUsdB: 42.7,
+      amountUsdB: 22.4, // 26.5% of $84.5B public debt
       color: "#EF4444", // Crimson
       icon: "💔",
-      description: "Ghost dams (Arror & Kimwarer $850M), SGR Phase 2A dead-end terminal at Suswa ($1.48B), 688 stalled county white-elephants (KSh 23.3B), KSh 540B national pending bills, over-invoiced government supplies, and 30% tender graft."
+      description: "Ghost dams (Arror & Kimwarer $850M), SGR Phase 2A dead-end terminal at Suswa ($1.48B), 688 stalled county white-elephants (KSh 23.3B), KSh 700B+ pending bills, over-invoiced government supplies, and 30% tender graft."
     },
     {
       id: "fees_forex_gaps",
-      label: "Loan Fees, Commitment Penalties & Offshore Gaps",
+      label: "Loan Fees, Commitment Penalties & Forex Slide",
       pct: 15.5,
-      amountUsdB: 25.0,
+      amountUsdB: 13.1, // 15.5% of $84.5B public debt
       color: "#F59E0B", // Amber
       icon: "💸",
       description: "Over KSh 7.7B paid in commitment fees on undisbursed loan balances; massive foreign exchange losses as Shilling slid from KSh 87 to KSh 130-160 per USD; unverified offshore NY Fed/JPMorgan bank accounts noted in Eurobond audits."
