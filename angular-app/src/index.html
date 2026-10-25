@@ -22,7 +22,7 @@
     <header class="masthead">
       <div class="masthead-inner">
         <div class="brand-group">
-          <span id="scopeBrandBadge" class="economist-badge" style="background-color: #D97706;">Special Edition • Kenya 2076</span>
+          <span id="scopeBrandBadge" class="economist-badge" style="background-color: #D97706;">Special Edition • Kenya Sovereign Debt & Economic Audit</span>
           <span class="brand-title">Kenya Economic Superpower Model</span>
         </div>
 
@@ -79,7 +79,7 @@
         <div>
           <span class="economist-badge" style="background-color: #B45309;">The Sankore Thesis</span>
           <div style="font-family: var(--font-serif); font-weight: 700; font-size: 1.05rem; margin-top: 0.25rem;">
-            Kenya 2076 Superpower Blueprint
+            Kenya Sovereign Debt & Economic Audit
           </div>
         </div>
         <button id="mobileDrawerCloseBtn" type="button" class="transport-step-btn">✕ Close</button>
@@ -249,6 +249,143 @@
             </div>
           </div>
 
+          <!-- Official Foreign Loans by Country & Creditor Register -->
+          <div style="background: var(--bg-primary); border: 1px solid var(--border-hairline); border-radius: var(--radius-sm); padding: 1.15rem; margin-bottom: 1.35rem;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.85rem; border-bottom: 1px solid var(--border-hairline); padding-bottom: 0.65rem;">
+              <div>
+                <span style="font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: #D97706; text-transform: uppercase;">
+                  🏛️ NATIONAL TREASURY &amp; PDMO REGISTER • OFFICIAL FOREIGN DEBT BY CREDITOR NATION
+                </span>
+                <h4 style="margin: 0.2rem 0 0; font-size: 1.15rem; font-weight: 800; color: var(--ink-pure);">
+                  How Much Kenya Has Received from Foreign Countries (KSh 5.7T External Stock)
+                </h4>
+              </div>
+              <div style="font-size: 0.76rem; font-family: var(--font-mono); color: var(--ink-muted);">
+                Source: National Treasury Public Debt Bulletin &amp; Controller of Budget
+              </div>
+            </div>
+
+            <!-- Top Level Totals Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.65rem; margin-bottom: 1rem;">
+              <div style="background: var(--bg-secondary); border: 1px solid var(--border-hairline); padding: 0.75rem; border-radius: 4px;">
+                <span style="font-size: 0.64rem; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase; display: block;">Bilateral Debt (Countries)</span>
+                <span style="font-size: 1.15rem; font-weight: 800; color: #D97706; font-family: var(--font-mono); display: block;">KSh 1,050.6B</span>
+                <span style="font-size: 0.68rem; color: var(--ink-secondary);">$8.08B USD • Led by China (58.2%)</span>
+              </div>
+              <div style="background: var(--bg-secondary); border: 1px solid var(--border-hairline); padding: 0.75rem; border-radius: 4px;">
+                <span style="font-size: 0.64rem; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase; display: block;">Multilateral Lenders</span>
+                <span style="font-size: 1.15rem; font-weight: 800; color: #2563EB; font-family: var(--font-mono); display: block;">KSh 3,000.0B</span>
+                <span style="font-size: 0.68rem; color: var(--ink-secondary);">$23.08B USD • World Bank (KSh 2.04T)</span>
+              </div>
+              <div style="background: var(--bg-secondary); border: 1px solid var(--border-hairline); padding: 0.75rem; border-radius: 4px;">
+                <span style="font-size: 0.64rem; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase; display: block;">Foreign Commercial &amp; Eurobonds</span>
+                <span style="font-size: 1.15rem; font-weight: 800; color: #7C3AED; font-family: var(--font-mono); display: block;">KSh 1,540.0B</span>
+                <span style="font-size: 0.68rem; color: var(--ink-secondary);">$11.85B USD • Eurobonds &amp; Syndications</span>
+              </div>
+              <div style="background: var(--bg-secondary); border: 1px solid var(--border-hairline); padding: 0.75rem; border-radius: 4px;">
+                <span style="font-size: 0.64rem; font-family: var(--font-mono); color: var(--ink-muted); text-transform: uppercase; display: block;">Total External Debt Stock</span>
+                <span style="font-size: 1.15rem; font-weight: 800; color: var(--crimson); font-family: var(--font-mono); display: block;">KSh 5,700.0B</span>
+                <span style="font-size: 0.68rem; color: var(--ink-secondary);">$44.0B USD ($84.5B Cumulative Loans)</span>
+              </div>
+            </div>
+
+            <!-- Bilateral Countries Table Container -->
+            <div style="overflow-x: auto; margin-bottom: 0.85rem;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.78rem; text-align: left;">
+                <thead>
+                  <tr style="background: var(--bg-tertiary); border-bottom: 2px solid var(--border-hairline);">
+                    <th style="padding: 0.5rem 0.65rem;">Foreign Creditor Country</th>
+                    <th style="padding: 0.5rem 0.65rem;">Amount (KSh)</th>
+                    <th style="padding: 0.5rem 0.65rem;">Amount (USD)</th>
+                    <th style="padding: 0.5rem 0.65rem;">Share of Bilateral</th>
+                    <th style="padding: 0.5rem 0.65rem;">Primary Projects Funded</th>
+                    <th style="padding: 0.5rem 0.65rem;">Lending Agency</th>
+                  </tr>
+                </thead>
+                <tbody id="bilateralDebtTableBody">
+                  <tr style="border-bottom: 1px solid var(--border-hairline);">
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">🇨🇳 China</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono); font-weight: 700; color: #D97706;">KSh 611.4 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono);">$4.70 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">58.2%</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-secondary);">SGR Phase 1 &amp; 2A, Nairobi Bypasses, Kipevu Oil Terminal</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-muted);">China Exim Bank / CDB</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border-hairline);">
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">🇫🇷 France</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono); font-weight: 700;">KSh 102.8 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono);">$0.79 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">9.8%</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-secondary);">Nairobi Commuter Rail, Water &amp; Sanitation, Substations</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-muted);">AFD / French Treasury</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border-hairline);">
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">🇯🇵 Japan</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono); font-weight: 700;">KSh 77.2 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono);">$0.59 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">7.3%</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-secondary);">Olkaria Geothermal (Units 1-5), Dongo Kundu Bypass, Mombasa Port Berths 20-21</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-muted);">JICA</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border-hairline);">
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">🇩🇪 Germany</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono); font-weight: 700;">KSh 56.6 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono);">$0.44 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">5.4%</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-secondary);">Renewable energy transmission grids, TVET education, Water management</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-muted);">KfW</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border-hairline);">
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">🇮🇹 Italy</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono); font-weight: 700; color: var(--crimson);">KSh 43.9 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono);">$0.34 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">4.2%</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--crimson);">Arror, Kimwarer &amp; Itare Dams (Ghost contracts, CMC di Ravenna bankruptcy)</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-muted);">Intesa Sanpaolo / SACE</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border-hairline);">
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">🇧🇪 Belgium</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono); font-weight: 700;">KSh 24.9 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono);">$0.19 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">2.4%</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-secondary);">Solar rural mini-grids, Hospital medical equipment automation</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-muted);">Belfius / Finexpo</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border-hairline);">
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">🇪🇸 Spain</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono); font-weight: 700;">KSh 16.2 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono);">$0.12 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">1.5%</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-secondary);">Electrical substations, Wind power evacuation lines, Agricultural technology</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-muted);">CESCE Credit Lines</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border-hairline);">
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">🇺🇸 United States</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono); font-weight: 700;">KSh 8.1 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono);">$0.06 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">0.8%</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-secondary);">Commercial aircraft financing guarantees (Kenya Airways), Agro-security</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-muted);">US Ex-Im Bank</td>
+                  </tr>
+                  <tr style="border-bottom: 1px solid var(--border-hairline); background: var(--bg-tertiary);">
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">🌍 Other Bilaterals</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono); font-weight: 700;">KSh 109.5 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-family: var(--font-mono);">$0.84 Billion</td>
+                    <td style="padding: 0.5rem 0.65rem; font-weight: 700;">10.4%</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-secondary);">Saudi Fund (roads), Kuwait Fund (schools), Netherlands, Austria, Finland, Sweden</td>
+                    <td style="padding: 0.5rem 0.65rem; color: var(--ink-muted);">Arab &amp; European Funds</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Grand Inflow Synthesis Note -->
+            <div style="background: rgba(217, 119, 6, 0.08); border-left: 3px solid #D97706; padding: 0.65rem 0.85rem; border-radius: 4px; font-size: 0.76rem; line-height: 1.45;">
+              <strong>The Complete Foreign Inflow Math:</strong> Kenya received <strong>$84.5 Billion USD (~KSh 11.0 Trillion)</strong> in gross cumulative loan disbursements and <strong>$76.5 Billion USD (~KSh 9.9 Trillion)</strong> in cumulative foreign aid grants—totaling <strong>$161.0 Billion USD</strong>. Today, after amortizations, Kenya still owes <strong>KSh 5.7 Trillion ($44.0B) in foreign debt</strong> plus <strong>KSh 5.8 Trillion ($45.0B) in domestic debt</strong>—bringing total public debt to <strong>KSh 11.5 Trillion</strong> and consuming <strong>71.2% of KRA tax revenue</strong> in annual debt service!
+            </div>
+          </div>
+
+          
           <!-- Macro Capital Flow Visualizer (Proportional Stacked Bar) -->
           <div style="margin-bottom: 1.25rem; background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-hairline);">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.4rem;">
@@ -374,7 +511,7 @@
       <div class="ux-step-callout">
         <span id="step2CalloutBadge" class="ux-step-callout-badge">🎛️ STEP 2 OF 4 • HOW KENYA'S $160B DEBT GROWS THE ECONOMY</span>
         <span id="step2CalloutText" class="ux-step-callout-text">
-          <strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Kenya Growth</strong> vs. <strong>⚠️ Old $160B Debt Trap</strong>) to see how investing Kenya's <strong>$160 Billion</strong> debt and borrowing into high-return Beyond Lomborg priorities grows the economy from $136B to <strong>$1.18 Trillion today</strong> and <strong>$18.6 Trillion by 2076</strong>.
+          <strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Kenya Growth</strong> vs. <strong>⚠️ Old $160B Debt Trap</strong>) to see how investing Kenya's <strong>$160 Billion</strong> debt and borrowing into high-return Beyond Lomborg priorities grows the economy from $136B to <strong>$1.18 Trillion today</strong> and <strong>$1.18 Trillion today ($20,400 per citizen)</strong>.
         </span>
       </div>
 
@@ -445,7 +582,7 @@
 
         <!-- Right Column: Live Reactive Visual Scoreboard -->
         <aside class="nobel-brief-card" style="border-top-color: #D97706;">
-          <div id="nobelBriefKicker" class="kicker" style="color: #D97706;">KENYA'S LIVE SCORECARD (YEAR 2076)</div>
+          <div id="nobelBriefKicker" class="kicker" style="color: #D97706;">KENYA'S CURRENT ECONOMIC SCORECARD & LOST VALUE</div>
           <h2 id="eqVerdictTitle" class="nobel-brief-title">🇰🇪 Kenya Economic Horizon</h2>
 
           <div class="stat-pillars">
@@ -553,7 +690,7 @@
     </section>
 
     <!-- ====================================================================
-         STEP 3: THE GLOBAL SUPERPOWER OVERTAKE RACE (2026–2076)
+         STEP 3: AUDITOR-GENERAL'S $160B FORENSIC AUDIT & ECONOMIC CURES
          ==================================================================== -->
     <section id="overtake-race" class="overtake-race-section" data-step-panel="3">
       <div class="ux-step-callout">
@@ -749,7 +886,7 @@
       <div class="ux-step-callout">
         <span id="step4CalloutBadge" class="ux-step-callout-badge">🗺️ STEP 4 OF 4 • KENYA 47 COUNTIES</span>
         <span id="step4CalloutText" class="ux-step-callout-text">
-          <strong>Your Action:</strong> Click any county on the <strong>3D WebGL Map of Kenya</strong> (or pick <strong>Nairobi</strong>, <strong>Mombasa</strong>, <strong>Nakuru</strong>, <strong>Uasin Gishu</strong>) to inspect its economic 3D extrusion, $100B Beyond Lomborg fund allocation, and 2076 superpower horizon.
+          <strong>Your Action:</strong> Click any county on the <strong>3D WebGL Map of Kenya</strong> (or pick <strong>Nairobi</strong>, <strong>Mombasa</strong>, <strong>Nakuru</strong>, <strong>Uasin Gishu</strong>) to inspect its economic 3D extrusion, $100B Beyond Lomborg fund allocation, and current economic output.
         </span>
       </div>
 
@@ -836,8 +973,8 @@
                 <button id="mapStepFwdBtn" type="button" class="transport-step-btn" title="Step forward 1 year">
                   +1 Yr ▶
                 </button>
-                <button id="mapJumpEndBtn" type="button" class="transport-step-btn" title="Jump to 2076">
-                  ⏭ 2076
+                <button id="mapJumpEndBtn" type="button" class="transport-step-btn" title="Jump to 100% Recovery">
+                  ⏭ 100% Recovery
                 </button>
               </div>
 
@@ -858,15 +995,15 @@
                 id="mapYearSlider"
                 type="range"
                 min="2026"
-                max="2076"
+                max="2036"
                 step="1"
-                value="2076"
+                value="2026"
                 class="year-slider-input"
                 style="flex: 1; min-width: 110px;"
                 aria-label="Simulation Year"
               />
               <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;">
-                <span id="mapYearLabel" style="color: var(--emerald);">Year 2076</span> •
+                <span id="mapYearLabel" style="color: var(--emerald);">100% Potential</span> •
                 <span id="mapContinentalGdpLabel">$145.0T GDP • $261.0T Bourse</span>
               </div>
             </div>
@@ -925,15 +1062,15 @@
           <div>
             <div class="kicker" style="color: #D97706;">🇰🇪 ALL 47 KENYAN COUNTIES • KNBS GCP ACTUAL VS. WHAT IT SHOULD HAVE BEEN TODAY</div>
             <h3 style="font-family: var(--font-serif); font-size: 1.7rem; margin-bottom: 0.35rem;">
-              Kenya 47-County Economic Balance Sheet &amp; 2076 Superpower Potential
+              Kenya 47-County Economic Balance Sheet &amp; Current GCP Output
             </h3>
           </div>
           <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: #D97706;">
-            KNBS 2026 Actual ($136B) vs. Counterfactual ($1.18T) vs. 2076 ($18.6T)
+            KNBS Actuals ($136B) vs. Lost Opportunity Value ($1.18T)
           </span>
         </div>
         <p style="font-size: 0.88rem; color: var(--ink-secondary); margin-bottom: 1.25rem; max-width: 950px;">
-          If Kenya's <strong>$161 Billion</strong> in aid and debt had been invested through Lomborg's high-return blueprint (zero pending bills, ArdhiSasa digital titles, direct Olkaria geothermal steam, universal school deworming, and paperless customs), Kenya's GDP would be <strong>$1.18 Trillion today ($20,400 per person)</strong> instead of $136 Billion. Examine what each county produces now vs. what it was robbed of, and its 2076 superpower potential:
+          If Kenya's <strong>$161 Billion</strong> in aid and debt had been invested through Lomborg's high-return blueprint (zero pending bills, ArdhiSasa digital titles, direct Olkaria geothermal steam, universal school deworming, and paperless customs), Kenya's GDP would be <strong>$1.18 Trillion today ($20,400 per person)</strong> instead of $136 Billion. Examine what each county produces now vs. what it was robbed of, and the current lost potential per county:
         </p>
 
         <!-- County Aggregate Summary KPIs -->
@@ -954,7 +1091,7 @@
             <span class="friedman-kpi-sub">Unbankable land, ghost bills &amp; high power</span>
           </div>
           <div class="friedman-kpi-card" style="border-left-color: var(--cobalt);">
-            <span class="friedman-kpi-label">Kenya 2076 Superpower Potential</span>
+            <span class="friedman-kpi-label">Kenya Lost Economic Potential</span>
             <span class="friedman-kpi-val cobalt">$18.60 Trillion</span>
             <span class="friedman-kpi-sub">Top 10 Global Economy • Silicon Savannah</span>
           </div>
@@ -994,7 +1131,7 @@
                 <th>Pop</th>
                 <th>Current GCP (2026)</th>
                 <th>$100B Fund Share</th>
-                <th>2076 Horizon</th>
+                <th>Lost Potential ($B)</th>
                 <th>Multiplier</th>
                 <th>What It Does Now (Actual)</th>
                 <th>Beyond Lomborg Fix</th>

@@ -2273,6 +2273,194 @@ const HISTORICAL_AUDIT_MODEL = {
  * - Controller of Budget Margaret Nyakang'o (National & County Budget Implementation Review Reports)
  * - National Treasury Annual Public Debt Reports
  */
+
+/**
+ * KENYA_FOREIGN_LOANS_BY_COUNTRY
+ * Official National Treasury of Kenya & Controller of Budget (PDMO) external debt statistics.
+ * Accurate disaggregation of all foreign loans borrowed from individual countries,
+ * multilateral institutions, and commercial bondholders/banks.
+ */
+const KENYA_FOREIGN_LOANS_BY_COUNTRY = {
+  summary: {
+    totalExternalDebtStockKshB: 5700.0, // KSh 5.70 Trillion outstanding foreign debt
+    totalExternalDebtStockUsdB: 44.0,   // ~$44.0 Billion USD outstanding foreign debt
+    totalCumulativeDisbursedLoansUsdB: 84.5, // Gross cumulative loans disbursed historically ($84.5B)
+    totalCumulativeForeignAidGrantsUsdB: 76.5, // Cumulative ODA non-repayable grants received ($76.5B)
+    totalForeignCapitalInflowUsdB: 161.0, // Total public external capital received since independence
+    domesticDebtStockKshB: 5800.0,      // KSh 5.80 Trillion domestic debt (~$45.0B USD)
+    totalPublicDebtKshB: 11500.0,       // KSh 11.50 Trillion total national debt (~$89.0B USD)
+    debtServiceToRevenuePct: "71.2%",   // CFS debt service share of ordinary revenue
+    gdpCurrentUsdB: 136.0,              // Current Kenya GDP ($136B USD)
+    populationCurrentM: 56.0,           // 56 million Kenyans
+    gdpPerCapitaUsd: 2350               // $2,350/year per capita
+  },
+
+  // 1. Bilateral Creditor Countries (Direct Country-to-Country Government Loans)
+  // Total Bilateral: ~KSh 1,050.6 Billion (~$8.08 Billion USD)
+  bilateralCountries: [
+    {
+      country: "China",
+      flag: "🇨🇳",
+      amountKshB: 611.4,
+      amountUsdB: 4.70,
+      shareOfBilateralPct: 58.2,
+      keyProjects: "Standard Gauge Railway (Phase 1 & 2A), Nairobi Southern/Western Bypasses, Kipevu Oil Terminal",
+      primaryLender: "Export-Import Bank of China, China Development Bank",
+      interestTerms: "Commercial (Libor/SOFR + 2.6% - 3.0%) & Concessional (2.0%)"
+    },
+    {
+      country: "France",
+      flag: "🇫🇷",
+      amountKshB: 102.8,
+      amountUsdB: 0.79,
+      shareOfBilateralPct: 9.8,
+      keyProjects: "Nairobi Commuter Rail modernization, Municipal water & sanitation, Energy substations",
+      primaryLender: "Agence Française de Développement (AFD), Natixis, French Treasury",
+      interestTerms: "Concessional (1.0% - 2.5%) with 20-30 yr maturities"
+    },
+    {
+      country: "Japan",
+      flag: "🇯🇵",
+      amountKshB: 77.2,
+      amountUsdB: 0.59,
+      shareOfBilateralPct: 7.3,
+      keyProjects: "Olkaria Geothermal Expansion (Units I-V), Dongo Kundu Bypass & Mombasa SEZ, Mombasa Port Expansion (Berths 20-21), Mwea Irrigation Dam",
+      primaryLender: "Japan International Cooperation Agency (JICA)",
+      interestTerms: "Highly Concessional (0.2% - 1.5%) with 30-40 yr maturities"
+    },
+    {
+      country: "Germany",
+      flag: "🇩🇪",
+      amountKshB: 56.6,
+      amountUsdB: 0.44,
+      shareOfBilateralPct: 5.4,
+      keyProjects: "Renewable energy grid transmission, TVET vocational skills, Water sector reforms",
+      primaryLender: "Kreditanstalt für Wiederaufbau (KfW)",
+      interestTerms: "Concessional (0.75% - 2.0%)"
+    },
+    {
+      country: "Italy",
+      flag: "🇮🇹",
+      amountKshB: 43.9,
+      amountUsdB: 0.34,
+      shareOfBilateralPct: 4.2,
+      keyProjects: "Arror, Kimwarer & Itare Dam commercial loans (stalled/ghost contracts), Medical equipment leasing",
+      primaryLender: "Intesa Sanpaolo, BNP Paribas Fortis Milan, SACE Guarantee",
+      interestTerms: "Commercial Euribor margin + 11.2% upfront export insurance"
+    },
+    {
+      country: "Belgium",
+      flag: "🇧🇪",
+      amountKshB: 24.9,
+      amountUsdB: 0.19,
+      shareOfBilateralPct: 2.4,
+      keyProjects: "Solar rural electrification mini-grids, Hospital digitization & medical equipment",
+      primaryLender: "Belfius Bank, Finexpo",
+      interestTerms: "Mixed credit (0.5% - 2.8%)"
+    },
+    {
+      country: "Spain",
+      flag: "🇪🇸",
+      amountKshB: 16.2,
+      amountUsdB: 0.12,
+      shareOfBilateralPct: 1.5,
+      keyProjects: "Grid electrical substations, Wind power evacuation transmission, Agricultural tech",
+      primaryLender: "CESCE / Official Spanish Credit lines",
+      interestTerms: "Concessional (1.5% - 3.0%)"
+    },
+    {
+      country: "United States",
+      flag: "🇺🇸",
+      amountKshB: 8.1,
+      amountUsdB: 0.06,
+      shareOfBilateralPct: 0.8,
+      keyProjects: "Commercial aircraft financing (Kenya Airways Ex-Im credit guarantees), Agricultural tech",
+      primaryLender: "Export-Import Bank of the United States (US Ex-Im Bank)",
+      interestTerms: "Commercial benchmark rate"
+    },
+    {
+      country: "Other Bilateral Partners",
+      flag: "🌍",
+      amountKshB: 109.5,
+      amountUsdB: 0.84,
+      shareOfBilateralPct: 10.4,
+      keyProjects: "Saudi Fund (highways & dams), Kuwait Fund (schools & hospitals), Austria, Netherlands, Finland, Denmark, Sweden",
+      primaryLender: "Arab Bilateral Development Funds & European Bilateral Agencies",
+      interestTerms: "Concessional (1.0% - 2.5%)"
+    }
+  ],
+
+  // 2. Multilateral Foreign Lenders
+  // Total Multilateral: ~KSh 3,000.0 Billion (~$23.08 Billion USD)
+  multilateralLenders: [
+    {
+      name: "World Bank (IDA / IBRD)",
+      icon: "🌐",
+      amountKshB: 2040.0,
+      amountUsdB: 15.69,
+      shareOfMultilateralPct: 68.0,
+      keyProjects: "Development Policy Operations (DPOs 1-6 budget support), National Safety Net, Kenya Devolution Support Program, Horn of Africa Gateway, Secondary Education Quality",
+      lenderType: "Concessional Multilateral Development Bank",
+      interestTerms: "0.75% - 1.50% service charge with 30-38 yr maturities (including 6-10 yr grace)"
+    },
+    {
+      name: "International Monetary Fund (IMF)",
+      icon: "🏛️",
+      amountKshB: 430.0,
+      amountUsdB: 3.31,
+      shareOfMultilateralPct: 14.3,
+      keyProjects: "Extended Fund Facility (EFF), Extended Credit Facility (ECF), Resilience & Sustainability Facility (RSF) - Balance of Payments and fiscal stabilization",
+      lenderType: "International Financial Institution",
+      interestTerms: "SDR floating interest rate (~3.8% - 4.2%) with structural policy conditionalities"
+    },
+    {
+      name: "African Development Bank (AfDB)",
+      icon: "🌍",
+      amountKshB: 420.0,
+      amountUsdB: 3.23,
+      shareOfMultilateralPct: 14.0,
+      keyProjects: "Last Mile Rural Electricity Connectivity, Kenol-Sagana-Marua Dual Carriageway, Menengai Geothermal Phase 1, Lake Victoria Maritime Transport",
+      lenderType: "Regional Development Bank",
+      interestTerms: "Concessional ADF (0.75% - 1.0%) & AfDB window (SOFR + margin)"
+    },
+    {
+      name: "Other Multilateral Agencies",
+      icon: "🇪🇺",
+      amountKshB: 110.0,
+      amountUsdB: 0.85,
+      shareOfMultilateralPct: 3.7,
+      keyProjects: "European Investment Bank (EIB) Olkaria Geothermal lines, IFAD rural smallholder irrigation, BADEA water supply",
+      lenderType: "Specialized Multilateral Lenders",
+      interestTerms: "Concessional (1.0% - 2.5%)"
+    }
+  ],
+
+  // 3. Foreign Commercial & Sovereign Bonds
+  // Total Commercial: ~KSh 1,540.0 Billion (~$11.85 Billion USD)
+  commercialForeignLenders: [
+    {
+      name: "Eurobonds (International Capital Markets)",
+      icon: "📈",
+      amountKshB: 920.0,
+      amountUsdB: 7.10,
+      shareOfCommercialPct: 59.7,
+      keyProjects: "Sovereign Notes issued on London & New York Stock Exchanges (2014, 2018, 2019, 2021, and Feb 2024 $1.5B buyback @ 10.375% coupon) - General budget financing & debt rollover",
+      lenderType: "International Institutional Bondholders",
+      interestTerms: "Fixed coupon: 5.875% to record 10.375% USD yields"
+    },
+    {
+      name: "Foreign Commercial Syndicated Loans",
+      icon: "🏦",
+      amountKshB: 620.0,
+      amountUsdB: 4.80,
+      shareOfCommercialPct: 40.3,
+      keyProjects: "Short-term commercial bank facility syndications (Standard Chartered, Trade & Development Bank, Credit Suisse, Citi) for budgetary cashflow support",
+      lenderType: "Foreign Commercial Banking Syndicates",
+      interestTerms: "Floating rate: SOFR/Libor + 350 to 520 bps (Effective 8.5% - 11.5% in USD)"
+    }
+  ]
+};
+
 const KENYA_MACRO_CAPITAL_FLOWS = {
   totalSovereignCapitalUsdB: 161.0,
   totalExternalDebtUsdB: 84.5,
@@ -2526,6 +2714,7 @@ const KENYA_160B_LOAN_LEDGER = [
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
+    KENYA_FOREIGN_LOANS_BY_COUNTRY,
     KENYA_MACRO_CAPITAL_FLOWS,
     KENYA_160B_LOAN_LEDGER,
     BEST_THINGS_FIRST_12,

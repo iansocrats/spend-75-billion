@@ -7,7 +7,7 @@ const html = fs.readFileSync('index.html', 'utf8');
 // Test 1: Title and brand are Kenya-exclusive
 const tests = [
   ['HTML Title is Kenya-exclusive', html.includes('Kenya Economic Superpower Model')],
-  ['Header brand title is Kenya 2076', html.includes('Kenya Economic Superpower Model') && html.includes('Special Edition • Kenya 2076')],
+  ['Header brand title is Kenya Sovereign Debt & Economic Audit', html.includes('Kenya Economic Superpower Model') && html.includes('Special Edition • Kenya Sovereign Debt & Economic Audit')],
   ['No scope navigation bar (All-Africa removed)', !html.includes('id="countryScopeNavBar"')],
   ['Step 1 title is Kenya $161B Audit', html.includes('Kenya $161B Audit')],
   ['Step 2 title is Kenya $160B', html.includes("How Kenya's $160B Grows Economy")],

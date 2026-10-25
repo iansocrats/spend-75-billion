@@ -1,6 +1,6 @@
 // ============================================================================
 // APPLICATION CONTROLLER: HOW $75B GROWS AFRICA INTO HISTORY'S LARGEST ECONOMY
-// Featuring 60FPS MapLibre WebGL 3D Extruded Map + 2026–2076 Growth Scrubber
+// Featuring 60FPS MapLibre WebGL 3D Extruded Map + 2026–2036 Growth Scrubber
 // ============================================================================
 
 (function () {
@@ -20,10 +20,10 @@
 
   // Interactive Map & Timeline State
   let selectedMapIso = "COD"; // Default to DRC
-  let mapColorMetric = "gdp2076T"; // "gdp2076T", "bcrWeighted", "catalystShareB"
+  let mapColorMetric = "gdp2036T"; // "gdp2036T", "bcrWeighted", "catalystShareB"
   let showCorridors = true;
   let countryDedicated75BMode = false;
-  let mapSimYear = 2076; // 2026 to 2076
+  let mapSimYear = 2026; // 2026 to 2036
   let timelineInterval = null;
   let mapEngineMode = "3d"; // "3d", "2d-gl", or "svg"
   let glMap = null;
@@ -41,12 +41,12 @@
     return AFRICAN_BLUEPRINTS[activeCountryKey] || AFRICAN_BLUEPRINTS.africa;
   }
 
-  // Helper: Interpolate country GDP at any year between 2026 and 2076 (compound curve)
+  // Helper: Interpolate country GDP at any year between 2026 and 2036 (compound curve)
   function getCountryGdpAtYear(c, year) {
     const t = Math.max(0, Math.min(1, (year - 2026) / 50.0));
     // Non-linear compound curve (t^2.15 matches 50-year compounding trajectory)
     const curve = Math.pow(t, 2.15);
-    return +(c.gdp2026T + (c.gdp2076T - c.gdp2026T) * curve).toFixed(2);
+    return +(c.gdp2026T + (c.gdp2036T - c.gdp2026T) * curve).toFixed(2);
   }
 
   function getContinentalGdpAtYear(year) {
@@ -202,11 +202,11 @@
   function getCountryFillColor(c) {
     if (!c) return "#CBD5E1";
     const val =
-      mapColorMetric === "gdp2076T"
+      mapColorMetric === "gdp2036T"
         ? getCountryGdpAtYear(c, mapSimYear)
         : c[mapColorMetric] || 0;
 
-    if (mapColorMetric === "gdp2076T") {
+    if (mapColorMetric === "gdp2036T") {
       if (val >= 15) return "#F59E0B"; // Gold Superpower Peak ($15T–$54.8T)
       if (val >= 5.0) return "#1D4ED8"; // Cobalt Regional Titan ($5T–$15T)
       if (val >= 2.0) return "#0D9488"; // Emerald Industrial Power ($2T–$5T)
@@ -267,7 +267,7 @@
         const isSectorMatch = activeCountySector === "ALL" || c.sector === activeCountySector;
         const isBlocMatch = activeCountyBloc === "ALL" || c.bloc === activeCountyBloc;
         const isMatch = isSectorMatch && isBlocMatch;
-        f.properties.extrusionHeight = mapEngineMode === "2d-gl" ? 0 : (isMatch ? Math.round(c.gcp2076T * 45000) : 4000);
+        f.properties.extrusionHeight = mapEngineMode === "2d-gl" ? 0 : (isMatch ? Math.round(c.gcp2036T * 45000) : 4000);
         f.properties.fillColor = isMatch ? (SECTOR_COLORS[c.sector] || "#D97706") : "#334155";
       }
     });
@@ -364,7 +364,7 @@
             mapFloatingTooltip.innerHTML = `
               <strong style="font-size: 0.92rem;">${p.icon || "📍"} ${p.code} • ${p.name}</strong> (${p.sectorName || ""})<br/>
               Current GCP: <strong style="color: var(--crimson);">$${p.gcp2026B || 1.0}B</strong> ➔ $100B Fund: <strong style="color: #F59E0B;">+$${((p.alloc100BM || 2000) / 1000).toFixed(1)}B</strong><br/>
-              2076 Superpower Horizon: <strong style="color: var(--emerald);">$${p.gcp2076T || 0.5} Trillion</strong> • <em>${p.multiplier || "Economic Multiplier"}</em>
+              Lost Potential & Horizon: <strong style="color: var(--emerald);">$${p.gcp2036T || 0.5} Trillion</strong> • <em>${p.multiplier || "Economic Multiplier"}</em>
             `;
           }
         });
@@ -441,7 +441,7 @@
     });
   }
 
-  // Timeline Scrubber, Transport & Speed Controls for 3D Map (2026 -> 2076)
+  // Timeline Scrubber, Transport & Speed Controls for 3D Map (2026 -> 2036)
   let mapSpeedMultiplier = 1;
   const MAP_BASE_YEAR_MS = 220;
   const mapResetStartBtn = document.getElementById("mapResetStartBtn");
@@ -473,7 +473,7 @@
     }
     if (playTimelineBtn) {
       playTimelineBtn.textContent =
-        mapSimYear >= 2076 ? "▶ Replay Yearly 3D Growth" : "▶ Play Yearly 3D Growth";
+        mapSimYear >= 2036 ? "▶ Replay Yearly 3D Growth" : "▶ Play Yearly 3D Growth";
     }
   }
 
@@ -482,7 +482,7 @@
       clearInterval(timelineInterval);
       timelineInterval = null;
     }
-    if (mapSimYear >= 2076) {
+    if (mapSimYear >= 2036) {
       mapSimYear = 2026;
       updateTimelineDisplay();
     }
@@ -493,7 +493,7 @@
     timelineInterval = setInterval(() => {
       mapSimYear += 1;
       updateTimelineDisplay();
-      if (mapSimYear >= 2076) {
+      if (mapSimYear >= 2036) {
         stopMapPlayback();
       }
     }, stepMs);
@@ -536,7 +536,7 @@
   if (mapStepFwdBtn) {
     mapStepFwdBtn.addEventListener("click", () => {
       stopMapPlayback();
-      mapSimYear = Math.min(2076, mapSimYear + 1);
+      mapSimYear = Math.min(2036, mapSimYear + 1);
       updateTimelineDisplay();
     });
   }
@@ -544,7 +544,7 @@
   if (mapJumpEndBtn) {
     mapJumpEndBtn.addEventListener("click", () => {
       stopMapPlayback();
-      mapSimYear = 2076;
+      mapSimYear = 2036;
       updateTimelineDisplay();
     });
   }
@@ -574,7 +574,7 @@
         (c) =>
           `<option value="${c.iso}" ${
             c.iso === selectedMapIso ? "selected" : ""
-          }>${c.flag} ${c.name} ($${c.gdp2076T}T Peak)</option>`
+          }>${c.flag} ${c.name} ($${c.gdp2036T}T Peak)</option>`
       )
       .join("");
   }
@@ -600,7 +600,7 @@
         const curGdp = getCountryGdpAtYear(c, mapSimYear);
         mapFloatingTooltip.innerHTML = `
           <strong>${c.flag} ${c.name}</strong> (${c.region})<br/>
-          Year ${mapSimYear} GDP: <strong style="color: var(--emerald);">$${curGdp}T</strong> (2076 Peak: <strong>$${c.gdp2076T}T</strong>)
+          Year ${mapSimYear} GDP: <strong style="color: var(--emerald);">$${curGdp}T</strong> (Potential: <strong>$${c.gdp2036T}T</strong>)
         `;
       });
 
@@ -766,19 +766,19 @@
           <span class="dossier-metric-val emerald">$${immediateSurplusB.toLocaleString()}B</span>
         </div>
         <div class="dossier-metric-box">
-          <span class="dossier-metric-label">Year ${mapSimYear} GDP (2076 Peak)</span>
-          <span class="dossier-metric-val emerald">$${curGdpT}T ($${c.gdp2076T}T)</span>
+          <span class="dossier-metric-label">Year ${mapSimYear} GDP (Potential)</span>
+          <span class="dossier-metric-val emerald">$${curGdpT}T ($${c.gdp2036T}T)</span>
         </div>
       </div>
 
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; padding: 0.65rem 0.85rem; background: var(--emerald-soft); border-left: 3px solid #D97706; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.73rem;">
-        <span>🏛️ <strong>2076 ${c.name} Stock Exchange (1.8× GDP):</strong> <strong style="color: var(--emerald);">$${(c.gdp2076T * 1.8).toFixed(2)}T Market Cap</strong></span>
+        <span>🏛️ <strong>2036 ${c.name} Stock Exchange (1.8× GDP):</strong> <strong style="color: var(--emerald);">$${(c.gdp2036T * 1.8).toFixed(2)}T Market Cap</strong></span>
         <span>💱 <strong>Friedman Currency Value:</strong> <strong style="color: #D97706;">+${Math.round(180 + c.bcrWeighted * 1.75)}% Real Appreciation</strong></span>
       </div>
 
       <div>
         <div style="font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; color: var(--ink-muted); font-weight: 700;">
-          Natural &amp; Strategic Endowments (${c.name} • ~${c.pop2076M}M Pop by 2076)
+          Natural &amp; Strategic Endowments (${c.name} • ~${c.pop2036M}M Pop by 2036)
         </div>
         <ul class="dossier-endowment-list">
           ${endowmentsHtml}
@@ -939,7 +939,7 @@
     if (typeof KENYA_47_COUNTIES_DATA === "undefined" || !countySelectDropdown) return;
     if (countySelectDropdown.options.length === 0) {
       countySelectDropdown.innerHTML = Object.values(KENYA_47_COUNTIES_DATA)
-        .map((c) => `<option value="${c.code}">${c.icon} ${c.code} • ${c.name} (${c.sectorName}) - $${c.gcp2076T}T</option>`)
+        .map((c) => `<option value="${c.code}">${c.icon} ${c.code} • ${c.name} (${c.sectorName}) - $${c.gcp2036T}T</option>`)
         .join("");
 
       countySelectDropdown.addEventListener("change", (e) => {
@@ -1087,11 +1087,11 @@
           </div>
         </div>
 
-        <!-- Meter 3: 2076 Superpower Potential -->
+        <!-- Meter 3: Lost Economic Potential -->
         <div>
           <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-family: var(--font-mono); margin-bottom: 0.25rem;">
-            <span style="color: var(--emerald); font-weight: 700;">🟢 3. 2076 Superpower Horizon:</span>
-            <strong style="color: var(--emerald); font-size: 0.85rem;">$${c.gcp2076T.toFixed(2)} Trillion</strong>
+            <span style="color: var(--emerald); font-weight: 700;">🟢 3. Lost Potential & Horizon:</span>
+            <strong style="color: var(--emerald); font-size: 0.85rem;">$${c.gcp2036T.toFixed(2)} Trillion</strong>
           </div>
           <div style="height: 10px; background: rgba(16, 185, 129, 0.15); border-radius: 999px; overflow: hidden;">
             <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #10B981, #059669); border-radius: 999px; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);"></div>
@@ -1214,7 +1214,7 @@
           mapFloatingTooltip.innerHTML = `
             <strong style="font-size: 0.9rem;">${c.icon} ${c.code} • ${c.name}</strong> (${c.sectorName})<br/>
             Current GCP: <strong style="color: var(--crimson);">$${c.gcp2026B}B</strong> ➔ $100B Fund: <strong style="color: #F59E0B;">+$${(c.alloc100BM / 1000).toFixed(1)}B</strong><br/>
-            2076 Potential: <strong style="color: var(--emerald);">$${c.gcp2076T} Trillion</strong> • <em>${c.multiplier}</em>
+            2036 Potential: <strong style="color: var(--emerald);">$${c.gcp2036T} Trillion</strong> • <em>${c.multiplier}</em>
           `;
         }
       });
@@ -1355,7 +1355,7 @@
             <td style="font-family: var(--font-mono); font-size: 0.78rem;">${c.pop2026M}M</td>
             <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--crimson); font-weight: 800;">$${c.gcp2026B.toFixed(1)}B</td>
             <td style="font-family: var(--font-mono); font-size: 0.8rem; color: #F59E0B; font-weight: 800;">+$${(c.alloc100BM / 1000).toFixed(1)}B</td>
-            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--emerald); font-weight: 800;">$${c.gcp2076T.toFixed(2)}T</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--emerald); font-weight: 800;">$${c.gcp2036T.toFixed(2)}T</td>
             <td>
               <span style="display: inline-block; padding: 0.15rem 0.45rem; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: var(--emerald); font-weight: 800; font-size: 0.72rem;">
                 ${c.multiplier}
@@ -1501,8 +1501,8 @@
         simVerdictText.innerHTML = `<strong style="color: var(--amber);">Notice the Opportunity Cost:</strong> Funding unsequenced debt traps crowds out high-return biological, agricultural, and property-rights breakthroughs!`;
       } else if (totalCost === 0) {
         simVerdictText.innerHTML = isKenya
-          ? `Status Quo ($0 allocated): Kenya lingers at ~$1.4T by 2076. Select high-BCR catalysts below to unlock the $18.6T Silicon Savannah trajectory.`
-          : `Status Quo ($0 allocated): Africa lingers at ~$8.2T by 2076. Select high-BCR catalysts below to unlock the $145T superpower trajectory.`;
+          ? `Status Quo ($0 allocated): Kenya lingers at ~$1.4T by 2036. Select high-BCR catalysts below to unlock the $18.6T Silicon Savannah trajectory.`
+          : `Status Quo ($0 allocated): Africa lingers at ~$8.2T by 2036. Select high-BCR catalysts below to unlock the $145T superpower trajectory.`;
       } else {
         simVerdictText.innerHTML = `You have <strong>$${remaining.toFixed(
           1
@@ -2082,9 +2082,9 @@
   }
 
   // ==========================================================================
-  // 7. GLOBAL SUPERPOWER OVERTAKE RACE (2026–2076) — YEARLY ENGINE & CONTROLS
+  // 7. GLOBAL SUPERPOWER OVERTAKE RACE (Current Baseline vs. Potential) — YEARLY ENGINE & CONTROLS
   // ==========================================================================
-  let raceYear = 2076;
+  let raceYear = 2036;
   let raceInterval = null;
   let raceSpeedMultiplier = 1; // 0.25x, 0.5x, 1x, 2x, 4x (base 1x = 220ms/year)
   const BASE_YEAR_MS = 220;
@@ -2128,11 +2128,11 @@
 
   function interpolateBlocGdp(bloc, yr) {
     const d = bloc.gdpByDecade;
-    const decades = [2026, 2036, 2046, 2056, 2066, 2076];
-    let baseVal = d[2076];
+    const decades = [2026, 2036, 2046, 2056, 2066, 2036];
+    let baseVal = d[2036];
     if (yr <= 2026) {
       baseVal = d[2026];
-    } else if (yr < 2076) {
+    } else if (yr < 2036) {
       for (let i = 0; i < decades.length - 1; i++) {
         const y0 = decades[i];
         const y1 = decades[i + 1];
@@ -2231,7 +2231,7 @@
               <span class="bloc-title-text">${bloc.flag} ${bloc.shortName}</span>
               <span class="overtake-flash-badge" style="display: none;">🔥 OVERTAKE!</span>
             </div>
-            <span class="race-bloc-sub">Workforce 2076: ${bloc.workingAge2076} • Power: ${bloc.powerCostKwh.split(" ")[0]}</span>
+            <span class="race-bloc-sub">Workforce 2036: ${bloc.workingAge2036} • Power: ${bloc.powerCostKwh.split(" ")[0]}</span>
           </div>
         </div>
         <div class="race-track">
@@ -2332,7 +2332,7 @@
     }
     if (playOvertakeRaceBtn) {
       playOvertakeRaceBtn.textContent =
-        raceYear >= 2076 ? "▶ Replay Yearly Race" : "▶ Play Yearly Race";
+        raceYear >= 2036 ? "▶ Replay Yearly Race" : "▶ Play Yearly Race";
     }
   }
 
@@ -2341,7 +2341,7 @@
       clearInterval(raceInterval);
       raceInterval = null;
     }
-    if (raceYear >= 2076) {
+    if (raceYear >= 2036) {
       raceYear = 2026;
       prevBlocRanks = {};
       renderOvertakeRace(false);
@@ -2353,7 +2353,7 @@
     raceInterval = setInterval(() => {
       raceYear += 1;
       renderOvertakeRace(true);
-      if (raceYear >= 2076) {
+      if (raceYear >= 2036) {
         stopRacePlayback();
       }
     }, stepMs);
@@ -2363,8 +2363,8 @@
     const blocs = getActiveOvertakeBlocs();
     if (!raceProofTableBody || !blocs) return;
     raceProofTableBody.innerHTML = blocs.map((b) => {
-      const gdp2076Full = interpolateBlocGdp(b, 2076);
-      const extraBoost = +(gdp2076Full - b.gdpByDecade[2076]).toFixed(1);
+      const gdp2036Full = interpolateBlocGdp(b, 2036);
+      const extraBoost = +(gdp2036Full - b.gdpByDecade[2036]).toFixed(1);
       const boostBadge =
         extraBoost > 0
           ? ` <span style="font-size: 0.68rem; color: #D97706;">(+$${extraBoost}T ${
@@ -2379,9 +2379,9 @@
         <td style="font-family: var(--font-mono);">$${b.gdpByDecade[2026].toFixed(2)}T</td>
         <td style="font-family: var(--font-mono); font-weight: 700; color: ${
           b.isAfricaHero ? "var(--emerald)" : "var(--ink-primary)"
-        };">$${gdp2076Full.toFixed(2)}T${boostBadge}</td>
-        <td style="font-family: var(--font-mono);">${b.workingAge2076}</td>
-        <td style="font-family: var(--font-mono);">${b.medianAge2076}</td>
+        };">$${gdp2036Full.toFixed(2)}T${boostBadge}</td>
+        <td style="font-family: var(--font-mono);">${b.workingAge2036}</td>
+        <td style="font-family: var(--font-mono);">${b.medianAge2036}</td>
         <td style="font-family: var(--font-mono);">${b.powerCostKwh}</td>
       </tr>
     `;
@@ -2452,7 +2452,7 @@
               <span class="megacap-ticker" style="background-color: #0D9488;">${
                 s.icon
               } $${s.ticker}</span>
-              <span class="megacap-cap">+$${s.gdp2076T.toFixed(1)}T GDP</span>
+              <span class="megacap-cap">+$${s.gdp2036T.toFixed(1)}T GDP</span>
             </div>
             <div style="font-weight: 700; font-size: 0.94rem; margin-top: 0.45rem; line-height: 1.25;">
               ${s.name}
@@ -2466,7 +2466,7 @@
             ${s.explanation}
           </p>
           <div style="font-family: var(--font-mono); font-size: 0.67rem; color: var(--emerald); font-weight: 700; border-top: 1px dashed var(--border-hairline); padding-top: 0.4rem;">
-            2026: $${s.baseline2026B}B → 2076 Bourse Cap: $${s.bourse2076T.toFixed(
+            2026: $${s.baseline2026B}B → 2036 Bourse Cap: $${s.bourse2036T.toFixed(
           1
         )}T (1.8×)
           </div>
@@ -2489,8 +2489,8 @@
               1
             )}T GDP</div>
             <div class="friedman-kpi-sub" style="margin-bottom: 0.3rem;">
-              <strong>2076 GDP:</strong> $${p.baseGdp2076T}T → <strong>$${(
-            p.baseGdp2076T + p.coProsperityGdpBoostT
+              <strong>2036 GDP:</strong> $${p.baseGdp2036T}T → <strong>$${(
+            p.baseGdp2036T + p.coProsperityGdpBoostT
           ).toFixed(1)}T</strong> (+$${p.coProsperityBourseBoostT}T Bourse)
             </div>
             <div style="font-size: 0.72rem; color: var(--ink-secondary); line-height: 1.35;">
@@ -2586,7 +2586,7 @@
   if (raceStepFwdBtn) {
     raceStepFwdBtn.addEventListener("click", () => {
       stopRacePlayback();
-      raceYear = Math.min(2076, raceYear + 1);
+      raceYear = Math.min(2036, raceYear + 1);
       renderOvertakeRace(true);
     });
   }
@@ -2594,7 +2594,7 @@
   if (raceJumpEndBtn) {
     raceJumpEndBtn.addEventListener("click", () => {
       stopRacePlayback();
-      raceYear = 2076;
+      raceYear = 2036;
       prevBlocRanks = {};
       renderOvertakeRace(false);
     });
@@ -2648,9 +2648,9 @@
     }
     if (valDiscountR) valDiscountR.textContent = `${rPct.toFixed(1)}%`;
 
-    // 1. Real Output Y in 2076 (calibrated so 7.6%/yr = $145.0T, 2.6%/yr = $8.2T)
-    const simGdp2076T = +(3.71 * Math.pow(1 + yPct / 100, 50)).toFixed(1);
-    const clampedGdp2076T = Math.min(260.0, Math.max(4.5, simGdp2076T));
+    // 1. Real Output Y in 2036 (calibrated so 7.6%/yr = $145.0T, 2.6%/yr = $8.2T)
+    const simGdp2036T = +(3.71 * Math.pow(1 + yPct / 100, 50)).toFixed(1);
+    const clampedGdp2036T = Math.min(260.0, Math.max(4.5, simGdp2036T));
 
     // 2. Friedman Equation of Exchange: Inflation P_dot = M_dot + V_dot - Y_dot
     // With digital velocity V_dot ~ +1.8% in deepening markets
@@ -2667,7 +2667,7 @@
     const currencyChangePct = reerIndex - 100;
 
     // 4. Total Pan-African Stock Market Cap (Buffett Indicator: Market Cap = GDP * buffett)
-    const panAfricanMarketCapT = +(clampedGdp2076T * buffett).toFixed(1);
+    const panAfricanMarketCapT = +(clampedGdp2036T * buffett).toFixed(1);
     const twinAxisMarketCapT = +(panAfricanMarketCapT * 0.506).toFixed(1);
 
     // 5. Gordon Growth Model P/E Multiple: P/E = (1 - retention) / (r - g)
@@ -2679,7 +2679,7 @@
     const bondYield10Yr = Math.max(1.8, +(rPct * 0.5 + Math.max(0, inflationPct * 0.65)).toFixed(1));
     const reserveSharePct = Math.max(
       0.2,
-      Math.min(52.0, +((clampedGdp2076T / 340.0) * 100 * (reerIndex / 365)).toFixed(1))
+      Math.min(52.0, +((clampedGdp2036T / 340.0) * 100 * (reerIndex / 365)).toFixed(1))
     );
 
     const reg =
@@ -2699,7 +2699,7 @@
         </div>
         <div style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; text-align: right;">
           <div>Friedman Identity: M(${mPct.toFixed(1)}%) · V = P(${inflationPct > 0 ? "+" : ""}${inflationPct}%) · Y(${yPct.toFixed(1)}%)</div>
-          <div style="color: var(--emerald);">2076 Real Output (Y): $${clampedGdp2076T.toFixed(1)} Trillion</div>
+          <div style="color: var(--emerald);">2036 Real Output (Y): $${clampedGdp2036T.toFixed(1)} Trillion</div>
         </div>
       `;
     }
@@ -2711,7 +2711,7 @@
       const kCurrencyChange = 380;
       friedmanKpiGrid.innerHTML = `
         <div class="friedman-kpi-card">
-          <div class="friedman-kpi-label">2076 Nairobi Securities Exchange (NSE)</div>
+          <div class="friedman-kpi-label">2036 Nairobi Securities Exchange (NSE)</div>
           <div class="friedman-kpi-val" style="color: var(--emerald);">$${kenyaMarketCapT}T</div>
           <div class="friedman-kpi-sub">${buffett.toFixed(2)}× Buffett Ratio on $18.6T Kenya GDP</div>
         </div>
@@ -2748,7 +2748,7 @@
       `;
 
       if (sankoreExchangeTotalLabel) {
-        sankoreExchangeTotalLabel.textContent = `Simulated 2076 Nairobi Securities Exchange (NSE) Market Cap: $${kenyaMarketCapT} Trillion`;
+        sankoreExchangeTotalLabel.textContent = `Simulated 2036 Nairobi Securities Exchange (NSE) Market Cap: $${kenyaMarketCapT} Trillion`;
       }
 
       if (megacapTickerBoard) {
@@ -2758,7 +2758,7 @@
             <div>
               <div class="megacap-top">
                 <span class="megacap-ticker">$${co.ticker}</span>
-                <span class="megacap-cap">$${co.baseCap2076T}T</span>
+                <span class="megacap-cap">$${co.baseCap2036T}T</span>
               </div>
               <div style="font-weight: 700; font-size: 0.94rem; margin-top: 0.45rem; line-height: 1.25;">
                 ${co.name}
@@ -2784,9 +2784,9 @@
 
     friedmanKpiGrid.innerHTML = `
       <div class="friedman-kpi-card">
-        <div class="friedman-kpi-label">2076 Pan-African Stock Market</div>
+        <div class="friedman-kpi-label">2036 Pan-African Stock Market</div>
         <div class="friedman-kpi-val" style="color: var(--emerald);">$${panAfricanMarketCapT.toFixed(1)}T</div>
-        <div class="friedman-kpi-sub">${buffett.toFixed(2)}× Buffett Ratio on $${clampedGdp2076T.toFixed(1)}T GDP (vs. $1.1T in 2026)</div>
+        <div class="friedman-kpi-sub">${buffett.toFixed(2)}× Buffett Ratio on $${clampedGdp2036T.toFixed(1)}T GDP (vs. $1.1T in 2026)</div>
       </div>
 
       <div class="friedman-kpi-card gold">
@@ -2833,14 +2833,14 @@
     `;
 
     if (sankoreExchangeTotalLabel) {
-      sankoreExchangeTotalLabel.textContent = `Simulated 2076 Continental Market Cap: $${panAfricanMarketCapT.toFixed(1)} Trillion`;
+      sankoreExchangeTotalLabel.textContent = `Simulated 2036 Continental Market Cap: $${panAfricanMarketCapT.toFixed(1)} Trillion`;
     }
 
     if (megacapTickerBoard) {
       const capScale = panAfricanMarketCapT / 261.0;
       megacapTickerBoard.innerHTML = FRIEDMAN_CAPITAL_MARKETS_MODEL.megacaps
         .map((co) => {
-          const scaledCapT = +(co.baseCap2076T * capScale).toFixed(2);
+          const scaledCapT = +(co.baseCap2036T * capScale).toFixed(2);
           return `
             <div class="megacap-card">
               <div>
@@ -2901,9 +2901,9 @@
   );
 
   // ==========================================================================
-  // 9. GLOBAL STOCK MARKET & CURRENCY OVERTAKE RACE (2026–2076)
+  // 9. GLOBAL STOCK MARKET & CURRENCY OVERTAKE RACE (Current Baseline vs. Potential)
   // ==========================================================================
-  let stockRaceYear = 2076;
+  let stockRaceYear = 2036;
   let stockRaceInterval = null;
   let stockRaceSpeedMultiplier = 1;
   const STOCK_BASE_YEAR_MS = 220;
@@ -2938,11 +2938,11 @@
 
   function interpolateStockCap(bloc, yr) {
     const d = bloc.capByDecade;
-    const decades = [2026, 2036, 2046, 2056, 2066, 2076];
-    let baseVal = d[2076];
+    const decades = [2026, 2036, 2046, 2056, 2066, 2036];
+    let baseVal = d[2036];
     if (yr <= 2026) {
       baseVal = d[2026];
-    } else if (yr < 2076) {
+    } else if (yr < 2036) {
       for (let i = 0; i < decades.length - 1; i++) {
         const y0 = decades[i];
         const y1 = decades[i + 1];
@@ -2963,7 +2963,7 @@
   function interpolateCurrencyReer(bloc, yr) {
     const t = Math.max(0, Math.min(1, (yr - 2026) / 50));
     return Math.round(
-      bloc.currencyReer2026 + (bloc.currencyReer2076 - bloc.currencyReer2026) * t
+      bloc.currencyReer2026 + (bloc.currencyReer2036 - bloc.currencyReer2026) * t
     );
   }
 
@@ -3016,7 +3016,7 @@
               <span class="bloc-title-text">${bloc.flag} ${bloc.shortName}</span>
               <span class="overtake-flash-badge" style="display: none;">🔥 OVERTAKE!</span>
             </div>
-            <span class="race-bloc-sub stock-meta-sub">Cap/GDP: ${bloc.buffett2076} • FX REER: ${bloc.currencyReer2076}</span>
+            <span class="race-bloc-sub stock-meta-sub">Cap/GDP: ${bloc.buffett2036} • FX REER: ${bloc.currencyReer2036}</span>
           </div>
         </div>
         <div class="race-track">
@@ -3095,7 +3095,7 @@
       const subEl = row.querySelector(".stock-meta-sub");
       if (subEl) {
         const fxDiff = bloc.currentReer - 100;
-        subEl.textContent = `2076 Cap/GDP: ${bloc.buffett2076} • FX REER: ${bloc.currentReer} (${fxDiff >= 0 ? "+" : ""}${fxDiff}%)`;
+        subEl.textContent = `2036 Cap/GDP: ${bloc.buffett2036} • FX REER: ${bloc.currentReer} (${fxDiff >= 0 ? "+" : ""}${fxDiff}%)`;
       }
 
       const widthPct = Math.max(2.5, (bloc.currentCapT / maxBarCap) * 100);
@@ -3122,7 +3122,7 @@
     }
     if (playStockRaceBtn) {
       playStockRaceBtn.textContent =
-        stockRaceYear >= 2076
+        stockRaceYear >= 2036
           ? "▶ Replay Stock Market Race"
           : "▶ Play Stock Market Race";
     }
@@ -3133,7 +3133,7 @@
       clearInterval(stockRaceInterval);
       stockRaceInterval = null;
     }
-    if (stockRaceYear >= 2076) {
+    if (stockRaceYear >= 2036) {
       stockRaceYear = 2026;
       prevStockBlocRanks = {};
       renderStockMarketRace(false);
@@ -3148,7 +3148,7 @@
     stockRaceInterval = setInterval(() => {
       stockRaceYear += 1;
       renderStockMarketRace(true);
-      if (stockRaceYear >= 2076) {
+      if (stockRaceYear >= 2036) {
         stopStockRacePlayback();
       }
     }, stepMs);
@@ -3208,7 +3208,7 @@
   if (stockRaceStepFwdBtn) {
     stockRaceStepFwdBtn.addEventListener("click", () => {
       stopStockRacePlayback();
-      stockRaceYear = Math.min(2076, stockRaceYear + 1);
+      stockRaceYear = Math.min(2036, stockRaceYear + 1);
       renderStockMarketRace(true);
     });
   }
@@ -3216,7 +3216,7 @@
   if (stockRaceJumpEndBtn) {
     stockRaceJumpEndBtn.addEventListener("click", () => {
       stopStockRacePlayback();
-      stockRaceYear = 2076;
+      stockRaceYear = 2036;
       prevStockBlocRanks = {};
       renderStockMarketRace(false);
     });
@@ -3287,8 +3287,8 @@
       instFactor
     ).toFixed(1);
 
-    // 2. Marginal Value Product of African Labor (2076 Annual Wage in $)
-    const annualWage2076 = Math.min(
+    // 2. Marginal Value Product of African Labor (2036 Annual Wage in $)
+    const annualWage2036 = Math.min(
       68000,
       Math.max(
         1450,
@@ -3363,8 +3363,8 @@
     priceTheoryKpiGrid.innerHTML = `
       <div class="friedman-kpi-card">
         <div class="friedman-kpi-label">Ch. 7 Marginal Product of Labor</div>
-        <div class="friedman-kpi-val" style="color: var(--emerald);">$${annualWage2076.toLocaleString()}/yr</div>
-        <div class="friedman-kpi-sub">2076 Avg African Skilled Wage (vs. $1,850/yr under Raw-Ore Trap)</div>
+        <div class="friedman-kpi-val" style="color: var(--emerald);">$${annualWage2036.toLocaleString()}/yr</div>
+        <div class="friedman-kpi-sub">2036 Avg African Skilled Wage (vs. $1,850/yr under Raw-Ore Trap)</div>
       </div>
 
       <div class="friedman-kpi-card gold">
@@ -3832,13 +3832,13 @@
     const coreComposite = b * 0.35 + e * 0.32 + p * 0.33;
     const isKenya = activeCountryScope === "kenya";
 
-    let gdp2076, bourse2076, fxGainPct, overtakeText, verdictText, stuntingText, powerText, twinText, worldText;
+    let gdp2036, bourse2036, fxGainPct, overtakeText, verdictText, stuntingText, powerText, twinText, worldText;
 
     if (isKenya) {
-      gdp2076 = +(1.4 + 13.8 * Math.pow(coreComposite, 1.35) + 3.4 * s * coreComposite).toFixed(1);
-      bourse2076 = +(gdp2076 * (1.15 + 0.15 * coreComposite)).toFixed(1);
+      gdp2036 = +(1.4 + 13.8 * Math.pow(coreComposite, 1.35) + 3.4 * s * coreComposite).toFixed(1);
+      bourse2036 = +(gdp2036 * (1.15 + 0.15 * coreComposite)).toFixed(1);
       fxGainPct = Math.round(-30 + 410 * coreComposite);
-      overtakeText = gdp2076 >= 5.0 ? "Year 2048 (Passes UK & France)" : "Never (Trap)";
+      overtakeText = gdp2036 >= 5.0 ? "Year 2048 (Passes UK & France)" : "Never (Trap)";
       verdictText = coreComposite >= 0.75
         ? "🏆 Top 10 Global Economy & Tech Hub"
         : coreComposite >= 0.35
@@ -3846,22 +3846,22 @@
         : "⚠️ Trapped in Debt & Tender Graft";
       stuntingText = `${(24.0 - 22.8 * b).toFixed(1)}% Stunting`;
       powerText = `$${(0.19 - 0.152 * p).toFixed(3)} / kWh (Olkaria Geothermal)`;
-      twinText = `$${gdp2076}T Kenya Superhub`;
+      twinText = `$${gdp2036}T Kenya Superhub`;
       worldText = `+$${(4.8 * coreComposite).toFixed(1)}T Regional Boost`;
     } else {
-      gdp2076 = +(
+      gdp2036 = +(
         8.2 +
         136.8 * Math.pow(coreComposite, 1.35) +
         38.5 * s * coreComposite
       ).toFixed(1);
       const buffettMult = 0.3 + 1.5 * Math.pow(p * 0.6 + e * 0.4, 1.1);
-      bourse2076 = +(gdp2076 * buffettMult).toFixed(1);
+      bourse2036 = +(gdp2036 * buffettMult).toFixed(1);
       fxGainPct = Math.round(-55 + 320 * coreComposite);
-      const twinGdp = +(gdp2076 * 0.484).toFixed(1);
+      const twinGdp = +(gdp2036 * 0.484).toFixed(1);
       const worldBoost = +(42.0 * coreComposite).toFixed(1);
 
       overtakeText = "Never (Trap)";
-      if (gdp2076 >= 65) {
+      if (gdp2036 >= 65) {
         const yr = Math.round(2074 - 23 * coreComposite - 3 * s);
         overtakeText = `Year ${Math.max(2049, Math.min(2075, yr))}`;
       }
@@ -3876,8 +3876,8 @@
       worldText = `+$${worldBoost}T Global Boost`;
     }
 
-    if (eqScoreGdp) eqScoreGdp.textContent = `$${gdp2076}T`;
-    if (eqScoreBourse) eqScoreBourse.textContent = `$${bourse2076}T`;
+    if (eqScoreGdp) eqScoreGdp.textContent = `$${gdp2036}T`;
+    if (eqScoreBourse) eqScoreBourse.textContent = `$${bourse2036}T`;
     if (eqScoreOvertakeYr) eqScoreOvertakeYr.textContent = overtakeText;
     if (eqScoreCurrency) {
       eqScoreCurrency.textContent = `${fxGainPct >= 0 ? "+" : ""}${fxGainPct}%`;
@@ -4513,7 +4513,7 @@
     if (s2Badge) s2Badge.textContent = isKenya ? "🎛️ STEP 2 OF 4 • HOW KENYA'S $160B DEBT GROWS THE ECONOMY" : "🎛️ STEP 2 OF 4 • THE $75B FIX";
     if (s2Callout) {
       s2Callout.innerHTML = isKenya
-        ? `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Kenya Growth</strong> vs. <strong>⚠️ Old $160B Debt Trap</strong>) to see how investing Kenya's <strong>$160 Billion</strong> debt and borrowing into high-return Beyond Lomborg priorities grows the economy from $136B to <strong>$1.18 Trillion today</strong> and <strong>$18.6 Trillion by 2076</strong>.`
+        ? `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Kenya Growth</strong> vs. <strong>⚠️ Old $160B Debt Trap</strong>) to see how investing Kenya's <strong>$160 Billion</strong> debt and borrowing into high-return Beyond Lomborg priorities grows the economy from $136B to <strong>$1.18 Trillion today</strong> and <strong>$18.6 Trillion by 2036</strong>.`
         : `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Growth</strong> vs. <strong>⚠️ Old Trap</strong>) to see how spending $75 Billion smartly unlocks an <strong>$183.5 Trillion</strong> economy.`;
     }
     if (s2Kicker) s2Kicker.textContent = isKenya ? "STEP 2 • MOVE THE 4 CONTROLS ($160B KENYA INVESTMENT)" : "STEP 2 • MOVE THE 4 CONTROLS";
@@ -4530,7 +4530,7 @@
     if (eqTopBarTitle) eqTopBarTitle.textContent = isKenya ? "🎛️ Live 4-Pillar Economic Controls ($160B Kenya Growth Model)" : "🎛️ Live 4-Pillar Economic Controls ($75B Catalyst)";
     if (eqMaxBtn) eqMaxBtn.textContent = isKenya ? "🔥 Max Kenya Growth ($18.6T)" : "🔥 Max Growth ($183.5T)";
     if (eqTrapBtn) eqTrapBtn.textContent = isKenya ? "⚠️ Old $160B Debt Trap ($1.4T)" : "⚠️ Old Raw-Ore Trap ($8.2T)";
-    if (nobelKicker) nobelKicker.textContent = isKenya ? "KENYA'S LIVE SCORECARD (YEAR 2076)" : "AFRICA'S LIVE SCORECARD (YEAR 2076)";
+    if (nobelKicker) nobelKicker.textContent = isKenya ? "KENYA'S LIVE SCORECARD (YEAR 2036)" : "AFRICA'S LIVE SCORECARD (YEAR 2036)";
     if (eqGdpLbl) eqGdpLbl.textContent = isKenya ? "Total Economy Size (vs. $136B Today)" : "Total Economy Size (vs. $3.7T Today)";
     if (eqBourseLbl) eqBourseLbl.textContent = isKenya ? "Nairobi Securities Exchange (NSE)" : "Stock Market Value (1.8× Economy)";
     if (eqOvertakeLbl) eqOvertakeLbl.textContent = isKenya ? "Year Kenya Passes the UK & France" : "Year Africa Passes the US as #1 on Earth";
@@ -4579,12 +4579,12 @@
         : `<strong>Your Action:</strong> Press <strong>▶ Play Yearly Race</strong> (or click the <strong>Key Years</strong> below) to watch Africa pass Europe, India, China, and the United States to become the world's #1 economy.`;
     }
 
-    if (raceKicker) raceKicker.textContent = isKenya ? "STEP 3 • 2026 TO 2076 • WATCH KENYA ENTER THE GLOBAL TOP 10" : "STEP 3 • 2026 TO 2076 • WATCH AFRICA TAKE THE LEAD";
-    if (raceTitle) raceTitle.textContent = isKenya ? "The Global Race: Watch Kenya Enter the World Top 10 by 2076" : "The Global Race: Watch Africa Overtake Europe, India, China & the United States";
+    if (raceKicker) raceKicker.textContent = isKenya ? "STEP 3 • 2026 TO 2036 • WATCH KENYA ENTER THE GLOBAL TOP 10" : "STEP 3 • 2026 TO 2036 • WATCH AFRICA TAKE THE LEAD";
+    if (raceTitle) raceTitle.textContent = isKenya ? "The Global Race: Watch Kenya Enter the World Top 10 by 2036" : "The Global Race: Watch Africa Overtake Europe, India, China & the United States";
     if (raceSub) {
       raceSub.innerHTML = isKenya
-        ? `Starting from $136B in 2026 (#74 globally), Kenya redirects its $160B borrowing into geothermal energy, port automation, and digital education—racing past South Africa, France, the UK, and Germany to become an $18.6 Trillion powerhouse by 2076:`
-        : `In 1324, Mansa Musa’s Mali was wealthier than any kingdom in Europe or Asia. Press <strong>▶ Play Yearly Race</strong> (or slide the years 2026 to 2076) to watch how high-impact investments lift Africa’s young population past aging world powers into the #1 economic spot on Earth:`;
+        ? `Starting from $136B in 2026 (#74 globally), Kenya redirects its $160B borrowing into geothermal energy, port automation, and digital education—racing past South Africa, France, the UK, and Germany to become an $18.6 Trillion powerhouse by 2036:`
+        : `In 1324, Mansa Musa’s Mali was wealthier than any kingdom in Europe or Asia. Press <strong>▶ Play Yearly Race</strong> (or slide the years 2026 to 2036) to watch how high-impact investments lift Africa’s young population past aging world powers into the #1 economic spot on Earth:`;
     }
 
     // Dynamic Milestone Buttons for Kenya vs Africa
@@ -4601,7 +4601,7 @@
           <button type="button" class="filter-pill" data-race-year="2046">2046 (Overtakes France: $4.5T)</button>
           <button type="button" class="filter-pill" data-race-year="2048">2048 (Overtakes UK: $5.8T)</button>
           <button type="button" class="filter-pill" data-race-year="2056">2056 (Overtakes Germany: $8.5T)</button>
-          <button type="button" class="filter-pill active" data-race-year="2076">2076 (Enters Global Top 5: $18.6T)</button>
+          <button type="button" class="filter-pill active" data-race-year="2036">2036 (Enters Global Top 5: $18.6T)</button>
         `;
       } else {
         raceMilestonesBar.innerHTML = `
@@ -4615,7 +4615,7 @@
           <button type="button" class="filter-pill" data-race-year="2053">2053 (Passes China)</button>
           <button type="button" class="filter-pill" data-race-year="2055">2055 (Passes USA to become #1)</button>
           <button type="button" class="filter-pill" data-race-year="2068">2068 (Kenya + Congo Alone Passes USA)</button>
-          <button type="button" class="filter-pill active" data-race-year="2076">2076 ($183.5T Superpower)</button>
+          <button type="button" class="filter-pill active" data-race-year="2036">2036 ($183.5T Superpower)</button>
         `;
       }
       raceMilestonesBar.querySelectorAll("[data-race-year]").forEach((b) => {
