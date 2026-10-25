@@ -922,9 +922,9 @@ const AFRICAN_BLUEPRINTS = {
   // ==========================================================================
   kenya: {
     id: "kenya",
-    name: "Kenya ($18.6T Silicon Savannah & Indian Ocean Superhub)",
+    name: "Kenya ($356.0B Silicon Savannah & Geothermal Tiger)",
     badge: "FINTECH, GEOTHERMAL, EDTECH PIONEER & INDO-AFRICAN GATEWAY",
-    headline: "How Kenya's Homegrown 'Best Things First' Breakthroughs Build an $18.6T Superhub",
+    headline: "How Kenya's Homegrown 'Best Things First' Breakthroughs Build a $356.0B Tiger Economy",
     intro: "Kenya is literally the global laboratory that proved Bjørn Lomborg's highest-ROI breakthroughs: Busia, Western Kenya proved School Deworming (60:1), Kenya's Tusome & structured pedagogy programs proved Adaptive Learning at the Right Level (65:1 in Best Things First!), and the Copenhagen Consensus 'Kenya Priorities' project mapped county-level ROI across the republic. Pairing these with 38:1 E-Procurement, 55:1 ArdhiSasa Digital Land Titles, 95:1 Paperless Mombasa–DRC Customs, and $0.04/kWh Rift Valley Geothermal turns Kenya into the 'Singapore + California' of Africa.",
     endowments: [
       {
@@ -1077,7 +1077,7 @@ const AFRICAN_BLUEPRINTS = {
     trajectories: {
       maxAxisT: 20.0,
       lomborg: {
-        name: "Unified $75B + Best Things First Kenya Superhub ($18.6T Peak)",
+        name: "Unified $41.0B Borrowed Debt + Best Things First Kenya Model ($356.0B Potential)",
         color: "#0D9488",
         points: [
           { year: "Year 0 (2026)", gdpT: 0.38, note: "Initial catalytic capital deployed into 101:1 vaccines, 65:1 Adaptive EdTech, 33:1 KALRO seeds, 38:1 E-Procurement & 55:1 ArdhiSasa." },
@@ -1085,7 +1085,7 @@ const AFRICAN_BLUEPRINTS = {
           { year: "Year 20 (2046)", gdpT: 3.90, note: "Nairobi & Konza become the #1 global hub for English-speaking AI engineering, FinTech, and KEMRI pharmaceutical manufacturing." },
           { year: "Year 30 (2056)", gdpT: 8.20, note: "Mombasa & Lamu ports clear $2T+/yr in automated Indo-African trade linking India/Asia to the Congo Basin." },
           { year: "Year 40 (2066)", gdpT: 13.40, note: "High-income innovation economy matching Singapore and California in per-capita R&D and financial services." },
-          { year: "Year 50 (2076)", gdpT: 18.60, note: "An $18.6 Trillion Indo-African technological, financial, and clean-industrial superpower." }
+          { year: "Year 10 (2036)", gdpT: 0.356, note: "A $356.0 Billion Upper-Middle Income African Tiger ($6,360 per capita)." }
         ]
       },
       megaproject: {
@@ -1526,7 +1526,7 @@ const OVERTAKE_RACE_BLOCS_KENYA = [
     workingAge2076: "68M (+130%)",
     medianAge2076: "31 yrs",
     powerCostKwh: "$0.038/kWh (Olkaria Geothermal & Turkana Wind)",
-    gdpByDecade: { 2026: 0.14, 2036: 1.18, 2046: 4.2, 2056: 8.5, 2066: 13.8, 2076: 18.6 }
+    gdpByDecade: { 2026: 0.136, 2029: 0.185, 2031: 0.250, 2036: 0.356 }
   },
   {
     id: "germany",
@@ -2145,7 +2145,7 @@ const HISTORICAL_AUDIT_MODEL = {
     lomborgPotentialBcr: "48.7 : 1",
     defaultRedirectPct: 25,
     headline: "Africa Already Received $3.33 Trillion in Aid & Sovereign Debt (44.4× Our $75B Catalyst)—Why Is 2026 GDP $3.7T Instead of $28.4T?",
-    summary: "Over the past 66 years, Africa received $2.15 Trillion in Official Development Aid and borrowed $1.18 Trillion in sovereign external debt. As Milton Friedman warned in his 1958 Foreign Aid paper, deploying government-to-government capital without 38:1 E-Procurement, 28:1 Property Rights, 95:1 Open Trade, and Ch. 11 Human Capital resulted in a 1.3:1 return and $1.45T in illicit capital flight. Had just 25% of that capital been sequenced via Lomborg's 48.7:1 Best Things First ratios starting in 1985, All-Africa's GDP TODAY in 2026 would already be $28.4 Trillion—larger than the EU ($19.4T) and China ($19.5T) right now!",
+    summary: "Over the past 66 years, Africa received $2.15 Trillion in Official Development Aid and borrowed $356.0 Billion in sovereign external debt. As Milton Friedman warned in his 1958 Foreign Aid paper, deploying government-to-government capital without 38:1 E-Procurement, 28:1 Property Rights, 95:1 Open Trade, and Ch. 11 Human Capital resulted in a 1.3:1 return and $1.45T in illicit capital flight. Had just 25% of that capital been sequenced via Lomborg's 48.7:1 Best Things First ratios starting in 1985, All-Africa's GDP TODAY in 2026 would already be $28.4 Trillion—larger than the EU ($19.4T) and China ($19.5T) right now!",
     inflowChannels: [
       {
         title: "1. Official Development Assistance (ODA / Foreign Aid • 1960–2026)",
@@ -2156,7 +2156,7 @@ const HISTORICAL_AUDIT_MODEL = {
       },
       {
         title: "2. Sovereign External Borrowing (Eurobonds, Bilateral & Multilateral Debt)",
-        amountLabel: "$1.18 Trillion (+ $950B Interest Paid)",
+        amountLabel: "$356.0 Billion (+ $950B Interest Paid)",
         multipleLabel: "15.7× our $75B Catalyst",
         realizedBcr: "1.6 : 1 BCR",
         leakageDiagnosis: "Borrowed at 7%–11% interest for unsequenced concrete megaprojects before curing stunting or automating customs; 25%–35% lost to procurement inflation without 38:1 E-Procurement."
@@ -2210,8 +2210,8 @@ const HISTORICAL_AUDIT_MODEL = {
     realizedBcr: "1.5 : 1",
     lomborgPotentialBcr: "54.2 : 1 (Copenhagen Consensus 'Kenya Priorities')",
     defaultRedirectPct: 0,
-    headline: "Kenya Borrowed $41.0 Billion in Foreign Debt ($84.5B Total Debt)—Why Is Kenya’s GDP $136B Instead of $759B to $1.18 Trillion?",
-    summary: "Kenya currently owes $41.0 Billion (KSh 5.3 Trillion) in foreign debt from bilateral nations (China, France, Japan, Germany, Italy) and multilaterals (World Bank, IMF), and $84.5 Billion (KSh 11.0 Trillion) in total public debt. Yet 65% to 71.2% of national taxes are swallowed by debt service while funds leaked into stalled dams, pending bills, and idle thermal IPPs. Had Kenya directed 28% into high-return priorities (deworming 60:1, digital land titles 55:1, Olkaria geothermal 38:1, paperless customs 95:1), Kenya's GDP would be $759B to $1.18 Trillion today!",
+    headline: "Kenya Borrowed $41.0 Billion in Foreign Debt ($84.5B Total Debt)—Why Is Kenya’s GDP $136B Instead of $759B to $356.0 Billion?",
+    summary: "Kenya currently owes $41.0 Billion (KSh 5.3 Trillion) in foreign debt from bilateral nations (China, France, Japan, Germany, Italy) and multilaterals (World Bank, IMF), and $84.5 Billion (KSh 11.0 Trillion) in total public debt. Yet 65% to 71.2% of national taxes are swallowed by debt service while funds leaked into stalled dams, pending bills, and idle thermal IPPs. Had Kenya directed 28% into high-return priorities (deworming 60:1, digital land titles 55:1, Olkaria geothermal 38:1, paperless customs 95:1), Kenya's GDP would be $759B to $356.0 Billion today!",
     inflowChannels: [
       {
         title: "1. Cumulative Official Foreign Aid / ODA to Kenya (1963–2026)",

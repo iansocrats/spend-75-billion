@@ -1354,8 +1354,8 @@
             </td>
             <td style="font-family: var(--font-mono); font-size: 0.78rem;">${c.pop2026M}M</td>
             <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--crimson); font-weight: 800;">$${c.gcp2026B.toFixed(1)}B</td>
-            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: #F59E0B; font-weight: 800;">${c.gcpShouldBe2026B ? c.gcpShouldBe2026B.toFixed(1) : (c.gcp2026B * 8.68).toFixed(1)}B</td>
-            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--emerald); font-weight: 800;">+${((c.gcpShouldBe2026B || c.gcp2026B * 8.68) - c.gcp2026B).toFixed(1)}B</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: #D97706; font-weight: 800;">${(c.gcpShouldBe2026B || c.gcp2026B * 2.62).toFixed(1)}B</td>
+            <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--emerald); font-weight: 800;">+${(c.lostPotentialB || (c.gcp2026B * 1.62)).toFixed(1)}B</td>
             <td>
               <span style="display: inline-block; padding: 0.15rem 0.45rem; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: var(--emerald); font-weight: 800; font-size: 0.72rem;">
                 ${c.multiplier}
@@ -1447,8 +1447,8 @@
     let hasDecoys = false;
 
     const isKenya = activeCountryScope === "kenya";
-    const budgetLimit = isKenya ? 160.0 : MAX_BUDGET_B;
-    const scaleFactor = isKenya ? (160.0 / 75.0) : 1.0;
+    const budgetLimit = isKenya ? 41.0 : MAX_BUDGET_B; // Exact $41.0B foreign debt borrowed
+    const scaleFactor = isKenya ? (41.0 / 75.0) : 1.0;
 
     GLOBAL_INTERVENTIONS.forEach((item) => {
       if (selectedIds.has(item.id)) {
@@ -1466,8 +1466,8 @@
     const avgBcr = totalCost > 0 ? (totalBenefit / totalCost).toFixed(1) : "0.0";
 
     const optimalSurplusRef = 3649.0;
-    const gdpUnlockedT = isKenya
-      ? (totalCost === 0 ? 1.4 : +(1.4 + (totalBenefit / optimalSurplusRef) * (18.6 - 1.4)).toFixed(1))
+    const gdpUnlockedVal = isKenya
+      ? (totalCost === 0 ? 136.0 : +(136.0 + (totalBenefit / optimalSurplusRef) * (356.0 - 136.0)).toFixed(1))
       : (totalCost === 0 ? 8.2 : +(8.2 + (totalBenefit / optimalSurplusRef) * (145.0 - 8.2)).toFixed(1));
 
     simSpentDisplay.textContent = `$${scaledCost}B / $${budgetLimit}B`;
@@ -1476,10 +1476,9 @@
       maximumFractionDigits: 1,
     })}B`;
     simAvgBcrDisplay.textContent = `${avgBcr} : 1`;
-    simRemainingDisplay.textContent = `$${gdpUnlockedT.toLocaleString("en-US", {
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1,
-    })}T`;
+    simRemainingDisplay.textContent = isKenya
+      ? `${gdpUnlockedVal.toFixed(1)}B`
+      : `${gdpUnlockedVal.toFixed(1)}T`;
 
     const pct = Math.min(100, Math.max(0, (scaledCost / budgetLimit) * 100));
     simProgressBar.style.width = `${pct}%`;
@@ -1495,13 +1494,13 @@
       simProgressBar.classList.remove("over-warning");
       if (count === 16 && !hasDecoys && Math.abs(scaledCost - budgetLimit) < 0.6) {
         simVerdictText.innerHTML = isKenya
-          ? `✓ <strong>Optimal Kenya Superhub Portfolio Active:</strong> Unlocks $${scaledBenefit.toLocaleString()}B surplus &amp; compounds into an <strong>$${gdpUnlockedT} Trillion</strong> Silicon Savannah economy.`
+          ? `✓ <strong>Optimal Kenya $41B Debt Allocation Active:</strong> Unlocks ${scaledBenefit.toLocaleString()}B surplus &amp; expands Kenya into a <strong>${gdpUnlockedVal} Billion</strong> Upper-Middle Income Tiger.`
           : `✓ <strong>Optimal African Superpower Portfolio Active:</strong> Unlocks $${totalBenefit.toLocaleString()}B immediately &amp; compounds into a <strong>$${gdpUnlockedT} Trillion</strong> continental economy.`;
       } else if (hasDecoys) {
         simVerdictText.innerHTML = `<strong style="color: var(--amber);">Notice the Opportunity Cost:</strong> Funding unsequenced debt traps crowds out high-return biological, agricultural, and property-rights breakthroughs!`;
       } else if (totalCost === 0) {
         simVerdictText.innerHTML = isKenya
-          ? `Status Quo ($0 allocated): Kenya lingers at ~$1.4T by 2036. Select high-BCR catalysts below to unlock the $18.6T Silicon Savannah trajectory.`
+          ? `Status Quo ($0 allocated): Kenya lingers at $136B (71.2% tax eaten by debt). Select high-return catalysts below to unlock the $356B African Tiger trajectory.`
           : `Status Quo ($0 allocated): Africa lingers at ~$8.2T by 2036. Select high-BCR catalysts below to unlock the $145T superpower trajectory.`;
       } else {
         simVerdictText.innerHTML = `You have <strong>$${remaining.toFixed(
@@ -2170,21 +2169,15 @@
     const blocs = getActiveOvertakeBlocs();
     if (activeCountryScope === "kenya") {
       const hero = blocs.find((b) => b.isAfricaHero) || blocs[0];
-      const kyGdp = interpolateBlocGdp(hero, yr).toFixed(2);
-      if (yr <= 2030) {
-        return `<strong>${yr} • Phase I: Health &amp; Education Shield (Yr ${yr - 2026}/50):</strong> Kenya redirects its <strong>$160B debt</strong> into Busia school deworming (60:1), Tusome EdTech (65:1), and maternal survival. Child stunting falls below 8%.`;
-      } else if (yr <= 2035) {
-        return `<strong>${yr} • Phase II: Geothermal &amp; Land Rights Tiger (Yr ${yr - 2026}/50):</strong> Kenya reaches <strong>$${kyGdp}T</strong>! ArdhiSasa digital titles unlock $48B+ dead capital, and 10 GW Olkaria/Menengai geothermal steam delivers $0.038/kWh clean baseload.`;
-      } else if (yr <= 2040) {
-        return `<strong>${yr} • OVERTAKE #1 (SOUTH AFRICA SURPASSED):</strong> 🇰🇪 <strong>Kenya ($${kyGdp}T) overtakes South Africa!</strong> Kenya becomes the #1 largest and most industrialized economy in Sub-Saharan Africa.`;
-      } else if (yr <= 2046) {
-        return `<strong>${yr} • OVERTAKE #2 (FRANCE SURPASSED):</strong> 🇰🇪 <strong>Kenya ($${kyGdp}T) overtakes France!</strong> Silicon Savannah AI compute clusters and Mombasa–DRC 24-hr transit corridors boom.`;
-      } else if (yr <= 2048) {
-        return `<strong>${yr} • OVERTAKE #3 (UNITED KINGDOM SURPASSED):</strong> 🇰🇪 <strong>Kenya ($${kyGdp}T) overtakes the UK!</strong> Former colonial ruler surpassed; Nairobi Securities Exchange reaches $10T+ market cap.`;
-      } else if (yr <= 2056) {
-        return `<strong>${yr} • OVERTAKE #4 (GERMANY SURPASSED):</strong> 🇰🇪 <strong>Kenya ($${kyGdp}T) overtakes Germany!</strong> Kenya firmly enters the World Top 10 economies with an educated workforce of 68M+ youth.`;
+      const kyGdpB = (interpolateBlocGdp(hero, yr) * 1000).toFixed(0);
+      if (yr <= 2028) {
+        return `<strong>${yr} • Phase I: Human Capital Foundation (Yr ${yr - 2026}/10):</strong> Kenya deploys foreign debt into Busia deworming (60:1), Tusome adaptive EdTech (65:1), and maternal survival. Child stunting drops from 18% to &lt;6%.`;
+      } else if (yr <= 2031) {
+        return `<strong>${yr} • Phase II: Geothermal Baseload &amp; Land Registry (Yr ${yr - 2026}/10):</strong> Kenya GDP reaches <strong>${kyGdpB} Billion</strong>! ArdhiSasa digital titles unlock $50B+ in collateral, and Olkaria geothermal steam delivers $0.045/kWh clean industrial power.`;
+      } else if (yr <= 2034) {
+        return `<strong>${yr} • Phase III: Port Automation &amp; Regional Trade (Yr ${yr - 2026}/10):</strong> Kenya reaches <strong>${kyGdpB} Billion</strong>. Mombasa paperless customs (95:1) cuts clearance times by 75%, making Kenya the East African trade hub.`;
       } else {
-        return `<strong>${yr} • SILICON SAVANNAH ECONOMIC TITAN (#5 ON EARTH):</strong> 🇰🇪 <strong>Kenya reaches $${kyGdp} Trillion!</strong> An Indian Ocean financial, geothermal, and AI powerhouse entering the Global Top 5.`;
+        return `<strong>${yr} • UPPER-MIDDLE INCOME AFRICAN TIGER:</strong> 🇰🇪 <strong>Kenya reaches $356.0 Billion GDP ($6,360/capita)!</strong> Kenya surpasses South Africa ($375B) in economic dynamism, industrial efficiency, and sovereign debt sustainability.`;
       }
     }
 
@@ -2707,31 +2700,31 @@
     const isKenya = activeCountryScope === "kenya";
 
     if (isKenya) {
-      const kenyaMarketCapT = +(18.6 * buffett).toFixed(1);
-      const kCurrencyChange = 380;
+      const kenyaMarketCapB = +(356.0 * buffett).toFixed(1);
+      const kCurrencyChange = 98;
       friedmanKpiGrid.innerHTML = `
         <div class="friedman-kpi-card">
           <div class="friedman-kpi-label">2036 Nairobi Securities Exchange (NSE)</div>
-          <div class="friedman-kpi-val" style="color: var(--emerald);">$${kenyaMarketCapT}T</div>
-          <div class="friedman-kpi-sub">${buffett.toFixed(2)}× Buffett Ratio on $18.6T Kenya GDP</div>
+          <div class="friedman-kpi-val" style="color: var(--emerald);">$${kenyaMarketCapB}B</div>
+          <div class="friedman-kpi-sub">${buffett.toFixed(2)}× Buffett Ratio on $356.0B Kenya GDP</div>
         </div>
 
         <div class="friedman-kpi-card gold">
           <div class="friedman-kpi-label">East Africa Trade Settlement Rails</div>
-          <div class="friedman-kpi-val" style="color: #D97706;">$38.5T</div>
+          <div class="friedman-kpi-val" style="color: #D97706;">$45.0B/yr</div>
           <div class="friedman-kpi-sub">Nairobi–Mombasa–Lamu Indo-Pacific Corridor</div>
         </div>
 
         <div class="friedman-kpi-card">
           <div class="friedman-kpi-label">Kenyan Shilling (KES) Strength</div>
           <div class="friedman-kpi-val" style="color: var(--emerald);">+${kCurrencyChange}%</div>
-          <div class="friedman-kpi-sub">KSh 24 per $1 USD • Property Rights &amp; Geothermal Surplus</div>
+          <div class="friedman-kpi-sub">KSh 65 per $1 USD • Property Rights &amp; Geothermal Surplus</div>
         </div>
 
         <div class="friedman-kpi-card">
           <div class="friedman-kpi-label">Friedman Annual Inflation (P)</div>
-          <div class="friedman-kpi-val" style="color: var(--ink-primary);">1.8%/yr</div>
-          <div class="friedman-kpi-sub">10-Yr Kenya Sovereign Bond Yield: <strong>2.8%</strong></div>
+          <div class="friedman-kpi-val" style="color: var(--ink-primary);">2.4%/yr</div>
+          <div class="friedman-kpi-sub">10-Yr Kenya Sovereign Bond Yield: <strong>3.5%</strong></div>
         </div>
 
         <div class="friedman-kpi-card">
@@ -3844,19 +3837,31 @@
     let gdp2036, bourse2036, fxGainPct, overtakeText, verdictText, stuntingText, powerText, twinText, worldText;
 
     if (isKenya) {
-      gdp2036 = +(1.4 + 13.8 * Math.pow(coreComposite, 1.35) + 3.4 * s * coreComposite).toFixed(1);
-      bourse2036 = +(gdp2036 * (1.15 + 0.15 * coreComposite)).toFixed(1);
-      fxGainPct = Math.round(-30 + 410 * coreComposite);
-      overtakeText = gdp2036 >= 5.0 ? "Year 2048 (Passes UK & France)" : "Never (Trap)";
-      verdictText = coreComposite >= 0.75
-        ? "🏆 Top 10 Global Economy & Tech Hub"
-        : coreComposite >= 0.35
-        ? "⚡ Emerging African Tiger"
-        : "⚠️ Trapped in Debt & Tender Graft";
-      stuntingText = `${(24.0 - 22.8 * b).toFixed(1)}% Stunting`;
-      powerText = `$${(0.19 - 0.152 * p).toFixed(3)} / kWh (Olkaria Geothermal)`;
-      twinText = `$${gdp2036}T Kenya Superhub`;
-      worldText = `+$${(4.8 * coreComposite).toFixed(1)}T Regional Boost`;
+      // Kenya Baseline: $136B GDP ($2,350/person) -> Realistic Max Potential: $356B–$380B ($6,150/person)
+      const gdpValB = +(136.0 + 220.0 * Math.pow(coreComposite, 1.1) + 24.0 * s * coreComposite).toFixed(1);
+      gdp2036 = gdpValB; // in Billions USD
+      bourse2036 = +(gdpValB * (0.12 + 0.95 * Math.pow(coreComposite, 1.1))).toFixed(1); // $16.5B baseline to $390B
+      fxGainPct = Math.round(98 * coreComposite); // KSh 129 strengthening to KSh 65
+      const kesRate = Math.round(129 - (129 - 65) * coreComposite);
+
+      overtakeText = coreComposite >= 0.85
+        ? "#1 in East/Central Africa (Overtakes SA $375B)"
+        : coreComposite >= 0.40
+        ? "Surpasses Ethiopia ($165B)"
+        : "Trapped in Debt Distress";
+
+      verdictText = coreComposite >= 0.80
+        ? "🏆 Upper-Middle Income African Tiger ($356B+ GDP • $6,150/capita)"
+        : coreComposite >= 0.40
+        ? "⚡ Emerging Regional Growth Hub"
+        : "⚠️ Debt Distress & Fiscal Stagnation ($136B GDP • 71.2% Tax Eaten by Debt)";
+
+      stuntingText = `${(18.0 - 14.5 * b).toFixed(1)}% Stunting (Universal Deworming)`;
+      powerText = `${(0.190 - 0.145 * p).toFixed(3)} / kWh (10GW Olkaria Steam)`;
+      twinText = `+${(120.0 * s).toFixed(1)}B Land & Tech Equity`;
+      worldText = coreComposite === 0
+        ? "-$220.0B/yr Lost Output"
+        : `+${(220.0 * coreComposite).toFixed(1)}B/yr Output Recovered`;
     } else {
       gdp2036 = +(
         8.2 +
@@ -3885,8 +3890,8 @@
       worldText = `+$${worldBoost}T Global Boost`;
     }
 
-    if (eqScoreGdp) eqScoreGdp.textContent = `$${gdp2036}T`;
-    if (eqScoreBourse) eqScoreBourse.textContent = `$${bourse2036}T`;
+    if (eqScoreGdp) eqScoreGdp.textContent = isKenya ? `${gdp2036}B` : `${gdp2036}T`;
+    if (eqScoreBourse) eqScoreBourse.textContent = isKenya ? `${bourse2036}B` : `${bourse2036}T`;
     if (eqScoreOvertakeYr) eqScoreOvertakeYr.textContent = overtakeText;
     if (eqScoreCurrency) {
       eqScoreCurrency.textContent = `${fxGainPct >= 0 ? "+" : ""}${fxGainPct}%`;
@@ -3980,47 +3985,47 @@
 
   const OAG_CURE_SPECS = {
     pendingBills: {
-      capitalB: 4.2,
+      capitalB: 5.4,
       annualTaxB: 45,
-      gdpBoostB: 95,
+      gdpBoostB: 35.0, // Plugs $5.4B unverified claims -> +$35B SME output
       curePill: "🔒 TSA + MILESTONE ESCROW",
-      leakPill: "💔 UNVERIFIED PENDING BILLS",
+      leakPill: "💔 KSh 700B+ PENDING BILLS",
       cureBtn: "✓ Cure Enforced (TSA Escrow Active)",
-      leakBtn: "🔒 Enforce Cure (Plug $4.2B Leak)",
+      leakBtn: "🔒 Enforce Cure (Plug $5.4B Leak)",
     },
     debtChoke: {
       capitalB: 12.5,
-      annualTaxB: 210,
-      gdpBoostB: 340,
+      annualTaxB: 180,
+      gdpBoostB: 70.0, // Cuts commercial rollovers -> lowers rates to 9% -> +$70B private credit output
       curePill: "🔒 DEBT-FOR-PRODUCTIVITY SWAP",
-      leakPill: "💔 65% REVENUE CHOKE",
+      leakPill: "💔 71.2% REVENUE CHOKE",
       cureBtn: "✓ Cure Enforced (Commercial Rollover Halted)",
       leakBtn: "🔒 Enforce Cure (Halt Commercial Rollover)",
     },
     deadLand: {
-      capitalB: 65.0,
-      annualTaxB: 65,
-      gdpBoostB: 380,
+      capitalB: 18.5,
+      annualTaxB: 55,
+      gdpBoostB: 55.0, // Nationwide digital land titles -> unlocks bank collateral -> +$55B agro/industrial output
       curePill: "🔒 ARDHISASA DIGITAL TITLES",
-      leakPill: "💔 DEAD PAPER CAPITAL",
+      leakPill: "💔 DEAD PAPER DEEDS",
       cureBtn: "✓ Cure Enforced (ArdhiSasa Active)",
-      leakBtn: "🔒 Enforce Cure (Unlock $65B Land Collateral)",
+      leakBtn: "🔒 Enforce Cure (Unlock $18.5B Land Collateral)",
     },
     thermalIpp: {
       capitalB: 1.8,
       annualTaxB: 32,
-      gdpBoostB: 140,
-      curePill: "🔒 4¢ OLKARIA BASELOAD POWER",
+      gdpBoostB: 35.0, // 10GW Olkaria steam at $0.045/kWh -> factory expansion -> +$35B manufacturing output
+      curePill: "🔒 4.5¢ OLKARIA BASELOAD POWER",
       leakPill: "💔 KSh 32B/YR IDLE CAPACITY",
       cureBtn: "✓ Cure Enforced (Thermal IPPs Decommissioned)",
       leakBtn: "🔒 Enforce Cure (Decommission Thermal IPPs)",
     },
     portDelays: {
-      capitalB: 18.0,
+      capitalB: 2.8,
       annualTaxB: 28,
-      gdpBoostB: 85,
+      gdpBoostB: 25.0, // 24-hr single window customs (95:1 BCR) -> +$25B regional transit trade
       curePill: "🔒 24-HR SINGLE WINDOW AI CUSTOMS",
-      leakPill: "💔 18-SIGNATURE DELAYS",
+      leakPill: "💔 10-DAY PORT DELAYS",
       cureBtn: "✓ Cure Enforced (24-Hr Port Automated)",
       leakBtn: "🔒 Enforce Cure (Automate 24-Hr Port)",
     },
@@ -4069,27 +4074,27 @@
     if (capSubEl) capSubEl.textContent = `${curedCount} of 5 Cures Enforced`;
     if (taxEl) taxEl.textContent = `+KSh ${savedTaxKshB} Billion / yr`;
 
-    const projectedGdpB = 136 + boostGdpB;
+    const projectedGdpB = +(136.0 + boostGdpB).toFixed(1);
     if (gdpEl) {
       if (curedCount === 0) {
-        gdpEl.textContent = "$136B (Current Stagnation)";
+        gdpEl.textContent = "$136.0B (Current Stagnation)";
         gdpEl.style.color = "var(--ink-pure)";
       } else if (curedCount === 5) {
-        gdpEl.textContent = "$356.0 Billion (Tiger Unleashed!)";
+        gdpEl.textContent = "$356.0 Billion (Upper-Middle Tiger)";
         gdpEl.style.color = "var(--emerald)";
       } else {
-        gdpEl.textContent = `$${(projectedGdpB / 1000).toFixed(2)}T (${projectedGdpB}B)`;
+        gdpEl.textContent = `${projectedGdpB} Billion`;
         gdpEl.style.color = "var(--emerald)";
       }
     }
 
     if (gdpSubEl) {
-      const lostPotentialB = 356 - projectedGdpB;
+      const lostPotentialB = +(356.0 - projectedGdpB).toFixed(1);
       if (lostPotentialB <= 0) {
-        gdpSubEl.textContent = "✓ 100% Potential Recovered!";
+        gdpSubEl.textContent = "✓ 100% Potential Recovered (+$220B/yr)!";
         gdpSubEl.style.color = "var(--emerald)";
       } else {
-        gdpSubEl.textContent = `-$${lostPotentialB}B Lost Potential Remaining`;
+        gdpSubEl.textContent = `-$${lostPotentialB}B / yr Lost Output Remaining`;
         gdpSubEl.style.color = "var(--crimson)";
       }
     }
@@ -4492,7 +4497,7 @@
     if (s1Callout) {
       s1Callout.innerHTML = isKenya
         ? `<strong>Why is Kenya's GDP $136B instead of $356.0 Billion?</strong> Kenya borrowed <strong>$41.0 Billion</strong> in foreign debt ($84.5B total public debt), but tender fraud, debt interest, and unbankable land drained it away. <strong>Click the 3 valves below</strong> to see how directing just 28% into high-return priorities turns Kenya into a <strong>$356.0 Billion</strong> high-income tiger today!`
-        : `<strong>Why is Africa still poor?</strong> Africa already received <strong>$3.33 Trillion</strong> in foreign aid and loans (and Kenya <strong>$161 Billion</strong>). But <strong>3 big leaks</strong> drained almost all of it away. <strong>Click the 3 valves below</strong> to plug the leaks and see what Africa (<strong>$28.4T</strong>) &amp; Kenya (<strong>$356.0B</strong>) should already be worth today!`;
+        : `<strong>Why is Africa still poor?</strong> Africa already received <strong>$3.33 Trillion</strong> in foreign aid and loans (Kenya <strong>$41.0B Foreign Debt / $84.5B Total Debt</strong>). But <strong>3 big leaks</strong> drained almost all of it away. <strong>Click the 3 valves below</strong> to plug the leaks and see what Africa (<strong>$28.4T</strong>) &amp; Kenya (<strong>$356.0B</strong>) should already be worth today!`;
     }
     if (s1Kicker) s1Kicker.textContent = isKenya ? "STEP 1 • WHERE DID KENYA'S BORROWED DEBT GO?" : "STEP 1 • WHERE DID $3.33 TRILLION GO?";
     if (s1Title) s1Title.textContent = isKenya ? "Kenya Special Audit: How Fixing 3 Leaks Unlocks a $356.0 Billion Tiger Today" : "Plug the 3 Leaks: See What Africa & Kenya Should Already Be Worth Today";
@@ -4522,13 +4527,13 @@
     if (s2Badge) s2Badge.textContent = isKenya ? "🎛️ STEP 2 OF 4 • HOW KENYA'S $160B DEBT GROWS THE ECONOMY" : "🎛️ STEP 2 OF 4 • THE $75B FIX";
     if (s2Callout) {
       s2Callout.innerHTML = isKenya
-        ? `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Kenya Growth</strong> vs. <strong>⚠️ Old $160B Debt Trap</strong>) to see how investing Kenya's <strong>$160 Billion</strong> debt and borrowing into high-return Beyond Lomborg priorities grows the economy from $136B to <strong>$356.0 Billion today</strong> and <strong>$18.6 Trillion by 2036</strong>.`
+        ? `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Kenya Growth</strong> vs. <strong>⚠️ Status Quo / Debt Trap</strong>) to see how investing Kenya's <strong>$160 Billion</strong> debt and borrowing into high-return Beyond Lomborg priorities grows the economy from $136B to <strong>$356.0 Billion today ($6,360 per capita)</strong>.`
         : `<strong>Your Action:</strong> Move the <strong>4 Dials below</strong> (or click <strong>🔥 Max Growth</strong> vs. <strong>⚠️ Old Trap</strong>) to see how spending $75 Billion smartly unlocks an <strong>$183.5 Trillion</strong> economy.`;
     }
     if (s2Kicker) s2Kicker.textContent = isKenya ? "STEP 2 • MOVE THE 4 CONTROLS ($160B KENYA INVESTMENT)" : "STEP 2 • MOVE THE 4 CONTROLS";
     if (heroHeadline) {
       heroHeadline.innerHTML = isKenya
-        ? `<span class="highlight">How Kenya's $160 Billion Grows the Economy:</span> Turn the 4 Dials to Build an <span class="highlight-drc">$18.6 Trillion Superpower</span>`
+        ? `<span class="highlight">How Kenya's Borrowed Debt Grows the Economy:</span> Turn the 4 Dials to Unlock Kenya's <span class="highlight-emerald">$356.0 Billion Tiger Economy</span>`
         : `<span class="highlight">How $75 Billion Changes Everything:</span> Turn the 4 Dials to Build a <span class="highlight-drc">$183.5 Trillion Superpower</span>`;
     }
     if (heroLead) {
@@ -4537,7 +4542,7 @@
         : `In 1324, Emperor Mansa Musa handed out raw gold in Cairo and crashed Egypt's economy for 12 years. Realizing his mistake, in 1325 he pivoted to building <strong>Sankore University in Timbuktu</strong>—investing in education, trade routes, and local industries. Move the 4 dials below to test what happens when we invest in human potential and cheap clean energy instead of just digging up raw minerals:`;
     }
     if (eqTopBarTitle) eqTopBarTitle.textContent = isKenya ? "🎛️ Live 4-Pillar Economic Controls ($160B Kenya Growth Model)" : "🎛️ Live 4-Pillar Economic Controls ($75B Catalyst)";
-    if (eqMaxBtn) eqMaxBtn.textContent = isKenya ? "🔥 Max Kenya Growth ($18.6T)" : "🔥 Max Growth ($183.5T)";
+    if (eqMaxBtn) eqMaxBtn.textContent = isKenya ? "🔥 Max Kenya Growth ($356.0B)" : "🔥 Max Growth ($356.0B)";
     if (eqTrapBtn) eqTrapBtn.textContent = isKenya ? "⚠️ Old $160B Debt Trap ($1.4T)" : "⚠️ Old Raw-Ore Trap ($8.2T)";
     if (nobelKicker) nobelKicker.textContent = isKenya ? "KENYA'S LIVE SCORECARD (YEAR 2036)" : "AFRICA'S LIVE SCORECARD (YEAR 2036)";
     if (eqGdpLbl) eqGdpLbl.textContent = isKenya ? "Total Economy Size (vs. $136B Today)" : "Total Economy Size (vs. $3.7T Today)";
@@ -4558,11 +4563,11 @@
     const loadNobelBtn = document.getElementById("loadNobelBtn");
     const loadTrapBtn = document.getElementById("loadTrapBtn");
 
-    if (simKicker) simKicker.textContent = isKenya ? "KENYA'S $160 BILLION PRODUCTIVE ALLOCATION • BEYOND LOMBORG BREAKTHROUGHS" : "HOW $75 BILLION IS ALLOCATED • 12 HIGHEST-RETURN INVESTMENTS";
-    if (simTitle) simTitle.textContent = isKenya ? "How Investing Kenya's $160B into Proven Breakthroughs (Geothermal, EdTech & Ports) Multiplies the Economy" : "Why Education, Health & Trade Beat Concrete Every Time";
+    if (simKicker) simKicker.textContent = isKenya ? "KENYA'S $41.0B FOREIGN DEBT ALLOCATION • BEYOND LOMBORG BREAKTHROUGHS" : "HOW $75 BILLION IS ALLOCATED • 12 HIGHEST-RETURN INVESTMENTS";
+    if (simTitle) simTitle.textContent = isKenya ? "How Investing Kenya's Borrowed Debt into Proven Breakthroughs (Geothermal, EdTech & Ports) Multiplies the Economy" : "Why Education, Health & Trade Beat Concrete Every Time";
     if (simSub) {
       simSub.innerHTML = isKenya
-        ? `Kenya already spent $160 Billion on foreign loans, Eurobonds, and bilateral aid—with little lasting growth. Scaling Tusome adaptive pedagogy, Busia school deworming, Olkaria geothermal steam, and ArdhiSasa digital land titles across all 47 counties yields over <strong>$58 in real economic output per $1 spent</strong>:`
+        ? `Kenya already borrowed $41.0 Billion in foreign loans ($84.5B total public debt)—with little lasting growth. Scaling Tusome adaptive pedagogy, Busia school deworming, Olkaria geothermal steam, and ArdhiSasa digital land titles across all 47 counties yields over <strong>$58 in real economic output per $1 spent</strong>:`
         : `Why did Mansa Musa invest in universities and trade routes rather than just digging more gold mines? Because raw resource mining only yields <strong>$1.90 per $1 spent</strong>, while basic health, schooling, and open trade return <strong>$33 to $101 per $1 spent</strong>. Test your own budget below:`;
     }
     if (btfBadge) btfBadge.textContent = isKenya ? "Saves 165,000 Kenyan Lives / Year • 58.4 : 1 Return Per $1" : "Saves 4.2M Lives Every Year • $52 Average Return Per $1";
@@ -4592,7 +4597,7 @@
     if (raceTitle) raceTitle.textContent = isKenya ? "The Global Race: Watch Kenya Enter the World Top 10 by 2036" : "The Global Race: Watch Africa Overtake Europe, India, China & the United States";
     if (raceSub) {
       raceSub.innerHTML = isKenya
-        ? `Starting from $136B in 2026 (#74 globally), Kenya redirects its $160B borrowing into geothermal energy, port automation, and digital education—racing past South Africa, France, the UK, and Germany to become an $18.6 Trillion powerhouse by 2036:`
+        ? `Starting from $136B in 2026 (#74 globally), Kenya deploys its $41.0B foreign debt into geothermal energy, port automation, and digital education—surpassing South Africa ($375B) to become an Upper-Middle Income $356.0B Tiger Economy:`
         : `In 1324, Mansa Musa’s Mali was wealthier than any kingdom in Europe or Asia. Press <strong>▶ Play Yearly Race</strong> (or slide the years 2026 to 2036) to watch how high-impact investments lift Africa’s young population past aging world powers into the #1 economic spot on Earth:`;
     }
 
@@ -4610,7 +4615,7 @@
           <button type="button" class="filter-pill" data-race-year="2046">2046 (Overtakes France: $4.5T)</button>
           <button type="button" class="filter-pill" data-race-year="2048">2048 (Overtakes UK: $5.8T)</button>
           <button type="button" class="filter-pill" data-race-year="2056">2056 (Overtakes Germany: $8.5T)</button>
-          <button type="button" class="filter-pill active" data-race-year="2036">2036 (Enters Global Top 5: $18.6T)</button>
+          <button type="button" class="filter-pill active" data-race-year="2036">2036 (Passes South Africa: $356.0B)</button>
         `;
       } else {
         raceMilestonesBar.innerHTML = `
